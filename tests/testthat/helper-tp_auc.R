@@ -11,12 +11,15 @@ TpAUC.function <- function(xsample, ysample, lower.fp, upper.fp){
     if (lower.fp>=upper.fp) {
         stop("Error in the prefixed FPR range")
     }
+
     fpr.roc <- points.curve(xsample, ysample)[,1]
     sen.roc <- points.curve(xsample, ysample)[,2]
+
     if (is.unsorted(sen.roc)) {
         sen.roc <- rev(sen.roc)
         fpr.roc <- rev(fpr.roc)
     }
+
     i.l <- min(which(fpr.roc>=lower.fp))
     j.l <- max(i.l-1,1)
     i.u <- max(which(fpr.roc<=upper.fp))

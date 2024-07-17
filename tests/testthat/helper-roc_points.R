@@ -30,3 +30,13 @@ points.curve <- function(xsample, ysample) {
     xy.roc <- cbind(fpr.p,sen.p)
     return(xy.roc)
 }
+
+#' Defined function to check points
+points.thresholds <- function(xsample, ysample) {
+    x.p <- xsample[which(is.na(xsample) == FALSE & is.na(ysample) == FALSE)]
+    y.p <- ysample[which(is.na(xsample) == FALSE & is.na(ysample) == FALSE)]
+
+    pts <- sort(y.p)
+    pts <- append(pts[-length(pts)] + diff(pts) / 2, min(pts) - 1, 0)
+    pts <- append(pts, max(y.p) + 1, length(pts))
+}

@@ -10,12 +10,22 @@ get_fpr_indexes <- function(fpr, lower_fpr, upper_fpr) {
     c(lower_index, upper_index)
 }
 
-tp_auc <- function(data, response, predictor, lower_fpr, upper_fpr, pauc) {
-    tpr_fpr <- data %>% roc_points({{ response }}, {{ predictor }})
-    tpr <- tpr_fpr %>% pull(tpr)
-    fpr <- tpr_fpr %>% pull(fpr)
-    response <- data %>% pull({{ response }})
-    predictor <- data %>% pull({{ predictor }})
+#' @importFrom dplyr pull
+tp_auc <- function(
+        data = NULL,
+        response,
+        predictor,
+        lower_fpr,
+        upper_fpr) {
+    if (!is.null(data)) {
+        tpr_fpr <- data %>% roc_points({{ response }}, {{ predictor }})
+        tpr <- tpr_fpr %>% pull(tpr)
+        fpr <- tpr_fpr %>% pull(fpr)
+    } else {
+        tpr_fpr <- roc_points(NULL, response, predictor)
+        tpr <- tpr_fpr[["tpr"]]
+        fpr <- tpr_fpr[["fpr"]]
+    }
 
     if (lower_fpr >= upper_fpr) {
         stop("Error in prefixed FPR range")
@@ -59,6 +69,7 @@ tp_auc <- function(data, response, predictor, lower_fpr, upper_fpr, pauc) {
             mean
         )
     )
+    # TODO: TPR has several NaN at the begining - makes errors
     lower_bound <- calculate_lower_bound(partial_fpr, partial_tpr)
     upper_bound <- calculate_upper_bound(partial_fpr, partial_tpr)
 
