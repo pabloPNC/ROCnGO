@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(ROCnRoll)
+library(ROCnGO)
 
-test_check("ROCnRoll")
+test_check("ROCnGO")
