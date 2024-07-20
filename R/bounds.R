@@ -41,7 +41,7 @@ has_hook <- function(partial_fpr, partial_tpr) {
     all(partial_tpr >= partial_fpr)
 }
 
-calc_lower_bound <- function(
+calc_fpr_lower_bound <- function(
         partial_fpr,
         partial_tpr) {
     lower_square_bound <- calc_fpr_square_lower_bound(partial_fpr, partial_tpr)
@@ -58,7 +58,7 @@ calc_lower_bound <- function(
     lower_bound
 }
 
-calc_upper_bound <- function(
+calc_fpr_upper_bound <- function(
         partial_fpr,
         partial_tpr) {
     if (min(partial_tpr) == max(partial_tpr)) {
@@ -68,4 +68,19 @@ calc_upper_bound <- function(
         upper_bound <- sum(diff(partial_fpr)) * max(partial_tpr)
     }
     return(upper_bound)
+}
+
+calc_fpr_bounds <- function(
+        partial_fpr,
+        partial_tpr) {
+    list(
+        upper_bound = calc_fpr_upper_bound(
+            partial_fpr,
+            partial_tpr
+        ),
+        lower_bound = calc_fpr_lower_bound(
+            partial_fpr,
+            partial_tpr
+        )
+    )
 }

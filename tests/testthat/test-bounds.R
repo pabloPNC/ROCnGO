@@ -85,7 +85,7 @@ test_that("fpr plr_lower_bound are equal", {
 
 test_that("fpr calc_lower_bound are equal", {
 
-    actual_bound <- calc_lower_bound(
+    actual_bound <- calc_fpr_lower_bound(
         partial_fpr = partial_tpr_fpr[["partial_fpr"]],
         partial_tpr = partial_tpr_fpr[["partial_tpr"]]
     )
@@ -102,7 +102,7 @@ test_that("fpr calc_lower_bound are equal", {
 
 test_that("fpr calc_upper_bound are equal", {
 
-    actual_bound <- calc_upper_bound(
+    actual_bound <- calc_fpr_upper_bound(
         partial_fpr = partial_tpr_fpr[["partial_fpr"]],
         partial_tpr = partial_tpr_fpr[["partial_tpr"]]
     )
@@ -115,4 +115,28 @@ test_that("fpr calc_upper_bound are equal", {
     )[["tp_auc_max"]]
 
     expect_equal(actual_bound, expected_bound)
+})
+
+test_that("fpr calc_fpr_bounds are equal", {
+
+    actual_bounds <- calc_fpr_bounds(
+        partial_fpr = partial_tpr_fpr[["partial_fpr"]],
+        partial_tpr = partial_tpr_fpr[["partial_tpr"]]
+    )
+
+    expected_bounds <- fpr.bounds(
+        data[[response]],
+        data[[predictor]],
+        lower.fp = 0.4,
+        upper.fp = 0.49
+    )
+
+    expect_equal(
+        actual_bounds[["upper_bound"]],
+        expected_bounds[["tp_auc_max"]]
+    )
+    expect_equal(
+        actual_bounds[["lower_bound"]],
+        expected_bounds[["tp_auc_min"]]
+    )
 })
