@@ -114,7 +114,6 @@ add_thresholds <- function(
         )
     }
     if (is.null(upper_interp) == FALSE) {
-        print("entro aqui")
         result[["ratio"]] <- c(
             result[["ratio"]],
             upper_interp[["threshold"]]
@@ -133,7 +132,7 @@ calc_partial_roc_points <- function(
         lower_threshold,
         upper_threshold,
         ratio = NULL,
-        sort = FALSE,
+        sort = TRUE,
         include_thresholds = TRUE) {
     if (sort == TRUE) {
         if (is.unsorted(tpr) == TRUE) {

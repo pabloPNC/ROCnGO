@@ -186,7 +186,6 @@ test_that("calc_partial_roc_points == partial.points.curve - fpr", {
     sorted_fpr <- rev(tpr_fpr$fpr)
     sorted_tpr <- rev(tpr_fpr$tpr)
 
-    print("* test *")
     actual_partial_points <- calc_partial_roc_points(
         tpr = sorted_tpr,
         fpr = sorted_fpr,
