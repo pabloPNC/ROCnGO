@@ -122,7 +122,7 @@ test_that("calc_ratios, calc_fpr and calc_tpr == points.curve - tidy", {
     )
 })
 
-test_that("sorting in functions is needed", {
+test_that("sorting when getting points not needed", {
     points_calc_ratios <- as.data.frame(
         calc_ratios(
             thresholds = get_thresholds(

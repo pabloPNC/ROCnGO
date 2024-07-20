@@ -55,7 +55,6 @@ calc_ratios <- function(data = NULL, thresholds, response, predictor) {
 
 #' @importFrom magrittr %>%
 roc_points <- function(data = NULL, response, predictor) {
-    # TODO: use cal_ratios
     if (!is.null(data)) {
         thresholds <- data %>% get_thresholds({{ predictor }})
         tpr <- data %>% calc_tpr(thresholds, {{ response }}, {{ predictor }})

@@ -1,15 +1,3 @@
-interpolate_threshold <- function(threshold, lower_x, upper_x,
-    lower_y, upper_y) {
-    slope <- (threshold - lower_x) / (upper_x - lower_x)
-    lower_y + (upper_y - lower_y) * slope
-}
-
-get_fpr_indexes <- function(fpr, lower_fpr, upper_fpr) {
-    lower_index <- min(which(fpr >= lower_fpr))
-    upper_index <- max(which(fpr <= upper_fpr))
-    c(lower_index, upper_index)
-}
-
 #' @importFrom dplyr pull
 tp_auc <- function(
         data = NULL,
@@ -31,6 +19,7 @@ tp_auc <- function(
         stop("Error in prefixed FPR range")
     }
 
+    # TODO: refactor with new function in partial_points
     partial_fpr_indexes <- get_fpr_indexes(fpr, lower_fpr, upper_fpr)
     lower_index <- partial_fpr_indexes[1]
     upper_index <- partial_fpr_indexes[2]
@@ -57,6 +46,8 @@ tp_auc <- function(
         )
         partial_tpr <- c(interpolated, partial_tpr)
     }
+
+
     # TODO: use better way to compute pauc
     pauc <- sum(
         diff(partial_fpr) *
