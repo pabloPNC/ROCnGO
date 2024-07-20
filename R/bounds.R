@@ -1,30 +1,71 @@
-calculate_lower_bound <- function(fpr, tpr) {
-    # TODO: Try to avoid min/max calculation if fixed value (sorted)
-    diagonal_pauc <- sum(diff(fpr^2)) / 2
-    lower_square_pauc <- sum(diff(fpr)) * min(tpr)
-    proper_roc_lower_bound <- max(diagonal_pauc, lower_square_pauc)
-    upper_diagonal <- sum(diff(fpr)) * mean(c(min(tpr), max(tpr)))
-
-    partial_plr <- (tpr - tpr[1]) / (fpr - fpr[1])
-    partial_plr <- partial_plr[is.finite(partial_plr)]
-
-    if (all(partial_plr >= partial_plr[length(partial_plr)])) {
-        lower_bound <- upper_diagonal
-    } else {
-        if (all(tpr >= fpr)) {
-            lower_bound <- proper_roc_lower_bound
-        } else {
-            lower_bound <- lower_square_pauc
-        }
-    }
-    return(lower_bound)
+calc_fpr_diagonal_lower_bound <- function(
+        partial_fpr,
+        partial_tpr) {
+    sum(diff(partial_fpr^2)) / 2
 }
 
-calculate_upper_bound <- function(fpr, tpr) {
-    if (min(tpr) == max(tpr)) {
-        warning("Constant ROC curve over the prefixed FPR range")
-        upper_bound <- sum(diff(tpr))
+calc_fpr_square_lower_bound <- function(
+        partial_fpr,
+        partial_tpr) {
+    sum(diff(partial_fpr)) * min(partial_tpr)
+}
+
+calc_fpr_proper_lower_bound <- function(
+        partial_fpr,
+        partial_tpr) {
+    max(
+        calc_fpr_diagonal_lower_bound(partial_fpr, partial_tpr),
+        calc_fpr_square_lower_bound(partial_fpr, partial_tpr)
+    )
+}
+
+calc_fpr_plr_lower_bound <- function(
+        partial_fpr,
+        partial_tpr) {
+    sum(diff(partial_fpr)) * mean(c(min(partial_tpr), max(partial_tpr)))
+}
+
+calc_plr <- function(
+        partial_fpr,
+        partial_tpr) {
+    plr <- (partial_tpr - partial_tpr[1]) / (partial_fpr - partial_fpr[1])
+    plr <- plr[is.finite(plr)]
+}
+
+is_concave <- function(partial_fpr, partial_tpr) {
+    plr <- calc_plr(partial_fpr, partial_tpr)
+    all(plr >= plr[length(plr)])
+}
+
+has_hook <- function(partial_fpr, partial_tpr) {
+    all(partial_tpr >= partial_fpr)
+}
+
+calc_lower_bound <- function(
+        partial_fpr,
+        partial_tpr) {
+    lower_square_bound <- calc_fpr_square_lower_bound(partial_fpr, partial_tpr)
+    proper_bound <- calc_fpr_proper_lower_bound(partial_fpr, partial_tpr)
+    plr_bound <- calc_fpr_plr_lower_bound(partial_fpr, partial_tpr)
+
+    if (is_concave(partial_fpr, partial_tpr)) {
+        lower_bound <- plr_bound
+    } else if (has_hook(partial_fpr, partial_tpr)) {
+        lower_bound <- proper_bound
     } else {
-        upper_bound <- sum(diff(fpr)) * max(tpr)
+        lower_bound <- lower_square_bound
     }
+    lower_bound
+}
+
+calc_upper_bound <- function(
+        partial_fpr,
+        partial_tpr) {
+    if (min(partial_tpr) == max(partial_tpr)) {
+        warning("Constant ROC curve over the prefixed FPR range")
+        upper_bound <- sum(diff(partial_tpr))
+    } else {
+        upper_bound <- sum(diff(partial_fpr)) * max(partial_tpr)
+    }
+    return(upper_bound)
 }
