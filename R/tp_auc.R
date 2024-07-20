@@ -1,10 +1,11 @@
 #' @importFrom dplyr pull
+# TODO: check for sorting
 tp_auc <- function(
-        data = NULL,
-        response,
-        predictor,
-        lower_fpr,
-        upper_fpr) {
+            data = NULL,
+            response,
+            predictor,
+            lower_fpr,
+            upper_fpr) {
     if (!is.null(data)) {
         tpr_fpr <- data %>% roc_points({{ response }}, {{ predictor }})
         tpr <- tpr_fpr %>% pull(tpr)
@@ -19,34 +20,18 @@ tp_auc <- function(
         stop("Error in prefixed FPR range")
     }
 
-    # TODO: refactor with new function in partial_points
-    partial_fpr_indexes <- get_fpr_indexes(fpr, lower_fpr, upper_fpr)
-    lower_index <- partial_fpr_indexes[1]
-    upper_index <- partial_fpr_indexes[2]
-    partial_tpr <- tpr[lower_index:upper_index]
-    partial_fpr <- fpr[lower_index:upper_index]
+    partial_tpr_fpr <- calc_partial_roc_points(
+        tpr = tpr,
+        fpr = fpr,
+        lower_threshold = lower_fpr,
+        upper_threshold = upper_fpr,
+        ratio = "fpr",
+        sort = TRUE,
+        include_thresholds = TRUE
+    )
 
-    previous_point_index <- max(lower_index - 1, 1)
-    next_point_index <- min(1 + upper_index, length(fpr))
-
-    if (tpr[lower_index] > lower_fpr) {
-        partial_fpr <- c(lower_fpr, partial_fpr)
-        interpolated <- interpolate_threshold(
-            lower_fpr, fpr[previous_point_index], fpr[lower_index],
-            tpr[previous_point_index], tpr[lower_index]
-        )
-        partial_tpr <- c(interpolated, partial_tpr)
-    }
-
-    if (fpr[upper_index] < upper_fpr) {
-        partial_fpr <- c(partial_fpr, upper_fpr)
-        interpolated <- interpolate_threshold(
-            upper_fpr, fpr[upper_index], fpr[next_point_index],
-            tpr[upper_index], tpr[next_point_index]
-        )
-        partial_tpr <- c(interpolated, partial_tpr)
-    }
-
+    partial_tpr <- partial_tpr_fpr[["partial_tpr"]]
+    partial_fpr <- partial_tpr_fpr[["partial_fpr"]]
 
     # TODO: use better way to compute pauc
     pauc <- sum(
@@ -60,9 +45,9 @@ tp_auc <- function(
             mean
         )
     )
-    # TODO: TPR has several NaN at the begining - makes errors
-    lower_bound <- calculate_lower_bound(partial_fpr, partial_tpr)
-    upper_bound <- calculate_upper_bound(partial_fpr, partial_tpr)
+    bounds <- calc_fpr_bounds(partial_fpr, partial_tpr)
+    lower_bound <- bounds[["lower_bound"]]
+    upper_bound <- bounds[["upper_bound"]]
 
     tpauc <- (1 + ((pauc - lower_bound) / (upper_bound - lower_bound))) / 2
     return(tpauc)
