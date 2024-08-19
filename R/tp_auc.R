@@ -1,5 +1,5 @@
 #' @importFrom dplyr pull
-# TODO: check for sorting
+#' @export
 tp_auc <- function(
             data = NULL,
             response,

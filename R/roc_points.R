@@ -35,13 +35,14 @@ calc_fpr <- function(data = NULL, thresholds, response, predictor) {
     )
 }
 
+#' @importFrom purrr map
 #' @importFrom magrittr %>%
 calc_ratios <- function(data = NULL, thresholds, response, predictor) {
     if (!is.null(data)) {
         response <- data %>% dplyr::pull({{ response }})
         predictor <- data %>% dplyr::pull({{ predictor }})
     }
-    result <- purrr::map(
+    result <- map(
         thresholds,
         \(t) list(
                 tpr = sum(((predictor > t) == 1) * (response == 1)) /

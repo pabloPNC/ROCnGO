@@ -11,7 +11,6 @@ TpAUC.function <- function(xsample, ysample, lower.fp, upper.fp){
     if (lower.fp>=upper.fp) {
         stop("Error in the prefixed FPR range")
     }
-
     fpr.roc <- points.curve(xsample, ysample)[,1]
     sen.roc <- points.curve(xsample, ysample)[,2]
 
