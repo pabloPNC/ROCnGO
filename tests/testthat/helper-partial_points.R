@@ -48,8 +48,30 @@ partial.points.curve <- function(xsample, ysample, lower.fp, upper.fp) {
     if (fpr.roc[i.u]<upper.fp) {
         fpr.pr <- append(fpr.pr, upper.fp, length(fpr.pr))
         uscale <- (fpr.roc[j.u]-fpr.pr[length(fpr.pr)])/(fpr.roc[j.u]-fpr.roc[i.u])
-        sen.pr <- append(sen.pr, sen.roc[j.u]-(sen.roc[j.u]-sen.roc[i.u])*uscale, 
+        sen.pr <- append(sen.pr, sen.roc[j.u]-(sen.roc[j.u]-sen.roc[i.u])*uscale,
                          length(sen.pr))
     }
     tibble::tibble(sen.pr, fpr.pr)
 }
+
+#' Function fragment of 'FpaucHS' which calculates partial points in HS range
+pHSpoints <- function(xsample, ysample, lower.sen) {
+    pts.roc=NULL; fpr.roc=NULL; sen.roc=NULL; fpr.p=NULL; sen.p=NULL;
+    ppoints=NULL;
+    i.low=NULL; j.low=NULL; lscale=NULL;
+    if ((lower.sen >= 1) || (lower.sen<0)) {stop("Error in the prefixed TPR
+ range")}
+    pts.roc <- ROCpoints(xsample, ysample)
+    fpr.roc <- pts.roc[,1]
+    sen.roc <- pts.roc[,2]
+    i.low <- min(which(sen.roc >= lower.sen))
+    j.low <- max(i.low -1, 1)
+    fpr.p <- fpr.roc[i.low:length(fpr.roc)]
+    sen.p <- sen.roc[i.low:length(sen.roc)]
+    if ((sen.roc[i.low] > lower.sen) && (i.low>1)) {
+        sen.p <- append(sen.p, lower.sen, 0)
+        lscale <- (sen.p[1]-sen.roc[j.low])/(sen.roc[i.low]-sen.roc[j.low])
+        fpr.p <- append(fpr.p, fpr.roc[j.low]+(fpr.roc[i.low]-
+                                                   fpr.roc[j.low])*lscale, 0)}
+    ppoints=cbind(fprp=fpr.p, tprp=sen.p)
+    return(ppoints)}

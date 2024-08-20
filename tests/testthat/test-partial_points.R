@@ -212,3 +212,35 @@ test_that("calc_partial_roc_points == partial.points.curve - fpr", {
         expected_partial_points[["sen.pr"]]
     )
 })
+
+test_that("calc_partial_roc_points == pHSpoints - tpr", {
+    sorted_fpr <- rev(tpr_fpr$fpr)
+    sorted_tpr <- rev(tpr_fpr$tpr)
+
+    actual_partial_points <- suppressWarnings(
+        calc_partial_roc_points(
+            tpr = sorted_tpr,
+            fpr = sorted_fpr,
+            lower_threshold = 0.9,
+            upper_threshold = 1,
+            ratio = "tpr",
+            sort = TRUE,
+            include_thresholds = TRUE
+        )
+    )
+
+    expected_partial_points <- pHSpoints(
+        xsample = data[[response]],
+        ysample = data[[predictor]],
+        lower.sen = 0.9
+    )
+
+    expect_equal(
+        actual_partial_points[["partial_fpr"]],
+        expected_partial_points[,1]
+    )
+    expect_equal(
+        actual_partial_points[["partial_tpr"]],
+        expected_partial_points[,2]
+    )
+})
