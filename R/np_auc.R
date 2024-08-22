@@ -1,9 +1,9 @@
 #' @export
 np_auc <- function(
-            data = NULL,
-            response,
-            predictor,
-            lower_tpr) {
+        data = NULL,
+        response,
+        predictor,
+        lower_tpr) {
 
     if (!is.null(data)) {
         tpr_fpr <- data %>% roc_points({{ response }}, {{ predictor }})
