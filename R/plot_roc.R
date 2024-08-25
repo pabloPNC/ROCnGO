@@ -22,7 +22,7 @@ add_chance_line <- function() {
 }
 
 #' @importFrom ggplot2 geom_path
-plot_roc_line <- function(
+plot_roc_curve <- function(
         data = NULL,
         fpr,
         tpr) {
@@ -49,5 +49,112 @@ add_threshold_line <- function(
         add_fpr_threshold_line(threshold)
     } else if (ratio == "spec") {
         add_tpr_threshold_line(threshold)
+    }
+}
+#' @importFrom ggplot2 geom_path
+#' @importFrom dplyr filter
+plot_partial_fpr_curve <- function(
+        data = NULL,
+        fpr,
+        tpr,
+        threshold = NULL) {
+    plot_roc(data, fpr, tpr) +
+        geom_path(
+            data = . %>% filter( {{ fpr }} > threshold),
+            size = 0.8
+        )
+}
+
+#' @importFrom ggplot2 geom_path
+#' @importFrom dplyr filter
+plot_partial_tpr_curve <- function(
+        data = NULL,
+        fpr,
+        tpr,
+        threshold = NULL) {
+    plot_roc(data, fpr, tpr) +
+        geom_path(
+            data = . %>% filter( {{ tpr }} > threshold),
+            size = 0.8
+        )
+}
+
+#' @importFrom ggplot2 geom_path
+#' @importFrom dplyr filter
+plot_partial_fpr_curve <- function(
+        data = NULL,
+        fpr,
+        tpr,
+        threshold = NULL) {
+    plot_roc(data, fpr, tpr) +
+        geom_path(
+            data = . %>% filter( {{ fpr }} > threshold),
+            size = 0.8
+        )
+}
+
+#' @importFrom ggplot2 geom_path
+#' @importFrom dplyr filter
+plot_partial_tpr_curve <- function(
+        data = NULL,
+        fpr,
+        tpr,
+        threshold = NULL) {
+    plot_roc(data, fpr, tpr) +
+        geom_path(
+            data = . %>% filter( {{ tpr }} > threshold),
+            size = 0.8
+        )
+}
+
+plot_partial_roc_curve <- function(
+        data = NULL,
+        fpr,
+        tpr,
+        threshold = NULL,
+        ratio = NULL) {
+    if (ratio == "sens") {
+        plot_partial_tpr_curve(data, fpr, tpr, threshold)
+    } else if (ratio == "spec") {
+        plot_partial_fpr_curve(data, fpr, tpr, threshold)
+    }
+}
+
+#' @importFrom ggplot2 geom_point
+#' @importFrom dplyr filter
+plot_partial_fpr_points <- function(
+        data = NULL,
+        fpr,
+        tpr,
+        threshold = NULL) {
+    plot_roc(data, fpr, tpr) +
+        geom_point(
+            data = . %>% filter( {{ fpr }} > threshold)
+        )
+}
+
+#' @importFrom ggplot2 geom_point
+#' @importFrom dplyr filter
+plot_partial_tpr_points <- function(
+        data = NULL,
+        fpr,
+        tpr,
+        threshold = NULL) {
+    plot_roc(data, fpr, tpr) +
+        geom_point(
+            data = . %>% filter( {{ tpr }} > threshold)
+        )
+}
+
+plot_partial_roc_points <- function(
+        data = NULL,
+        fpr,
+        tpr,
+        threshold = NULL,
+        ratio = NULL) {
+    if (ratio == "sens") {
+        plot_partial_tpr_points(data, fpr, tpr, threshold)
+    } else if (ratio == "spec") {
+        plot_partial_fpr_points(data, fpr, tpr, threshold)
     }
 }
