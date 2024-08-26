@@ -8,6 +8,7 @@ plot_roc <- function(
 }
 
 #' @importFrom ggplot2 geom_point
+#' @export
 plot_roc_points <- function(
         data = NULL,
         fpr,
@@ -17,11 +18,13 @@ plot_roc_points <- function(
 }
 
 #' @importFrom ggplot2 geom_abline
+#' @export
 add_chance_line <- function() {
     geom_abline(slope = 1, linetype = "dashed", alpha = 1/5)
 }
 
 #' @importFrom ggplot2 geom_path
+#' @export
 plot_roc_curve <- function(
         data = NULL,
         fpr,
@@ -31,17 +34,20 @@ plot_roc_curve <- function(
 }
 
 #' @importFrom  ggplot2 geom_vline
+#' @export
 add_fpr_threshold_line <- function(
         threshold) {
     geom_vline(xintercept = threshold, linetype = "dashed")
 }
 
 #' @importFrom  ggplot2 geom_hline
+#' @export
 add_tpr_threshold_line <- function(
         threshold) {
     geom_hline(yintercept = threshold, linetype = "dashed")
 }
 
+#' @export
 add_threshold_line <- function(
         threshold,
         ratio = NULL) {
@@ -51,8 +57,10 @@ add_threshold_line <- function(
         add_tpr_threshold_line(threshold)
     }
 }
+
 #' @importFrom ggplot2 geom_path
 #' @importFrom dplyr filter
+#' @export
 plot_partial_fpr_curve <- function(
         data = NULL,
         fpr,
@@ -67,6 +75,7 @@ plot_partial_fpr_curve <- function(
 
 #' @importFrom ggplot2 geom_path
 #' @importFrom dplyr filter
+#' @export
 plot_partial_tpr_curve <- function(
         data = NULL,
         fpr,
@@ -81,6 +90,7 @@ plot_partial_tpr_curve <- function(
 
 #' @importFrom ggplot2 geom_path
 #' @importFrom dplyr filter
+#' @export
 plot_partial_fpr_curve <- function(
         data = NULL,
         fpr,
@@ -95,6 +105,7 @@ plot_partial_fpr_curve <- function(
 
 #' @importFrom ggplot2 geom_path
 #' @importFrom dplyr filter
+#' @export
 plot_partial_tpr_curve <- function(
         data = NULL,
         fpr,
@@ -107,6 +118,7 @@ plot_partial_tpr_curve <- function(
         )
 }
 
+#' @export
 plot_partial_roc_curve <- function(
         data = NULL,
         fpr,
@@ -122,6 +134,7 @@ plot_partial_roc_curve <- function(
 
 #' @importFrom ggplot2 geom_point
 #' @importFrom dplyr filter
+#' @export
 plot_partial_fpr_points <- function(
         data = NULL,
         fpr,
@@ -135,6 +148,7 @@ plot_partial_fpr_points <- function(
 
 #' @importFrom ggplot2 geom_point
 #' @importFrom dplyr filter
+#' @export
 plot_partial_tpr_points <- function(
         data = NULL,
         fpr,
@@ -146,6 +160,7 @@ plot_partial_tpr_points <- function(
         )
 }
 
+#' @export
 plot_partial_roc_points <- function(
         data = NULL,
         fpr,
