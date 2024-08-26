@@ -141,11 +141,11 @@ calc_tpr_curve_shape <- function(
         partial_tpr) {
     partial_nlr <- calc_partial_nlr(partial_fpr, partial_tpr)
     if (is_concave_nlr(partial_fpr, partial_tpr)) {
-        curve_shape <- "Proper"
+        curve_shape <- "Concave"
     } else if (is_partially_concave_tpr(partial_nlr)) {
         curve_shape <- "Partially proper"
     } else {
-        curve_shape <- "Improper"
+        curve_shape <- "Hook under chance"
     }
     return(curve_shape)
 }
@@ -157,7 +157,7 @@ calc_tpr_lower_bound <- function(
         partial_fpr = partial_fpr,
         partial_tpr = partial_tpr
     )
-    if (curve_shape == "Proper") {
+    if (curve_shape == "Concave") {
         lower_bound <- calc_tpr_concave_lower_bound(
             partial_fpr = partial_fpr,
             partial_tpr = partial_tpr
@@ -167,7 +167,7 @@ calc_tpr_lower_bound <- function(
             partial_fpr = partial_fpr,
             partial_tpr = partial_tpr
         )
-    } else if (curve_shape == "Improper") {
+    } else if (curve_shape == "Hook under chance") {
         lower_bound <- calc_tpr_upper_hook_lower_bound(
             partial_tpr = partial_tpr,
             partial_fpr = partial_fpr
