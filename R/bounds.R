@@ -115,7 +115,7 @@ calc_tpr_upper_hook_lower_bound <- function(
     return(0)
 }
 
-calc_nlr <- function(
+calc_partial_nlr <- function(
         partial_fpr,
         partial_tpr) {
     partial_fpr <- partial_fpr[-length(partial_fpr)]
@@ -137,7 +137,7 @@ is_partially_concave_tpr <- function(
 calc_tpr_curve_shape <- function(
         partial_fpr,
         partial_tpr) {
-    partial_nlr <- calc_nlr(partial_fpr, partial_tpr)
+    partial_nlr <- calc_partial_nlr(partial_fpr, partial_tpr)
     if (is_concave_tpr(partial_nlr)) {
         curve_shape <- "Proper"
     } else if (is_partially_concave_tpr(partial_nlr)) {
