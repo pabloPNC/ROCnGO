@@ -25,7 +25,7 @@ calc_fpr_plr_lower_bound <- function(
     sum(diff(partial_fpr)) * mean(c(min(partial_tpr), max(partial_tpr)))
 }
 
-calc_plr <- function(
+calc_partial_plr <- function(
         partial_fpr,
         partial_tpr) {
     plr <- (partial_tpr - partial_tpr[1]) / (partial_fpr - partial_fpr[1])
@@ -33,7 +33,7 @@ calc_plr <- function(
 }
 
 is_concave <- function(partial_fpr, partial_tpr) {
-    plr <- calc_plr(partial_fpr, partial_tpr)
+    plr <- calc_partial_plr(partial_fpr, partial_tpr)
     all(plr >= plr[length(plr)])
 }
 
