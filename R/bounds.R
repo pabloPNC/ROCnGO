@@ -37,7 +37,7 @@ is_concave <- function(partial_fpr, partial_tpr) {
     all(plr >= plr[length(plr)])
 }
 
-has_hook <- function(partial_fpr, partial_tpr) {
+is_over_chance_line <- function(partial_fpr, partial_tpr) {
     all(partial_tpr >= partial_fpr)
 }
 
@@ -50,7 +50,7 @@ calc_fpr_lower_bound <- function(
 
     if (is_concave(partial_fpr, partial_tpr)) {
         lower_bound <- plr_bound
-    } else if (has_hook(partial_fpr, partial_tpr)) {
+    } else if (is_over_chance_line(partial_fpr, partial_tpr)) {
         lower_bound <- proper_bound
     } else {
         lower_bound <- lower_square_bound
