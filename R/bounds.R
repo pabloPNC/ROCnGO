@@ -41,18 +41,35 @@ is_over_chance_line <- function(partial_fpr, partial_tpr) {
     all(partial_tpr >= partial_fpr)
 }
 
+calc_fpr_curve_shape <- function(
+        partial_fpr,
+        partial_tpr) {
+    if (is_concave_plr(partial_fpr, partial_tpr)) {
+        curve_shape <- "Concave"
+    } else if (is_over_chance_line(partial_fpr, partial_tpr)) {
+        curve_shape <- "Partially Proper"
+    } else {
+        curve_shape <- "Hook under chance"
+    }
+    return(curve_shape)
+}
+
 calc_fpr_lower_bound <- function(
         partial_fpr,
         partial_tpr) {
+    curve_shape <- calc_fpr_curve_shape(
+        partial_fpr,
+        partial_tpr
+    )
     lower_square_bound <- calc_fpr_square_lower_bound(partial_fpr, partial_tpr)
     proper_bound <- calc_fpr_proper_lower_bound(partial_fpr, partial_tpr)
     plr_bound <- calc_fpr_plr_lower_bound(partial_fpr, partial_tpr)
 
-    if (is_concave_plr(partial_fpr, partial_tpr)) {
+    if (curve_shape == "Concave") {
         lower_bound <- plr_bound
-    } else if (is_over_chance_line(partial_fpr, partial_tpr)) {
+    } else if (curve_shape == "Partially Proper") {
         lower_bound <- proper_bound
-    } else {
+    } else if (curve_shape == "Hook under chance") {
         lower_bound <- lower_square_bound
     }
     lower_bound
@@ -131,7 +148,7 @@ is_concave_nlr <- function(
     all(partial_nlr <= partial_nlr_0) & (is.finite(partial_nlr_0))
 }
 
-is_partially_concave_tpr <- function(
+is_over_chance_line_nlr <- function(
         partial_nlr) {
     all(partial_nlr <= 1)
 }
@@ -142,7 +159,7 @@ calc_tpr_curve_shape <- function(
     partial_nlr <- calc_partial_nlr(partial_fpr, partial_tpr)
     if (is_concave_nlr(partial_fpr, partial_tpr)) {
         curve_shape <- "Concave"
-    } else if (is_partially_concave_tpr(partial_nlr)) {
+    } else if (is_over_chance_line_nlr(partial_nlr)) {
         curve_shape <- "Partially proper"
     } else {
         curve_shape <- "Hook under chance"
