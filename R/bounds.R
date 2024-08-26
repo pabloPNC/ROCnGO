@@ -32,7 +32,7 @@ calc_partial_plr <- function(
     plr <- plr[is.finite(plr)]
 }
 
-is_concave <- function(partial_fpr, partial_tpr) {
+is_concave_plr <- function(partial_fpr, partial_tpr) {
     plr <- calc_partial_plr(partial_fpr, partial_tpr)
     all(plr >= plr[length(plr)])
 }
@@ -48,7 +48,7 @@ calc_fpr_lower_bound <- function(
     proper_bound <- calc_fpr_proper_lower_bound(partial_fpr, partial_tpr)
     plr_bound <- calc_fpr_plr_lower_bound(partial_fpr, partial_tpr)
 
-    if (is_concave(partial_fpr, partial_tpr)) {
+    if (is_concave_plr(partial_fpr, partial_tpr)) {
         lower_bound <- plr_bound
     } else if (is_over_chance_line(partial_fpr, partial_tpr)) {
         lower_bound <- proper_bound
