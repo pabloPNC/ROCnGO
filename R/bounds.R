@@ -41,6 +41,7 @@ is_over_chance_line <- function(partial_fpr, partial_tpr) {
     all(partial_tpr >= partial_fpr)
 }
 
+#' @export
 calc_fpr_curve_shape <- function(
         partial_fpr,
         partial_tpr) {
@@ -153,6 +154,7 @@ is_over_chance_line_nlr <- function(
     all(partial_nlr <= 1)
 }
 
+#' @export
 calc_tpr_curve_shape <- function(
         partial_fpr,
         partial_tpr) {
