@@ -126,6 +126,7 @@ add_thresholds <- function(
     result
 }
 
+#' @export
 calc_partial_roc_points <- function(
         tpr,
         fpr,
