@@ -10,23 +10,39 @@ summarize_tpr_predictor <- function(
         predictor <- data %>% pull( {{ predictor }} )
         response <- data %>% pull( {{ response }} )
     }
+    tpr_fpr <- roc_points(NULL, response, predictor)
+    ptpr_pfpr <- calc_partial_roc_points(
+        tpr_fpr$tpr,
+        tpr_fpr$fpr,
+        lower_threshold = threshold,
+        upper_threshold = 1,
+        ratio = "tpr"
+    )
     tibble(
-        auc = auc(
-            response = response,
-            predictor = predictor,
-            direction = "<",
-            quiet = TRUE
+        auc = as.double(
+            auc(
+                response = response,
+                predictor = predictor,
+                direction = "<",
+                quiet = TRUE
+            )
         ),
-        pauc = auc(
-            response = response,
-            predictor = predictor,
-            direction = "<",
-            quiet = TRUE,
-            partial.auc = c(threshold, 1),
-            partial.auc.focus = "sens"
+        pauc = as.double(
+            auc(
+                response = response,
+                predictor = predictor,
+                direction = "<",
+                quiet = TRUE,
+                partial.auc = c(threshold, 1),
+                partial.auc.focus = "sens"
+            )
         ),
         np_auc = np_auc(NULL, response, predictor, threshold),
-        fp_auc = fp_auc(NULL, response, predictor, threshold)
+        fp_auc = fp_auc(NULL, response, predictor, threshold),
+        curve_shape = calc_tpr_curve_shape(
+            ptpr_pfpr$partial_fpr,
+            ptpr_pfpr$partial_tpr
+        )
     )
 }
 
@@ -43,35 +59,54 @@ summarize_fpr_predictor <- function(
         predictor <- data %>% pull( {{ predictor }})
         response <- data %>% pull( {{ response }})
     }
+    tpr_fpr <- roc_points(NULL, response, predictor)
+    ptpr_pfpr <- calc_partial_roc_points(
+        tpr_fpr$tpr,
+        tpr_fpr$fpr,
+        lower_threshold = 0,
+        upper_threshold = threshold,
+        ratio = "fpr"
+    )
     tibble(
-        auc = auc(
-            response = response,
-            predictor = predictor,
-            direction = "<",
-            quiet = TRUE
+        auc = as.double(
+            auc(
+                response = response,
+                predictor = predictor,
+                direction = "<",
+                quiet = TRUE
+            )
         ),
-        pauc = auc(
-            response = response,
-            predictor = predictor,
-            direction = "<",
-            quiet = TRUE,
-            partial.auc = c(1 - threshold, 1),
-            partial.auc.focus = "spec"
+        pauc = as.double(
+            auc(
+                response = response,
+                predictor = predictor,
+                direction = "<",
+                quiet = TRUE,
+                partial.auc = c(1 - threshold, 1),
+                partial.auc.focus = "spec"
+            )
         ),
-        sp_auc = auc(
-            response = response,
-            predictor = predictor,
-            direction = "<",
-            quiet = TRUE,
-            partial.auc = c(1 - threshold, 1),
-            partial.auc.focus = "spec",
-            partial.auc.correct = TRUE,
-            allow.invalid.partial.auc.correct = FALSE
+        sp_auc = as.double(
+            auc(
+                response = response,
+                predictor = predictor,
+                direction = "<",
+                quiet = TRUE,
+                partial.auc = c(1 - threshold, 1),
+                partial.auc.focus = "spec",
+                partial.auc.correct = TRUE,
+                allow.invalid.partial.auc.correct = FALSE
+            )
         ),
-        tp_auc = tp_auc(NULL, response, predictor, 0, threshold)
+        tp_auc = tp_auc(NULL, response, predictor, 0, threshold),
+        curve_shape = calc_fpr_curve_shape(
+            ptpr_pfpr$partial_fpr,
+            ptpr_pfpr$partial_tpr
+        )
     )
 }
 
+#' @export
 #' @importFrom tibble tibble
 summarize_predictor <- function(
         data = NULL,
@@ -81,7 +116,10 @@ summarize_predictor <- function(
         threshold) {
     if (ratio == "tpr") {
         summarize_tpr_predictor(
-            data, {{ predictor }}, {{ response }}, threshold
+            data,
+            {{ predictor }},
+            {{ response }},
+            threshold
         )
     } else if (ratio == "fpr") {
         summarize_fpr_predictor(
@@ -94,5 +132,49 @@ summarize_predictor <- function(
 
 }
 
+#' @export
+#' @importFrom dplyr select bind_rows
+#' @importFrom stringr str_glue
+summarize_dataset <- function(
+        data = NULL,
+        predictors = NULL,
+        response,
+        ratio,
+        threshold,
+        .progress = FALSE) {
 
+    results <- list()
 
+    predictors_dataset <- data %>%
+        select({{ predictors }})
+
+    response <- data %>% pull({{ response }})
+
+    for (i in 1:length(predictors_dataset)) {
+        if (ratio == "tpr") {
+            result <- summarize_tpr_predictor(
+                NULL,
+                predictors_dataset[[i]],
+                response,
+                threshold
+            )
+        } else if (ratio == "fpr") {
+            result <- summarize_fpr_predictor(
+                NULL,
+                predictors_dataset[i],
+                response,
+                threshold
+            )
+        }
+
+        id <- names(predictors_dataset[i])
+        results[[id]] <- result
+
+        if (.progress == TRUE) {
+            print(stringr::str_glue("[*] {length(results)}/{length(predictors_dataset)}"))
+        }
+
+    }
+
+    results <- bind_rows(results, .id = "identifier")
+}
