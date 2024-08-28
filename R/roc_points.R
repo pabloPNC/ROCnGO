@@ -61,6 +61,10 @@ roc_points <- function(data = NULL, response, predictor) {
         thresholds <- data %>% get_thresholds({{ predictor }})
         tpr <- data %>% calc_tpr(thresholds, {{ response }}, {{ predictor }})
         fpr <- data %>% calc_fpr(thresholds, {{ response }}, {{ predictor }})
+        result <- tibble::tibble(
+            tpr = tpr,
+            fpr = fpr
+        )
     } else {
         thresholds <- get_thresholds(predictor = predictor)
         ratios <- calc_ratios(
@@ -68,9 +72,11 @@ roc_points <- function(data = NULL, response, predictor) {
             response = response,
             predictor = predictor
         )
+        result <- tibble::tibble(
+            tpr = ratios[["tpr"]],
+            fpr = ratios[["fpr"]]
+        )
     }
-    tibble::tibble(
-        tpr = ratios[["tpr"]],
-        fpr = ratios[["fpr"]]
-    )
+    return(result)
+
 }

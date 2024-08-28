@@ -51,9 +51,9 @@ add_tpr_threshold_line <- function(
 add_threshold_line <- function(
         threshold,
         ratio = NULL) {
-    if (ratio == "sens") {
+    if (ratio == "tpr") {
         add_fpr_threshold_line(threshold)
-    } else if (ratio == "spec") {
+    } else if (ratio == "fpr") {
         add_tpr_threshold_line(threshold)
     }
 }
@@ -68,37 +68,7 @@ plot_partial_fpr_curve <- function(
         threshold = NULL) {
     plot_roc(data, fpr, tpr) +
         geom_path(
-            data = . %>% filter( {{ fpr }} > threshold),
-            size = 0.8
-        )
-}
-
-#' @importFrom ggplot2 geom_path
-#' @importFrom dplyr filter
-#' @export
-plot_partial_tpr_curve <- function(
-        data = NULL,
-        fpr,
-        tpr,
-        threshold = NULL) {
-    plot_roc(data, fpr, tpr) +
-        geom_path(
-            data = . %>% filter( {{ tpr }} > threshold),
-            size = 0.8
-        )
-}
-
-#' @importFrom ggplot2 geom_path
-#' @importFrom dplyr filter
-#' @export
-plot_partial_fpr_curve <- function(
-        data = NULL,
-        fpr,
-        tpr,
-        threshold = NULL) {
-    plot_roc(data, fpr, tpr) +
-        geom_path(
-            data = . %>% filter( {{ fpr }} > threshold),
+            data = . %>% filter( {{ fpr }} < threshold),
             size = 0.8
         )
 }
@@ -125,9 +95,9 @@ plot_partial_roc_curve <- function(
         tpr,
         threshold = NULL,
         ratio = NULL) {
-    if (ratio == "sens") {
+    if (ratio == "tpr") {
         plot_partial_tpr_curve(data, fpr, tpr, threshold)
-    } else if (ratio == "spec") {
+    } else if (ratio == "fpr") {
         plot_partial_fpr_curve(data, fpr, tpr, threshold)
     }
 }
