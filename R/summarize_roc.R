@@ -133,10 +133,11 @@ summarize_predictor <- function(
 }
 
 #' @export
-#' @importFrom dplyr select bind_rows
+#' @importFrom dplyr select bind_rows group_by summarize n
 #' @importFrom stringr str_glue
+#' @importFrom rlang enquo quo_is_null
 summarize_dataset <- function(
-        data = NULL,
+        data,
         predictors = NULL,
         response,
         ratio,
@@ -144,11 +145,15 @@ summarize_dataset <- function(
         .progress = FALSE) {
 
     results <- list()
+    predictors_expr <- enquo(predictors)
 
-    predictors_dataset <- data %>%
-        select({{ predictors }})
-
-    response <- data %>% pull({{ response }})
+    if (!quo_is_null(predictors_expr)) {
+        predictors_dataset <- data %>%
+            select({{ predictors }})
+        response <- data %>% pull( {{ response }} )
+    } else {
+        predictors_dataset <- data
+    }
 
     for (i in 1:length(predictors_dataset)) {
         if (ratio == "tpr") {
@@ -161,7 +166,7 @@ summarize_dataset <- function(
         } else if (ratio == "fpr") {
             result <- summarize_fpr_predictor(
                 NULL,
-                predictors_dataset[i],
+                predictors_dataset[[i]],
                 response,
                 threshold
             )
@@ -176,5 +181,20 @@ summarize_dataset <- function(
 
     }
 
-    results <- bind_rows(results, .id = "identifier")
+    metrics <- list(
+        data = bind_rows(results, .id = "identifier")
+    )
+    metrics[["curve_shape"]] <- metrics$data %>%
+        group_by(curve_shape) %>%
+        summarize(count = n())
+
+    metrics[["auc"]] <- metrics$data %>%
+        group_by(
+            auc > 0.5,
+            auc > 0.8
+        ) %>%
+        summarize(count = n())
+
+    return(metrics)
+
 }
