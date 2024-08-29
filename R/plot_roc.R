@@ -1,19 +1,35 @@
 #' @importFrom ggplot2 ggplot aes labs
+#' @importFrom rlang quo_is_null enquo
 plot_roc <- function(
-        data = NULL,
-        fpr,
-        tpr) {
-    ggplot(data, mapping = aes(x = {{ fpr }}, y = {{ tpr }})) +
-        labs(x = "FPR", y = "TPR")
+        data,
+        fpr = NULL,
+        tpr = NULL,
+        response = NULL,
+        predictor = NULL) {
+    response_exp <- enquo(response)
+    predictor_exp <- enquo(response)
+
+    if (!quo_is_null(response_exp) & !quo_is_null(predictor_exp)) {
+        data <- roc_points(data, {{ response }}, {{ predictor }})
+        ggplot(data, mapping = aes(x = .data[["fpr"]], y = .data[["tpr"]])) +
+            labs(x = "FPR", y = "TPR")
+    } else {
+        ggplot(data, mapping = aes(x = {{ fpr }}, y = {{ tpr }})) +
+            labs(x = "FPR", y = "TPR")
+    }
+
+
 }
 
 #' @importFrom ggplot2 geom_point
 #' @export
 plot_roc_points <- function(
-        data = NULL,
-        fpr,
-        tpr) {
-    plot_roc(data, fpr, tpr) +
+        data,
+        fpr = NULL,
+        tpr = NULL,
+        response = NULL,
+        predictor = NULL) {
+    plot_roc(data, {{ fpr }}, {{ tpr }}, {{ response }}, {{ predictor }}) +
         geom_point()
 }
 
@@ -26,10 +42,12 @@ add_chance_line <- function() {
 #' @importFrom ggplot2 geom_path
 #' @export
 plot_roc_curve <- function(
-        data = NULL,
-        fpr,
-        tpr) {
-    plot_roc(data, fpr, tpr) +
+        data,
+        fpr = NULL,
+        tpr = NULL,
+        response = NULL,
+        predictor = NULL) {
+    plot_roc(data, {{ fpr }}, {{ tpr }}, {{ response }}, {{ predictor }}) +
         geom_path(size = 0.8)
 }
 
@@ -66,7 +84,7 @@ plot_partial_fpr_curve <- function(
         fpr,
         tpr,
         threshold = NULL) {
-    plot_roc(data, fpr, tpr) +
+    plot_roc(data, {{ fpr }}, {{ tpr }}, {{ response }}, {{ predictor }}) +
         geom_path(
             data = . %>% filter( {{ fpr }} < threshold),
             size = 0.8
@@ -81,7 +99,7 @@ plot_partial_tpr_curve <- function(
         fpr,
         tpr,
         threshold = NULL) {
-    plot_roc(data, fpr, tpr) +
+    plot_roc(data, {{ fpr }}, {{ tpr }}, {{ response }}, {{ predictor }}) +
         geom_path(
             data = . %>% filter( {{ tpr }} > threshold),
             size = 0.8
@@ -110,7 +128,7 @@ plot_partial_fpr_points <- function(
         fpr,
         tpr,
         threshold = NULL) {
-    plot_roc(data, fpr, tpr) +
+    plot_roc(data, {{ fpr }}, {{ tpr }}, {{ response }}, {{ predictor }}) +
         geom_point(
             data = . %>% filter( {{ fpr }} > threshold)
         )
@@ -124,7 +142,7 @@ plot_partial_tpr_points <- function(
         fpr,
         tpr,
         threshold = NULL) {
-    plot_roc(data, fpr, tpr) +
+    plot_roc(data, {{ fpr }}, {{ tpr }}, {{ response }}, {{ predictor }}) +
         geom_point(
             data = . %>% filter( {{ tpr }} > threshold)
         )

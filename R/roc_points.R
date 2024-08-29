@@ -1,9 +1,10 @@
 #' @importFrom magrittr %>%
+#' @importFrom dplyr arrange pull
 get_thresholds <- function(data = NULL, predictor) {
     if (!is.null(data)) {
         sorted_pred <- data %>%
-            dplyr::arrange({{ predictor }}) %>%
-            dplyr::pull({{ predictor }})
+            arrange({{ predictor }}) %>%
+            pull({{ predictor }})
     } else {
         sorted_pred <- sort(predictor)
     }
