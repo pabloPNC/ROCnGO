@@ -1,27 +1,11 @@
-#' @importFrom ggplot2 ggplot aes labs
-#' @importFrom rlang quo_is_null enquo
-plot_roc <- function(
-        data,
-        fpr = NULL,
-        tpr = NULL,
-        response = NULL,
-        predictor = NULL) {
-    response_exp <- enquo(response)
-    predictor_exp <- enquo(response)
-
-    if (!quo_is_null(response_exp) & !quo_is_null(predictor_exp)) {
-        data <- roc_points(data, {{ response }}, {{ predictor }})
-        ggplot(data, mapping = aes(x = .data[["fpr"]], y = .data[["tpr"]])) +
-            labs(x = "FPR", y = "TPR")
-    } else {
-        ggplot(data, mapping = aes(x = {{ fpr }}, y = {{ tpr }})) +
-            labs(x = "FPR", y = "TPR")
-    }
-
-
+#' @importFrom ggplot2 ggplot labs
+plot_roc <- function(data) {
+    ggplot(data) +
+        labs(x = "FPR", y = "TPR", color = "Predictor")
 }
 
-#' @importFrom ggplot2 geom_point
+#' @importFrom ggplot2 geom_point aes
+#' @importFrom rlang as_name enquo quo_is_null
 #' @export
 plot_roc_points <- function(
         data,
@@ -29,8 +13,66 @@ plot_roc_points <- function(
         tpr = NULL,
         response = NULL,
         predictor = NULL) {
-    plot_roc(data, {{ fpr }}, {{ tpr }}, {{ response }}, {{ predictor }}) +
-        geom_point()
+    predictor_expr <- enquo(predictor)
+    response_expr <- enquo(response)
+    if (!quo_is_null(predictor_expr) & !quo_is_null(response_expr)) {
+        predictor_name <- as_name(enquo(predictor))
+        plot_roc(data) +
+            geom_point(
+                data = roc_points(data, {{ response }}, {{ predictor }}),
+                mapping = aes(
+                    x = .data[["fpr"]],
+                    y = .data[["tpr"]],
+                    color = predictor_name
+                ),
+                size = 0.8
+            )
+    } else {
+        plot_roc(data) +
+            geom_point(
+                mapping = aes(
+                    x = {{ fpr }},
+                    y = {{ tpr }}
+                ),
+                size = 0.8
+            )
+    }
+
+}
+
+#' @importFrom ggplot2 geom_path aes
+#' @importFrom rlang as_name enquo quo_is_null
+#' @export
+plot_roc_curve <- function(
+        data,
+        fpr = NULL,
+        tpr = NULL,
+        response = NULL,
+        predictor = NULL) {
+    predictor_expr <- enquo(predictor)
+    response_expr <- enquo(response)
+    if (!quo_is_null(predictor_expr) & !quo_is_null(response_expr)) {
+        predictor_name <- as_name(enquo(predictor))
+        plot_roc(data) +
+            geom_path(
+                data = roc_points(data, {{ response }}, {{ predictor }}),
+                mapping = aes(
+                    x = .data[["fpr"]],
+                    y = .data[["tpr"]],
+                    color = predictor_name
+                ),
+                size = 0.8
+            )
+    } else {
+        plot_roc(data) +
+            geom_path(
+                mapping = aes(
+                    x = {{ fpr }},
+                    y = {{ tpr }}
+                ),
+                size = 0.8
+            )
+    }
 }
 
 #' @importFrom ggplot2 geom_abline
@@ -39,16 +81,117 @@ add_chance_line <- function() {
     geom_abline(slope = 1, linetype = "dashed", alpha = 1/5)
 }
 
-#' @importFrom ggplot2 geom_path
-#' @export
-plot_roc_curve <- function(
+#' @importFrom ggplot2 aes
+#' @importFrom rlang enquo as_name
+add_roc_from_predictor <- function(
         data,
+        response,
+        predictor,
+        geom = NULL) {
+    predictor_name <- as_name(enquo(predictor))
+    if (is.null(data)) {
+        geom(
+            data = . %>% roc_points({{ response }}, {{ predictor }}),
+            mapping = aes(
+                x = .data[["fpr"]],
+                y = .data[["tpr"]],
+                color = predictor_name
+            ),
+            size = 0.8
+        )
+    } else {
+        geom(
+            data = roc_points(data, {{ response }}, {{ predictor }}),
+            mapping = aes(
+                x = .data[["fpr"]],
+                y = .data[["tpr"]],
+                color = predictor_name
+            ),
+            size = 0.8
+        )
+    }
+}
+
+#' @importFrom ggplot2 aes
+add_roc_from_ratios <- function(
+        data,
+        fpr = fpr,
+        tpr = tpr,
+        geom = NULL) {
+    geom(
+        data = data,
+        mapping = aes(
+            x = {{ fpr }},
+            y = {{ tpr }}
+        ),
+        size = 0.8
+    )
+}
+
+#' @importFrom ggplot2 geom_path
+add_roc_curve_from_predictor <- function(
+        data,
+        response,
+        predictor) {
+    add_roc_from_predictor(data, {{ response }}, {{ predictor }}, geom_path)
+}
+
+#' @importFrom ggplot2 geom_path
+add_roc_curve_from_ratios <- function(
+        data,
+        fpr,
+        tpr) {
+    add_roc_from_ratios(data, {{ fpr }}, {{ tpr }}, geom_path)
+}
+
+#' @importFrom ggplot2 geom_point
+add_roc_points_from_predictor <- function(
+        data,
+        response,
+        predictor) {
+    add_roc_from_predictor(data, {{ response }}, {{ predictor }}, geom_point)
+}
+
+#' @importFrom ggplot2 geom_point
+add_roc_points_from_ratios <- function(
+        data,
+        fpr,
+        tpr) {
+    add_roc_from_ratios(data, {{ fpr }}, {{ tpr }}, geom_point)
+}
+
+#' @importFrom rlang enquo quo_is_null
+#' @export
+add_roc_curve <- function(
+        data = NULL,
         fpr = NULL,
         tpr = NULL,
         response = NULL,
         predictor = NULL) {
-    plot_roc(data, {{ fpr }}, {{ tpr }}, {{ response }}, {{ predictor }}) +
-        geom_path(size = 0.8)
+    predictor_expr <- enquo(predictor)
+    response_expr <- enquo(response)
+    if (!quo_is_null(predictor_expr) & !quo_is_null(response_expr)) {
+        add_roc_curve_from_predictor(data, {{ response }}, {{ predictor }})
+    } else {
+        add_roc_curve_from_ratios(data, {{ fpr }}, {{ tpr }})
+    }
+}
+
+#' @importFrom rlang as_name enquo quo_is_null
+#' @export
+add_roc_points <- function(
+        data = NULL,
+        fpr = NULL,
+        tpr = NULL,
+        response = NULL,
+        predictor = NULL) {
+    predictor_expr <- enquo(predictor)
+    response_expr <- enquo(response)
+    if (!quo_is_null(predictor_expr) & !quo_is_null(response_expr)) {
+        add_roc_points_from_predictor(data, {{ response }}, {{ predictor }})
+    } else {
+        add_roc_points_from_ratios(data, {{ fpr }}, {{ tpr }})
+    }
 }
 
 #' @importFrom  ggplot2 geom_vline
@@ -76,6 +219,22 @@ add_threshold_line <- function(
     }
 }
 
+
+
+# FIX here ----------------------------------------------------------------
+
+
+add_partial_roc <- function(
+        data,
+        fpr,
+        tpr,
+        response,
+        predictor,
+        ratio = NULL,
+        threshold) {
+
+}
+
 #' @importFrom ggplot2 geom_path
 #' @importFrom dplyr filter
 #' @export
@@ -84,7 +243,7 @@ plot_partial_fpr_curve <- function(
         fpr,
         tpr,
         threshold = NULL) {
-    plot_roc(data, {{ fpr }}, {{ tpr }}, {{ response }}, {{ predictor }}) +
+    plot_roc(data) +
         geom_path(
             data = . %>% filter( {{ fpr }} < threshold),
             size = 0.8
