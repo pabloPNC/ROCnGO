@@ -212,9 +212,9 @@ add_tpr_threshold_line <- function(
 add_threshold_line <- function(
         threshold,
         ratio = NULL) {
-    if (ratio == "tpr") {
+    if (ratio == "fpr") {
         add_fpr_threshold_line(threshold)
-    } else if (ratio == "fpr") {
+    } else if (ratio == "tpr") {
         add_tpr_threshold_line(threshold)
     }
 }
@@ -476,7 +476,6 @@ plot_partial_roc_curve <- function(
         )
 }
 
-
 #' @export
 plot_partial_roc_points <- function(
         data,
@@ -496,4 +495,37 @@ plot_partial_roc_points <- function(
             ratio,
             threshold
         )
+}
+
+#' @importFrom ggplot2 geom_polygon
+add_fpauc_partially_proper_lower_bound <- function(
+        data = NULL,
+        fpr = NULL,
+        tpr = NULL,
+        response = NULL,
+        predictor = NULL,
+        threshold) {
+    geom_polygon(
+        data = tibble(
+            x = c(threshold, 1, 1),
+            y = c(threshold, 1, threshold)
+        ),
+        mapping = aes(
+            x,
+            y
+        ),
+        color = "black",
+        alpha = 1/5,
+        linetype = "solid"
+    )
+}
+
+add_fpauc_proper_lower_bound <- function(
+        data = NULL,
+        fpr = NULL,
+        tpr = NULL,
+        response = NULL,
+        predictor = NULL,
+        threshold) {
+
 }
