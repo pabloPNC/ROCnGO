@@ -527,5 +527,29 @@ add_fpauc_proper_lower_bound <- function(
         response = NULL,
         predictor = NULL,
         threshold) {
+    partial_points <- calc_partial_roc_points(
+        data,
+        {{ fpr }},
+        {{ trp }},
+        {{ response }},
+        {{ predictor }},
+        threshold,
+        1,
+        "tpr"
+    )
 
+    threshold_fpr <- partial_points[["partial_fpr"]][1]
+    geom_polygon(
+        data = tibble(
+            x = c(threshold_fpr, 1, 1),
+            y = c(threshold, threshold, 1)
+        ),
+        mapping = aes(
+            x,
+            y
+        ),
+        color = "black",
+        alpha = 1/5,
+        linetype = "solid"
+    )
 }
