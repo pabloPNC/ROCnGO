@@ -25,9 +25,7 @@ tp_auc <- function(
         fpr = fpr,
         lower_threshold = lower_fpr,
         upper_threshold = upper_fpr,
-        ratio = "fpr",
-        sort = TRUE,
-        include_thresholds = TRUE
+        ratio = "fpr"
     )
 
     partial_tpr <- partial_tpr_fpr[["partial_tpr"]]

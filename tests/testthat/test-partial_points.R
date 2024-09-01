@@ -191,9 +191,7 @@ test_that("calc_partial_roc_points == partial.points.curve - fpr", {
         fpr = sorted_fpr,
         lower_threshold = 0.4,
         upper_threshold = 0.49,
-        ratio = "fpr",
-        sort = TRUE,
-        include_thresholds = TRUE
+        ratio = "fpr"
     )
 
     expected_partial_points <- partial.points.curve(
@@ -223,9 +221,7 @@ test_that("calc_partial_roc_points == pHSpoints - tpr", {
             fpr = sorted_fpr,
             lower_threshold = 0.9,
             upper_threshold = 1,
-            ratio = "tpr",
-            sort = TRUE,
-            include_thresholds = TRUE
+            ratio = "tpr"
         )
     )
 

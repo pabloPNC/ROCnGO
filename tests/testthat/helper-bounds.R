@@ -1,4 +1,4 @@
-#' Function frament of 'TpAUC.function' which calculates bounds in FPR inside a range 
+#' Function frament of 'TpAUC.function' which calculates bounds in FPR inside a range
 fpr.lower.bounds <- function(xsample, ysample, lower.fp, upper.fp){
     if (lower.fp>=upper.fp) {
         stop("Error in the prefixed FPR range")
@@ -26,7 +26,7 @@ fpr.lower.bounds <- function(xsample, ysample, lower.fp, upper.fp){
     if (fpr.roc[i.u]<upper.fp) {
         fpr.pr <- append(fpr.pr, upper.fp, length(fpr.pr))
         uscale <- (fpr.roc[j.u]-fpr.pr[length(fpr.pr)])/(fpr.roc[j.u]-fpr.roc[i.u])
-        sen.pr <- append(sen.pr, sen.roc[j.u]-(sen.roc[j.u]-sen.roc[i.u])*uscale, 
+        sen.pr <- append(sen.pr, sen.roc[j.u]-(sen.roc[j.u]-sen.roc[i.u])*uscale,
                          length(sen.pr))
     }
     pAUC.roc <- sum(diff(fpr.pr)*apply(cbind(sen.pr[-1], sen.pr[-length(sen.pr)]), 1, mean))
@@ -44,7 +44,7 @@ fpr.lower.bounds <- function(xsample, ysample, lower.fp, upper.fp){
     )
 }
 
-#' Function fragment of 'TpAUC.function' which calculates bounds in FPR inside a range 
+#' Function fragment of 'TpAUC.function' which calculates bounds in FPR inside a range
 fpr.bounds <- function(xsample, ysample, lower.fp, upper.fp) {
     if (lower.fp>=upper.fp) {
         stop("Error in the prefixed FPR range")
@@ -72,10 +72,10 @@ fpr.bounds <- function(xsample, ysample, lower.fp, upper.fp) {
     if (fpr.roc[i.u]<upper.fp) {
         fpr.pr <- append(fpr.pr, upper.fp, length(fpr.pr))
         uscale <- (fpr.roc[j.u]-fpr.pr[length(fpr.pr)])/(fpr.roc[j.u]-fpr.roc[i.u])
-        sen.pr <- append(sen.pr, sen.roc[j.u]-(sen.roc[j.u]-sen.roc[i.u])*uscale, 
+        sen.pr <- append(sen.pr, sen.roc[j.u]-(sen.roc[j.u]-sen.roc[i.u])*uscale,
                          length(sen.pr))
     }
-    pAUC.roc <- sum(diff(fpr.pr)*apply(cbind(sen.pr[-1], sen.pr[-length(sen.pr)]), 
+    pAUC.roc <- sum(diff(fpr.pr)*apply(cbind(sen.pr[-1], sen.pr[-length(sen.pr)]),
                                        1, mean))
     diagonal.pAUC <- sum(diff(fpr.pr^2))/2
     TpAUC.min.roc <- sum(diff(fpr.pr))*min(sen.pr)

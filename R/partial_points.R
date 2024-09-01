@@ -126,65 +126,175 @@ add_thresholds <- function(
     result
 }
 
-#' @export
-calc_partial_roc_points <- function(
-        tpr,
+#' @importFrom tibble tibble
+#' @importFrom dplyr rename arrange
+calc_partial_roc_points_from_ratios <- function(
+        data = NULL,
         fpr,
+        tpr,
         lower_threshold,
         upper_threshold,
-        ratio = NULL,
-        sort = TRUE,
-        include_thresholds = TRUE) {
-    if (sort == TRUE) {
-        if (is.unsorted(tpr) == TRUE) {
-            tpr <- rev(tpr)
-            fpr <- rev(fpr)
-        }
+        ratio) {
+    if (is.null(data)) {
+        roc_points <- tibble(tpr = tpr, fpr = fpr)
+    } else {
+        roc_points <- data %>%
+            rename(
+                tpr = {{ tpr }},
+                fpr = {{ fpr }}
+            )
     }
+
+    roc_points <- roc_points %>% arrange(.data[["tpr"]], .data[["fpr"]])
+
     if (ratio == "tpr") {
-        indexes <- calc_indexes(tpr, lower_threshold, upper_threshold)
-        if (include_thresholds == TRUE) {
-            interp <- interp_thresholds(
-                tpr,
-                fpr,
-                lower_threshold,
-                upper_threshold,
-                indexes[["lower"]],
-                indexes[["upper"]]
-            )
-            partial_ratios <- add_thresholds(
-                tpr[indexes[["lower"]]:indexes[["upper"]]],
-                fpr[indexes[["lower"]]:indexes[["upper"]]],
-                interp[["lower"]],
-                interp[["upper"]]
-            )
-            result <- tibble::tibble(
-                partial_tpr = partial_ratios[["ratio"]],
-                partial_fpr = partial_ratios[["interp_ratio"]]
-            )
-        }
+        indexes <- calc_indexes(
+            roc_points[["tpr"]],
+            lower_threshold,
+            upper_threshold
+        )
+        interp <- interp_thresholds(
+            roc_points[["tpr"]],
+            roc_points[["fpr"]],
+            lower_threshold,
+            upper_threshold,
+            indexes[["lower"]],
+            indexes[["upper"]]
+        )
+        partial_ratios <- add_thresholds(
+            roc_points[["tpr"]][indexes[["lower"]]:indexes[["upper"]]],
+            roc_points[["fpr"]][indexes[["lower"]]:indexes[["upper"]]],
+            interp[["lower"]],
+            interp[["upper"]]
+        )
+        tibble(
+            partial_tpr = partial_ratios[["ratio"]],
+            partial_fpr = partial_ratios[["interp_ratio"]]
+        )
     } else if (ratio == "fpr") {
-        indexes <- calc_indexes(fpr, lower_threshold, upper_threshold)
-        if (include_thresholds == TRUE) {
-            interp <- interp_thresholds(
-                fpr,
-                tpr,
-                lower_threshold,
-                upper_threshold,
-                indexes[["lower"]],
-                indexes[["upper"]]
-            )
-            partial_ratios <- add_thresholds(
-                fpr[indexes[["lower"]]:indexes[["upper"]]],
-                tpr[indexes[["lower"]]:indexes[["upper"]]],
-                interp[["lower"]],
-                interp[["upper"]]
-            )
-            result <- tibble::tibble(
-                partial_tpr = partial_ratios[["interp_ratio"]],
-                partial_fpr = partial_ratios[["ratio"]]
-            )
-        }
+        indexes <- calc_indexes(
+            roc_points[["fpr"]],
+            lower_threshold,
+            upper_threshold
+        )
+        interp <- interp_thresholds(
+            roc_points[["fpr"]],
+            roc_points[["tpr"]],
+            lower_threshold,
+            upper_threshold,
+            indexes[["lower"]],
+            indexes[["upper"]]
+        )
+        partial_ratios <- add_thresholds(
+            roc_points[["fpr"]][indexes[["lower"]]:indexes[["upper"]]],
+            roc_points[["tpr"]][indexes[["lower"]]:indexes[["upper"]]],
+            interp[["lower"]],
+            interp[["upper"]]
+        )
+        tibble(
+            partial_fpr = partial_ratios[["ratio"]],
+            partial_tpr = partial_ratios[["interp_ratio"]]
+        )
     }
-    result
+}
+
+#' @importFrom dplyr arrange
+#' @importFrom tibble tibble
+calc_partial_roc_points_from_predictor <- function(
+        data = NULL,
+        predictor,
+        response,
+        lower_threshold,
+        upper_threshold,
+        ratio) {
+
+    roc_points <- data %>%
+        roc_points({{ response }}, {{ predictor }}) %>%
+        arrange(.data[["tpr"]], .data[["fpr"]])
+
+    if (ratio == "tpr") {
+        indexes <- calc_indexes(
+            roc_points[["tpr"]],
+            lower_threshold,
+            upper_threshold
+        )
+        interp <- interp_thresholds(
+            roc_points[["tpr"]],
+            roc_points[["fpr"]],
+            lower_threshold,
+            upper_threshold,
+            indexes[["lower"]],
+            indexes[["upper"]]
+        )
+        partial_ratios <- add_thresholds(
+            roc_points[["tpr"]][indexes[["lower"]]:indexes[["upper"]]],
+            roc_points[["fpr"]][indexes[["lower"]]:indexes[["upper"]]],
+            interp[["lower"]],
+            interp[["upper"]]
+        )
+        tibble(
+            partial_tpr = partial_ratios[["ratio"]],
+            partial_fpr = partial_ratios[["interp_ratio"]]
+        )
+    } else if (ratio == "fpr") {
+        indexes <- calc_indexes(
+            roc_points[["fpr"]],
+            lower_threshold,
+            upper_threshold
+        )
+        interp <- interp_thresholds(
+            roc_points[["fpr"]],
+            roc_points[["tpr"]],
+            lower_threshold,
+            upper_threshold,
+            indexes[["lower"]],
+            indexes[["upper"]]
+        )
+        partial_ratios <- add_thresholds(
+            roc_points[["fpr"]][indexes[["lower"]]:indexes[["upper"]]],
+            roc_points[["tpr"]][indexes[["lower"]]:indexes[["upper"]]],
+            interp[["lower"]],
+            interp[["upper"]]
+        )
+        tibble(
+            partial_fpr = partial_ratios[["ratio"]],
+            partial_tpr = partial_ratios[["interp_ratio"]]
+        )
+    }
+
+}
+
+#' @export
+calc_partial_roc_points <- function(
+        data = NULL,
+        fpr = NULL,
+        tpr = NULL,
+        response = NULL,
+        predictor = NULL,
+        lower_threshold,
+        upper_threshold,
+        ratio) {
+    predic_exp <- enquo(predictor)
+    resp_exp <- enquo(response)
+
+    if (!quo_is_null(predic_exp) & !quo_is_null(resp_exp)) {
+        result <- calc_partial_roc_points_from_predictor(
+            data,
+            {{ predictor }},
+            {{ response }},
+            lower_threshold,
+            upper_threshold,
+            ratio
+        )
+    } else {
+        result <- calc_partial_roc_points_from_ratios(
+            data,
+            {{ fpr }},
+            {{ tpr }},
+            lower_threshold,
+            upper_threshold,
+            ratio
+        )
+    }
+    return(result)
 }

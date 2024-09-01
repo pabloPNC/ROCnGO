@@ -11,9 +11,7 @@ partial_tpr_fpr <- calc_partial_roc_points(
     fpr = tpr_fpr[["fpr"]],
     lower_threshold = 0.4,
     upper_threshold = 0.49,
-    ratio = "fpr",
-    sort = TRUE,
-    include_thresholds = TRUE
+    ratio = "fpr"
 )
 
 
