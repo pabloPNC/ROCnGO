@@ -264,6 +264,7 @@ calc_partial_roc_points_from_predictor <- function(
 
 }
 
+#' @importFrom rlang enquo quo_is_null
 #' @export
 calc_partial_roc_points <- function(
         data = NULL,
