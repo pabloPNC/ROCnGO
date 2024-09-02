@@ -520,7 +520,9 @@ add_fpauc_partially_proper_lower_bound <- function(
     )
 }
 
-add_fpauc_proper_lower_bound <- function(
+#' @importFrom ggplot2 aes geom_polygon
+#' @importFrom tibble tibble
+add_fpauc_concave_lower_bound <- function(
         data = NULL,
         fpr = NULL,
         tpr = NULL,
@@ -530,7 +532,7 @@ add_fpauc_proper_lower_bound <- function(
     partial_points <- calc_partial_roc_points(
         data,
         {{ fpr }},
-        {{ trp }},
+        {{ tpr }},
         {{ response }},
         {{ predictor }},
         threshold,
@@ -543,6 +545,179 @@ add_fpauc_proper_lower_bound <- function(
         data = tibble(
             x = c(threshold_fpr, 1, 1),
             y = c(threshold, threshold, 1)
+        ),
+        mapping = aes(
+            x,
+            y
+        ),
+        color = "black",
+        alpha = 1/5,
+        linetype = "solid"
+    )
+}
+
+#' @importFrom dplyr slice_max slice_min filter pull
+#' @importFrom ggplot2 geom_polygon
+add_tpauc_concave_lower_bound <- function(
+        data = NULL,
+        fpr = NULL,
+        tpr = NULL,
+        response = NULL,
+        predictor = NULL,
+        lower_threshold,
+        upper_threshold) {
+    partial_points <- calc_partial_roc_points(
+        data,
+        {{ fpr }},
+        {{ tpr }},
+        {{ response }},
+        {{ predictor }},
+        lower_threshold,
+        upper_threshold,
+        "fpr"
+    )
+    lower_threshold_tpr <- partial_points %>%
+        filter(partial_fpr == lower_threshold) %>%
+        slice_min(partial_tpr) %>%
+        pull(partial_tpr)
+    upper_threshold_tpr <- partial_points %>%
+        filter(partial_fpr == upper_threshold) %>%
+        slice_max(partial_tpr) %>%
+        pull(partial_tpr)
+
+
+    geom_polygon(
+        data = tibble(
+            x = c(
+                lower_threshold,
+                upper_threshold,
+                upper_threshold,
+                lower_threshold
+            ),
+            y = c(0, 0, upper_threshold_tpr, lower_threshold_tpr)
+        ),
+        mapping = aes(
+            x,
+            y
+        ),
+        color = "black",
+        alpha = 1/5,
+        linetype = "solid"
+    )
+}
+
+#' @importFrom dplyr slice_min filter pull
+#' @importFrom ggplot2 geom_polygon
+add_tpauc_partially_proper_lower_bound <- function(
+        data = NULL,
+        fpr = NULL,
+        tpr = NULL,
+        response = NULL,
+        predictor = NULL,
+        lower_threshold,
+        upper_threshold) {
+    partial_points <- calc_partial_roc_points(
+        data,
+        {{ fpr }},
+        {{ tpr }},
+        {{ response }},
+        {{ predictor }},
+        lower_threshold,
+        upper_threshold,
+        "fpr"
+    )
+    lower_threshold_tpr <- partial_points %>%
+        filter(partial_fpr == lower_threshold) %>%
+        slice_min(partial_tpr) %>%
+        pull(partial_tpr)
+    diagonal_area <- calc_fpr_diagonal_lower_bound(
+        partial_points[["partial_fpr"]],
+        partial_points[["partial_tpr"]]
+    )
+    square_area <- calc_fpr_square_lower_bound(
+        partial_points[["partial_fpr"]],
+        partial_points[["partial_tpr"]]
+    )
+
+    if (diagonal_area > square_area ) {
+        geom_polygon(
+            data = tibble(
+                x = c(
+                    lower_threshold,
+                    upper_threshold,
+                    upper_threshold,
+                    lower_threshold
+                ),
+                y = c(
+                    0, 0, upper_threshold, lower_threshold
+                )
+            ),
+            mapping = aes(
+                x,
+                y
+            ),
+            color = "black",
+            alpha = 1/5,
+            linetype = "solid"
+        )
+    } else if (diagonal_area < square_area) {
+        geom_polygon(
+            data = tibble(
+                x = c(
+                    lower_threshold,
+                    upper_threshold,
+                    upper_threshold,
+                    lower_threshold
+                ),
+                y = c(0, 0, lower_threshold_tpr, lower_threshold_tpr)
+            ),
+            mapping = aes(
+                x,
+                y
+            ),
+            color = "black",
+            alpha = 1/5,
+            linetype = "solid"
+        )
+    }
+
+}
+
+#' @importFrom dplyr slice_min filter pull
+#' @importFrom ggplot2 geom_polygon
+add_tpauc_under_chance_lower_bound <- function(
+        data = NULL,
+        fpr = NULL,
+        tpr = NULL,
+        response = NULL,
+        predictor = NULL,
+        lower_threshold,
+        upper_threshold) {
+
+    partial_points <- calc_partial_roc_points(
+        data,
+        {{ fpr }},
+        {{ tpr }},
+        {{ response }},
+        {{ predictor }},
+        lower_threshold,
+        upper_threshold,
+        "fpr"
+    )
+    lower_threshold_tpr <- partial_points %>%
+        filter(partial_fpr == lower_threshold) %>%
+        slice_min(partial_tpr) %>%
+        pull(partial_tpr)
+
+    geom_polygon(
+        data = tibble(
+            x = c(
+                lower_threshold,
+                upper_threshold,
+                upper_threshold,
+                lower_threshold
+            ),
+            y = c(0, 0, lower_threshold_tpr, lower_threshold_tpr)
         ),
         mapping = aes(
             x,
