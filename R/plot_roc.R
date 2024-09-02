@@ -775,3 +775,48 @@ add_npauc_normalized_lower_bound <- function(
     )
 }
 
+#' @importFrom ggplot2 geom_polygon aes
+#' @importFrom dplyr filter slice_min pull
+add_spauc_lower_bound <- function(
+        data = NULL,
+        fpr = NULL,
+        tpr = NULL,
+        response = NULL,
+        predictor = NULL,
+        lower_threshold,
+        upper_threshold) {
+    partial_points <- calc_partial_roc_points(
+        data,
+        {{ fpr }},
+        {{ tpr }},
+        {{ response }},
+        {{ predictor }},
+        lower_threshold,
+        upper_threshold,
+        "fpr"
+    )
+    lower_threshold_tpr <- partial_points %>%
+        filter(partial_fpr == lower_threshold) %>%
+        slice_min(partial_tpr) %>%
+        pull(partial_tpr)
+    geom_polygon(
+        data = tibble(
+            x = c(
+                lower_threshold,
+                upper_threshold,
+                upper_threshold,
+                lower_threshold
+            ),
+            y = c(
+                0, 0, upper_threshold, lower_threshold
+            )
+        ),
+        mapping = aes(
+            x,
+            y
+        ),
+        color = "black",
+        alpha = 1/5,
+        linetype = "solid"
+    )
+}
