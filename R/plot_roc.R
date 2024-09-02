@@ -414,6 +414,7 @@ add_partial_roc <- function(
 }
 
 #' @importFrom ggplot2 geom_path
+#' @export
 add_partial_roc_curve <- function(
         data = NULL,
         fpr = NULL,
@@ -435,6 +436,7 @@ add_partial_roc_curve <- function(
 }
 
 #' @importFrom ggplot2 geom_point
+#' @export
 add_partial_roc_points <- function(
         data = NULL,
         fpr = NULL,
@@ -498,6 +500,7 @@ plot_partial_roc_points <- function(
 }
 
 #' @importFrom ggplot2 geom_polygon
+#' @export
 add_fpauc_partially_proper_lower_bound <- function(
         data = NULL,
         fpr = NULL,
@@ -522,6 +525,7 @@ add_fpauc_partially_proper_lower_bound <- function(
 
 #' @importFrom ggplot2 aes geom_polygon
 #' @importFrom tibble tibble
+#' @export
 add_fpauc_concave_lower_bound <- function(
         data = NULL,
         fpr = NULL,
@@ -558,6 +562,7 @@ add_fpauc_concave_lower_bound <- function(
 
 #' @importFrom dplyr slice_max slice_min filter pull
 #' @importFrom ggplot2 geom_polygon
+#' @export
 add_tpauc_concave_lower_bound <- function(
         data = NULL,
         fpr = NULL,
@@ -608,6 +613,7 @@ add_tpauc_concave_lower_bound <- function(
 
 #' @importFrom dplyr slice_min filter pull
 #' @importFrom ggplot2 geom_polygon
+#' @export
 add_tpauc_partially_proper_lower_bound <- function(
         data = NULL,
         fpr = NULL,
@@ -685,6 +691,7 @@ add_tpauc_partially_proper_lower_bound <- function(
 
 #' @importFrom dplyr slice_min filter pull
 #' @importFrom ggplot2 geom_polygon
+#' @export
 add_tpauc_under_chance_lower_bound <- function(
         data = NULL,
         fpr = NULL,
@@ -730,6 +737,7 @@ add_tpauc_under_chance_lower_bound <- function(
 }
 
 #' @importFrom ggplot2 geom_polygon
+#' @export
 add_npauc_lower_bound <- function(
         data = NULL,
         fpr = NULL,
@@ -753,6 +761,7 @@ add_npauc_lower_bound <- function(
 }
 
 #' @importFrom ggplot2 geom_polygon
+#' @export
 add_npauc_normalized_lower_bound <- function(
         data = NULL,
         fpr = NULL,
@@ -777,6 +786,7 @@ add_npauc_normalized_lower_bound <- function(
 
 #' @importFrom ggplot2 geom_polygon aes
 #' @importFrom dplyr filter slice_min pull
+#' @export
 add_spauc_lower_bound <- function(
         data = NULL,
         fpr = NULL,
