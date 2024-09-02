@@ -728,3 +728,50 @@ add_tpauc_under_chance_lower_bound <- function(
         linetype = "solid"
     )
 }
+
+#' @importFrom ggplot2 geom_polygon
+add_npauc_lower_bound <- function(
+        data = NULL,
+        fpr = NULL,
+        tpr = NULL,
+        response = NULL,
+        predictor = NULL,
+        threshold) {
+    geom_polygon(
+        data = tibble(
+            x = c(threshold, 1, 1),
+            y = c(threshold, 1, threshold)
+        ),
+        mapping = aes(
+            x,
+            y
+        ),
+        color = "black",
+        alpha = 1/5,
+        linetype = "solid"
+    )
+}
+
+#' @importFrom ggplot2 geom_polygon
+add_npauc_normalized_lower_bound <- function(
+        data = NULL,
+        fpr = NULL,
+        tpr = NULL,
+        response = NULL,
+        predictor = NULL,
+        threshold) {
+    geom_polygon(
+        data = tibble(
+            x = c(0, 1, 1),
+            y = c(threshold, 1, threshold)
+        ),
+        mapping = aes(
+            x,
+            y
+        ),
+        color = "black",
+        alpha = 1/5,
+        linetype = "solid"
+    )
+}
+
