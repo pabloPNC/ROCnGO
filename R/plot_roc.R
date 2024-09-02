@@ -1,7 +1,7 @@
 #' @importFrom ggplot2 ggplot labs
 plot_roc <- function(data) {
     ggplot(data) +
-        labs(x = "FPR", y = "TPR", color = "Predictor")
+        labs(x = "FPR", y = "TPR", color = "Predictor", fill = "Bound")
 }
 
 #' @importFrom ggplot2 geom_point aes
@@ -523,7 +523,11 @@ add_fpauc_partially_proper_lower_bound <- function(
             mapping = aes(
                 x,
                 y,
-                color = as_name(predictor_expr)
+                color = as_name(predictor_expr),
+                fill = str_c(
+                    as_name(predictor_expr),
+                    " FpAUC lower bound"
+                )
             ),
             alpha = 1/5,
             linetype = "solid"
@@ -581,7 +585,11 @@ add_fpauc_concave_lower_bound <- function(
             mapping = aes(
                 x,
                 y,
-                color = as_name(predictor_expr)
+                color = as_name(predictor_expr),
+                fill = str_c(
+                    as_name(predictor_expr),
+                    " FpAUC lower bound"
+                )
             ),
             alpha = 1/5,
             linetype = "solid"
@@ -650,7 +658,11 @@ add_tpauc_concave_lower_bound <- function(
             mapping = aes(
                 x,
                 y,
-                color = as_name(predictor_expr)
+                color = as_name(predictor_expr),
+                fill = str_c(
+                    as_name(predictor_expr),
+                    " TpAUC lower bound"
+                )
             ),
             alpha = 1/5,
             linetype = "solid"
@@ -732,7 +744,11 @@ add_tpauc_partially_proper_lower_bound <- function(
                 mapping = aes(
                     x,
                     y,
-                    color = as_name(predictor_expr)
+                    color = as_name(predictor_expr),
+                    fill = str_c(
+                        as_name(predictor_expr),
+                        " TpAUC lower bound"
+                    )
                 ),
                 alpha = 1/5,
                 linetype = "solid"
@@ -751,7 +767,11 @@ add_tpauc_partially_proper_lower_bound <- function(
                 mapping = aes(
                     x,
                     y,
-                    color = as_name(predictor_expr)
+                    color = as_name(predictor_expr),
+                    fill = str_c(
+                        as_name(predictor_expr),
+                        " TpAUC lower bound"
+                    )
                 ),
                 alpha = 1/5,
                 linetype = "solid"
@@ -847,7 +867,11 @@ add_tpauc_under_chance_lower_bound <- function(
             mapping = aes(
                 x,
                 y,
-                color = as_name(predictor_expr)
+                color = as_name(predictor_expr),
+                fill = str_c(
+                    as_name(predictor_expr),
+                    " TpAUC lower bound"
+                )
             ),
             alpha = 1/5,
             linetype = "solid"
@@ -896,7 +920,11 @@ add_npauc_lower_bound <- function(
             mapping = aes(
                 x,
                 y,
-                color = as_name(predictor_expr)
+                color = as_name(predictor_expr),
+                fill = str_c(
+                    as_name(predictor_expr),
+                    " NpAUC lower bound"
+                )
             ),
             alpha = 1/5,
             linetype = "solid"
@@ -940,7 +968,11 @@ add_npauc_normalized_lower_bound <- function(
             mapping = aes(
                 x,
                 y,
-                color = as_name(predictor_expr)
+                color = as_name(predictor_expr),
+                fill = str_c(
+                    as_name(predictor_expr),
+                    " NpAUC lower bound"
+                )
             ),
             alpha = 1/5,
             linetype = "solid"
@@ -1009,7 +1041,11 @@ add_spauc_lower_bound <- function(
             mapping = aes(
                 x,
                 y,
-                color = as_name(predictor_expr)
+                color = as_name(predictor_expr),
+                fill = str_c(
+                    as_name(predictor_expr),
+                    " SpAUC lower bound"
+                )
             ),
             alpha = 1/5,
             linetype = "solid"
