@@ -282,14 +282,13 @@ add_partial_roc_from_ratios <- function(
 #' @importFrom rlang as_name enquo
 #' @importFrom dplyr filter
 #' @importFrom ggplot2 aes
-#' @importFrom stringr str_c
 add_partial_roc_from_predictor_tpr <- function(
         data,
         response,
         predictor,
         threshold,
         geom) {
-    predictor_name <- str_c("Partial ", as_name(enquo(predictor)))
+    predictor_name <- as_name(enquo(predictor))
     if (is.null(data)) {
         geom(
             data = . %>%
@@ -319,14 +318,13 @@ add_partial_roc_from_predictor_tpr <- function(
 #' @importFrom rlang as_name enquo
 #' @importFrom dplyr filter
 #' @importFrom ggplot2 aes
-#' @importFrom stringr str_c
 add_partial_roc_from_predictor_fpr <- function(
         data,
         response,
         predictor,
         threshold,
         geom) {
-    predictor_name <- str_c("Partial ", as_name(enquo(predictor)))
+    predictor_name <- as_name(enquo(predictor))
     if (is.null(data)) {
         geom(
             data = . %>%
@@ -948,6 +946,7 @@ add_npauc_lower_bound <- function(
 }
 
 #' @importFrom ggplot2 geom_polygon
+#' @importFrom stringr str_c
 #' @export
 add_npauc_normalized_lower_bound <- function(
         data = NULL,
