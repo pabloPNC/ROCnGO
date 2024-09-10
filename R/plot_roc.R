@@ -1019,10 +1019,6 @@ add_spauc_lower_bound <- function(
         upper_threshold,
         "fpr"
     )
-    lower_threshold_tpr <- partial_points %>%
-        filter(partial_fpr == lower_threshold) %>%
-        slice_min(partial_tpr) %>%
-        pull(partial_tpr)
 
     if (!quo_is_null(response_expr) & !quo_is_null(predictor_expr)) {
         geom_polygon(
