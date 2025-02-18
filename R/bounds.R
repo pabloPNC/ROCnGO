@@ -209,3 +209,40 @@ calc_tpr_bounds <- function(
         )
     )
 }
+
+#' @export
+calc_curve_shape <- function(
+        data = NULL,
+        fpr = NULL,
+        tpr = NULL,
+        response = NULL,
+        predictor = NULL,
+        lower_threshold,
+        upper_threshold,
+        ratio) {
+    if (!is.null(data)) {
+        response <- data %>% pull( {{ response }})
+        predictor <- data %>% pull( {{ predictor }})
+    }
+    tpr_fpr <- roc_points(NULL, response, predictor)
+    ptpr_pfpr <- calc_partial_roc_points(
+        tpr = tpr_fpr$tpr,
+        fpr = tpr_fpr$fpr,
+        lower_threshold = lower_threshold,
+        upper_threshold = upper_threshold,
+        ratio = ratio
+    )
+    if (ratio == "tpr") {
+        curve_shape <- calc_tpr_curve_shape(
+            ptpr_pfpr$partial_fpr,
+            ptpr_pfpr$partial_tpr
+        )
+    } else if (ratio == "fpr") {
+        curve_shape <- calc_fpr_curve_shape(
+            ptpr_pfpr$partial_fpr,
+            ptpr_pfpr$partial_tpr
+        )
+    }
+    curve_shape
+}
+

@@ -41,7 +41,7 @@ plot_roc_points <- function(
 }
 
 #' @importFrom ggplot2 geom_path aes
-#' @importFrom rlang as_name enquo quo_is_null
+#' @importFrom rlang as_name enquo quo_is_null quo_is_symbol quo_is_call
 #' @export
 plot_roc_curve <- function(
         data,
@@ -52,14 +52,25 @@ plot_roc_curve <- function(
     predictor_expr <- enquo(predictor)
     response_expr <- enquo(response)
     if (!quo_is_null(predictor_expr) & !quo_is_null(response_expr)) {
-        predictor_name <- as_name(enquo(predictor))
+        if (quo_is_symbol(predictor_expr)) {
+            color <- as_name({{ predictor_expr }})
+        } else if (quo_is_call(predictor_expr)) {
+            expr_args <- rlang::call_args(
+                rlang::get_expr(predictor_expr)
+            )
+            if (expr_args[[1]] == ".data" | expr_args[[1]] == ".env") {
+                color <- expr_args[[2]]
+            } else {
+                color <- NULL
+            }
+        }
         plot_roc(data) +
             geom_path(
                 data = roc_points(data, {{ response }}, {{ predictor }}),
                 mapping = aes(
                     x = .data[["fpr"]],
                     y = .data[["tpr"]],
-                    color = predictor_name
+                    color = color
                 ),
                 size = 0.8
             )
@@ -88,7 +99,8 @@ add_roc_from_predictor <- function(
         response,
         predictor,
         geom = NULL) {
-    predictor_name <- as_name(enquo(predictor))
+    predictor_expr <- enquo(predictor)
+    predictor_name <- mask_name(predictor_expr)
     if (is.null(data)) {
         geom(
             data = . %>% roc_points({{ response }}, {{ predictor }}),
@@ -521,9 +533,9 @@ add_fpauc_partially_proper_lower_bound <- function(
             mapping = aes(
                 x,
                 y,
-                color = as_name(predictor_expr),
+                color = mask_name(predictor_expr),
                 fill = str_c(
-                    as_name(predictor_expr),
+                    mask_name(predictor_expr),
                     " FpAUC lower bound"
                 )
             ),
@@ -583,9 +595,9 @@ add_fpauc_concave_lower_bound <- function(
             mapping = aes(
                 x,
                 y,
-                color = as_name(predictor_expr),
+                color = mask_name(predictor_expr),
                 fill = str_c(
-                    as_name(predictor_expr),
+                    mask_name(predictor_expr),
                     " FpAUC lower bound"
                 )
             ),
@@ -607,6 +619,48 @@ add_fpauc_concave_lower_bound <- function(
             linetype = "solid"
         )
     }
+}
+
+#' @export
+add_fpauc_lower_bound <- function(
+        data = NULL,
+        fpr = NULL,
+        tpr = NULL,
+        response = NULL,
+        predictor = NULL,
+        threshold) {
+    curve_shape <- calc_curve_shape(
+        data,
+        fpr,
+        tpr,
+        response = {{ response }},
+        predictor = {{ predictor }},
+        lower_threshold = threshold,
+        upper_threshold = 1,
+        ratio = "tpr"
+    )
+    if (curve_shape == "Concave") {
+        bound <- add_fpauc_concave_lower_bound(
+            data,
+            fpr,
+            tpr,
+            response = {{ response }},
+            predictor = {{ predictor }},
+            threshold
+        )
+    } else if (curve_shape == "Partially proper") {
+        bound <- add_fpauc_partially_proper_lower_bound(
+            data,
+            fpr,
+            tpr,
+            response = {{ response }},
+            predictor = {{ predictor }},
+            threshold
+        )
+    } else if (curve_shape == "Hook under chance") {
+        bound <- NULL
+    }
+    bound
 }
 
 #' @importFrom dplyr slice_max slice_min filter pull
@@ -656,9 +710,9 @@ add_tpauc_concave_lower_bound <- function(
             mapping = aes(
                 x,
                 y,
-                color = as_name(predictor_expr),
+                color = mask_name(predictor_expr),
                 fill = str_c(
-                    as_name(predictor_expr),
+                    mask_name(predictor_expr),
                     " TpAUC lower bound"
                 )
             ),
@@ -742,9 +796,9 @@ add_tpauc_partially_proper_lower_bound <- function(
                 mapping = aes(
                     x,
                     y,
-                    color = as_name(predictor_expr),
+                    color = mask_name(predictor_expr),
                     fill = str_c(
-                        as_name(predictor_expr),
+                        mask_name(predictor_expr),
                         " TpAUC lower bound"
                     )
                 ),
@@ -765,9 +819,9 @@ add_tpauc_partially_proper_lower_bound <- function(
                 mapping = aes(
                     x,
                     y,
-                    color = as_name(predictor_expr),
+                    color = mask_name(predictor_expr),
                     fill = str_c(
-                        as_name(predictor_expr),
+                        mask_name(predictor_expr),
                         " TpAUC lower bound"
                     )
                 ),
@@ -865,9 +919,9 @@ add_tpauc_under_chance_lower_bound <- function(
             mapping = aes(
                 x,
                 y,
-                color = as_name(predictor_expr),
+                color = mask_name(predictor_expr),
                 fill = str_c(
-                    as_name(predictor_expr),
+                    mask_name(predictor_expr),
                     " TpAUC lower bound"
                 )
             ),
@@ -896,6 +950,59 @@ add_tpauc_under_chance_lower_bound <- function(
     }
 }
 
+#' @export
+add_tpauc_lower_bound <- function(
+        data = NULL,
+        fpr = NULL,
+        tpr = NULL,
+        response = NULL,
+        predictor = NULL,
+        lower_threshold,
+        upper_threshold) {
+    curve_shape <- calc_curve_shape(
+        data,
+        fpr,
+        tpr,
+        response = {{ response }},
+        predictor = {{ predictor }},
+        lower_threshold = lower_threshold,
+        upper_threshold = upper_threshold,
+        ratio = "fpr"
+    )
+    if (curve_shape == "Concave") {
+        bound <- add_tpauc_concave_lower_bound(
+            data,
+            fpr,
+            tpr,
+            response = {{ response }},
+            predictor = {{ predictor }},
+            upper_threshold = upper_threshold,
+            lower_threshold = lower_threshold
+        )
+    } else if (curve_shape == "Partially Proper") {
+        bound <- add_tpauc_partially_proper_lower_bound(
+            data,
+            fpr,
+            tpr,
+            response = {{ response }},
+            predictor = {{ predictor }},
+            upper_threshold = upper_threshold,
+            lower_threshold = lower_threshold
+        )
+    } else if (curve_shape == "Hook under chance") {
+        bound <- add_tpauc_under_chance_lower_bound(
+            data,
+            fpr,
+            tpr,
+            response = {{ response }},
+            predictor = {{ predictor }},
+            upper_threshold = upper_threshold,
+            lower_threshold = lower_threshold
+        )
+    }
+    bound
+}
+
 #' @importFrom ggplot2 geom_polygon
 #' @export
 add_npauc_lower_bound <- function(
@@ -908,7 +1015,6 @@ add_npauc_lower_bound <- function(
 
     predictor_expr <- enquo(predictor)
     response_expr <- enquo(response)
-
     if (!quo_is_null(predictor_expr) & !quo_is_null(response_expr)) {
         geom_polygon(
             data = tibble(
@@ -918,9 +1024,9 @@ add_npauc_lower_bound <- function(
             mapping = aes(
                 x,
                 y,
-                color = as_name(predictor_expr),
+                color = mask_name(predictor_expr),
                 fill = str_c(
-                    as_name(predictor_expr),
+                    mask_name(predictor_expr),
                     " NpAUC lower bound"
                 )
             ),
@@ -967,9 +1073,9 @@ add_npauc_normalized_lower_bound <- function(
             mapping = aes(
                 x,
                 y,
-                color = as_name(predictor_expr),
+                color = mask_name(predictor_expr),
                 fill = str_c(
-                    as_name(predictor_expr),
+                    mask_name(predictor_expr),
                     " NpAUC lower bound"
                 )
             ),
@@ -1036,9 +1142,9 @@ add_spauc_lower_bound <- function(
             mapping = aes(
                 x,
                 y,
-                color = as_name(predictor_expr),
+                color = mask_name(predictor_expr),
                 fill = str_c(
-                    as_name(predictor_expr),
+                    mask_name(predictor_expr),
                     " SpAUC lower bound"
                 )
             ),
@@ -1068,3 +1174,12 @@ add_spauc_lower_bound <- function(
         )
     }
 }
+
+#' @importFrom ggplot2 theme
+#' @export
+hide_legend <- function() {
+    theme(legend.position = "none")
+}
+
+
+

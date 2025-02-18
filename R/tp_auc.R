@@ -16,10 +16,6 @@ tp_auc <- function(
         fpr <- tpr_fpr[["fpr"]]
     }
 
-    if (lower_fpr >= upper_fpr) {
-        stop("Error in prefixed FPR range")
-    }
-
     partial_tpr_fpr <- calc_partial_roc_points(
         tpr = tpr,
         fpr = fpr,

@@ -79,5 +79,4 @@ roc_points <- function(data = NULL, response, predictor) {
         )
     }
     return(result)
-
 }
