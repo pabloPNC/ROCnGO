@@ -1,5 +1,3 @@
-#' @importFrom pROC auc
-#' @importFrom dplyr pull
 #' @export
 sp_auc <- function(
     data = NULL,

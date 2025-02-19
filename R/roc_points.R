@@ -1,82 +1,75 @@
-#' @importFrom magrittr %>%
-#' @importFrom dplyr arrange pull
 get_thresholds <- function(data = NULL, predictor) {
-    if (!is.null(data)) {
-        sorted_pred <- data %>%
-            arrange({{ predictor }}) %>%
-            pull({{ predictor }})
-    } else {
-        sorted_pred <- sort(predictor)
-    }
-    thresholds <- sorted_pred[-length(sorted_pred)] + diff(sorted_pred) / 2
-    thresholds <- c(min(sorted_pred) - 1, thresholds, max(sorted_pred) + 1)
+  if (!is.null(data)) {
+    sorted_pred <- data %>%
+      arrange({{ predictor }}) %>%
+      pull({{ predictor }})
+  } else {
+    sorted_pred <- sort(predictor)
+  }
+  thresholds <- sorted_pred[-length(sorted_pred)] + diff(sorted_pred) / 2
+  thresholds <- c(min(sorted_pred) - 1, thresholds, max(sorted_pred) + 1)
 }
 
-#' @importFrom magrittr %>%
 calc_tpr <- function(data = NULL, thresholds, response, predictor) {
-    if (!is.null(data)) {
-        response <- data %>% dplyr::pull({{ response }})
-        predictor <- data %>% dplyr::pull({{ predictor }})
-    }
-    purrr::map_dbl(
-        thresholds,
-        \(t) sum(((predictor > t) == 1) * (response == 1)) / sum(response == 1)
-    )
+  if (!is.null(data)) {
+    response <- data %>% pull({{ response }})
+    predictor <- data %>% pull({{ predictor }})
+  }
+  purrr::map_dbl(
+    thresholds,
+    \(t) sum(((predictor > t) == 1) * (response == 1)) / sum(response == 1)
+  )
 }
 
-#' @importFrom magrittr %>%
 calc_fpr <- function(data = NULL, thresholds, response, predictor) {
-    if (!is.null(data)) {
-        response <- data %>% dplyr::pull({{ response }})
-        predictor <- data %>% dplyr::pull({{ predictor }})
-    }
-    purrr::map_dbl(
-        thresholds,
-        \(t) sum(((predictor > t) == 1) * (response == 0)) / sum(response == 0)
-    )
+  if (!is.null(data)) {
+    response <- data %>% pull({{ response }})
+    predictor <- data %>% pull({{ predictor }})
+  }
+  purrr::map_dbl(
+    thresholds,
+    \(t) sum(((predictor > t) == 1) * (response == 0)) / sum(response == 0)
+  )
 }
 
-#' @importFrom purrr map
-#' @importFrom magrittr %>%
 calc_ratios <- function(data = NULL, thresholds, response, predictor) {
-    if (!is.null(data)) {
-        response <- data %>% dplyr::pull({{ response }})
-        predictor <- data %>% dplyr::pull({{ predictor }})
-    }
-    result <- map(
-        thresholds,
-        \(t) list(
-                tpr = sum(((predictor > t) == 1) * (response == 1)) /
-                sum(response == 1),
-                fpr = sum(((predictor > t) == 1) * (response == 0)) /
-                sum(response == 0)
-            )
+  if (!is.null(data)) {
+    response <- data %>% pull({{ response }})
+    predictor <- data %>% pull({{ predictor }})
+  }
+  result <- map(
+    thresholds,
+    \(t) list(
+      tpr = sum(((predictor > t) == 1) * (response == 1)) /
+        sum(response == 1),
+      fpr = sum(((predictor > t) == 1) * (response == 0)) /
+        sum(response == 0)
     )
-    purrr::list_transpose(result)
+  )
+  purrr::list_transpose(result)
 }
 
-#' @importFrom magrittr %>%
 #' @export
 roc_points <- function(data = NULL, response, predictor) {
-    if (!is.null(data)) {
-        thresholds <- data %>% get_thresholds({{ predictor }})
-        tpr <- data %>% calc_tpr(thresholds, {{ response }}, {{ predictor }})
-        fpr <- data %>% calc_fpr(thresholds, {{ response }}, {{ predictor }})
-        result <- tibble::tibble(
-            tpr = tpr,
-            fpr = fpr
-        )
-    } else {
-        thresholds <- get_thresholds(predictor = predictor)
-        ratios <- calc_ratios(
-            thresholds = thresholds,
-            response = response,
-            predictor = predictor
-        )
-        result <- tibble::tibble(
-            tpr = ratios[["tpr"]],
-            fpr = ratios[["fpr"]]
-        )
-    }
-    return(result)
+  if (!is.null(data)) {
+    thresholds <- data %>% get_thresholds({{ predictor }})
+    tpr <- data %>% calc_tpr(thresholds, {{ response }}, {{ predictor }})
+    fpr <- data %>% calc_fpr(thresholds, {{ response }}, {{ predictor }})
+    result <- tibble::tibble(
+      tpr = tpr,
+      fpr = fpr
+    )
+  } else {
+    thresholds <- get_thresholds(predictor = predictor)
+    ratios <- calc_ratios(
+      thresholds = thresholds,
+      response = response,
+      predictor = predictor
+    )
+    result <- tibble::tibble(
+      tpr = ratios[["tpr"]],
+      fpr = ratios[["fpr"]]
+    )
+  }
+  return(result)
 }
