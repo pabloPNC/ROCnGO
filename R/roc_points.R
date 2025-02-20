@@ -15,6 +15,9 @@ calc_tpr <- function(data = NULL, thresholds, response, predictor) {
     response <- data %>% pull({{ response }})
     predictor <- data %>% pull({{ predictor }})
   }
+  if (!all(levels(response) == c(0, 1))) {
+    response <- transform_response(response)
+  }
   purrr::map_dbl(
     thresholds,
     \(t) sum(((predictor > t) == 1) * (response == 1)) / sum(response == 1)
@@ -26,6 +29,9 @@ calc_fpr <- function(data = NULL, thresholds, response, predictor) {
     response <- data %>% pull({{ response }})
     predictor <- data %>% pull({{ predictor }})
   }
+  if (!all(levels(response) == c(0, 1))) {
+    response <- transform_response(response)
+  }
   purrr::map_dbl(
     thresholds,
     \(t) sum(((predictor > t) == 1) * (response == 0)) / sum(response == 0)
@@ -36,6 +42,9 @@ calc_ratios <- function(data = NULL, thresholds, response, predictor) {
   if (!is.null(data)) {
     response <- data %>% pull({{ response }})
     predictor <- data %>% pull({{ predictor }})
+  }
+  if (!all(levels(response) == c(0, 1))) {
+    response <- transform_response(response)
   }
   result <- map(
     thresholds,
