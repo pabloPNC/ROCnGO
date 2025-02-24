@@ -1,3 +1,8 @@
+#' @rdname sensitivity_indexes
+#' @references
+#' Jiang Y., Metz C. E. y Nishikawa R. M. A receiver operating characteristic
+#' partial area index for highly sensitive diagnostic tests. *Radiology*
+#' 201, 745-750 (1996).
 #' @export
 np_auc <- function(data = NULL,
                    response,
@@ -37,4 +42,5 @@ np_auc <- function(data = NULL,
   )
 
   npauc <- pauc / (1 - lower_tpr)
+  return(npauc)
 }

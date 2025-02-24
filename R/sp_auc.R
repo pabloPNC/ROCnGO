@@ -1,4 +1,8 @@
+#' @rdname specificity_indexes
 #' @export
+#' @references
+#' McClish D. K. Analyzing a Portion of the ROC Curve. *Medical Decision Making*
+#' 9, 190-195 (1989).
 sp_auc <- function(
     data = NULL,
     response,

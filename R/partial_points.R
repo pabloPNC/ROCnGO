@@ -242,6 +242,22 @@ calc_partial_roc_points_from_predictor <- function(data = NULL,
   }
 }
 
+#' @title Calculate ROC curve partial points
+#' @description
+#' Calculates a series of pairs of (FPR, TPR) points which correspond to ROC
+#' curve points in the specified region. x axis will correspond to
+#' "false positive ratio", while y axis the "true positive ratio".
+#' @inheritParams roc_points
+#' @inheritSection roc_points Methods
+#' @inheritSection roc_points Data masking variables
+#' @param lower_threshold,upper_threshold Two numbers between 0 and 1, which
+#' indicate lower and upper limits for the region in which to calculate ROC
+#' partial points.
+#' @param ratio If `"tpr"` only points with a TPR in delimited region will be
+#' calculated, if `"fpr"` only points with a FPR in the region will do.
+#' @returns
+#' A tibble with two columns: "partial_fpr" and "partial_tpr", which contain
+#' FPR and TPR values for each point in ROC in specified region.
 #' @export
 calc_partial_roc_points <- function(data = NULL,
                                     fpr = NULL,

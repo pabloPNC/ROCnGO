@@ -3,6 +3,12 @@ plot_roc <- function(data) {
     labs(x = "FPR", y = "TPR", color = "Predictor", fill = "Bound")
 }
 
+#' @title Plot classifier points of a ROC curve
+#' @description
+#' Create an scatterplot using pairs of points (FPR, TPR) of a ROC curve.
+#' @inheritParams roc_points
+#' @inheritSection roc_points Methods
+#' @inheritSection roc_points Data masking variables
 #' @export
 plot_roc_points <- function(data,
                             fpr = NULL,
@@ -35,6 +41,12 @@ plot_roc_points <- function(data,
   }
 }
 
+#' @title Plot a classifier ROC curve
+#' @description
+#' Create a plot of a ROC curve.
+#' @inheritParams roc_points
+#' @inheritSection roc_points Methods
+#' @inheritSection roc_points Data masking variables
 #' @export
 plot_roc_curve <- function(data,
                            fpr = NULL,
@@ -78,6 +90,10 @@ plot_roc_curve <- function(data,
   }
 }
 
+
+#' @title Show chance line in a ROC plot
+#' @description
+#' Plot chance line in a ROC plot.
 #' @export
 add_chance_line <- function() {
   geom_abline(slope = 1, linetype = "dashed", alpha = 1 / 5)
@@ -150,6 +166,12 @@ add_roc_points_from_ratios <- function(data,
   add_roc_from_ratios(data, {{ fpr }}, {{ tpr }}, geom_point)
 }
 
+#' @title Add a ROC curve plot to an existing one
+#' @description
+#' Add a ROC curve to an existing ROC plot.
+#' @inheritParams roc_points
+#' @inheritSection roc_points Methods
+#' @inheritSection roc_points Data masking variables
 #' @export
 add_roc_curve <- function(data = NULL,
                           fpr = NULL,
@@ -158,13 +180,19 @@ add_roc_curve <- function(data = NULL,
                           predictor = NULL) {
   predictor_expr <- enquo(predictor)
   response_expr <- enquo(response)
-  if (!quo_is_null(predictor_expr) & !quo_is_null(response_expr)) {
+  if (!quo_is_null(predictor_expr) && !quo_is_null(response_expr)) {
     add_roc_curve_from_predictor(data, {{ response }}, {{ predictor }})
   } else {
     add_roc_curve_from_ratios(data, {{ fpr }}, {{ tpr }})
   }
 }
 
+#' @title Add ROC points plot to an existing one
+#' @description
+#' Add ROC points to an existing ROC plot.
+#' @inheritParams roc_points
+#' @inheritSection roc_points Methods
+#' @inheritSection roc_points Data masking variables
 #' @export
 add_roc_points <- function(data = NULL,
                            fpr = NULL,
@@ -180,16 +208,26 @@ add_roc_points <- function(data = NULL,
   }
 }
 
+#' @rdname plot_thresholds
 #' @export
 add_fpr_threshold_line <- function(threshold) {
   geom_vline(xintercept = threshold, linetype = "dashed")
 }
 
+#' @rdname plot_thresholds
 #' @export
 add_tpr_threshold_line <- function(threshold) {
   geom_hline(yintercept = threshold, linetype = "dashed")
 }
 
+#' @title Add a threshold line to a ROC plot
+#' @description
+#' Include a threshold line in an specified axis.
+#' @param threshold Axis position where to display threshold. Must be a numeric
+#' between 0 and 1.
+#' @param ratio Ratio in which to display the threshold. If `"tpr"` threshold
+#' will be displayed in TPR axis, if `"fpr"` it will be displayed in FPR axis.
+#' @name plot_thresholds
 #' @export
 add_threshold_line <- function(threshold,
                                ratio = NULL) {
@@ -375,6 +413,15 @@ add_partial_roc <- function(data,
   }
 }
 
+#' @title Add a section of a ROC curve to an existing one
+#' @description
+#' Calculate a section of the ROC curve and add it to an existing ROC plot.
+#' @inheritParams calc_partial_roc_points
+#' @inheritSection roc_points Methods
+#' @inheritSection roc_points Data masking variables
+#' @param threshold Theshold in which to make partial area calculations. When
+#' working in TPR it represents lower threshold up to 1, and upper threshold
+#' in FPR up to 0.
 #' @export
 add_partial_roc_curve <- function(data = NULL,
                                   fpr = NULL,
@@ -395,6 +442,15 @@ add_partial_roc_curve <- function(data = NULL,
   )
 }
 
+#' @title Add points in a section of a ROC curve to an existing plot
+#' @description
+#' Calculate points of a region in ROC curve and them to an existing ROC plot.
+#' @inheritParams calc_partial_roc_points
+#' @inheritSection roc_points Methods
+#' @inheritSection roc_points Data masking variables
+#' @param threshold Theshold in which to make partial area calculations. When
+#' working in TPR it represents lower threshold up to 1, and upper threshold
+#' in FPR up to 0.
 #' @export
 add_partial_roc_points <- function(data = NULL,
                                    fpr = NULL,
@@ -415,6 +471,15 @@ add_partial_roc_points <- function(data = NULL,
   )
 }
 
+#' @title Plot a section of a classifier ROC curve
+#' @description
+#' Create a plot of section of a ROC curve.
+#' @inheritParams calc_partial_roc_points
+#' @inheritSection roc_points Methods
+#' @inheritSection roc_points Data masking variables
+#' @param threshold Theshold in which to make partial area calculations. When
+#' working in TPR it represents lower threshold up to 1, and upper threshold
+#' in FPR up to 0.
 #' @export
 plot_partial_roc_curve <- function(data,
                                    fpr = NULL,
@@ -435,6 +500,15 @@ plot_partial_roc_curve <- function(data,
     )
 }
 
+#' @title Plot points in a region of a ROC curve.
+#' @description
+#' Calculate ando plot points in a region of a ROC curve.
+#' @inheritParams calc_partial_roc_points
+#' @inheritSection roc_points Methods
+#' @inheritSection roc_points Data masking variables
+#' @param threshold Theshold in which to make partial area calculations. When
+#' working in TPR it represents lower threshold up to 1, and upper threshold
+#' in FPR up to 0.
 #' @export
 plot_partial_roc_points <- function(data,
                                     fpr = NULL,
@@ -455,6 +529,7 @@ plot_partial_roc_points <- function(data,
     )
 }
 
+#' @rdname fpauc_lower_bounds
 #' @export
 add_fpauc_partially_proper_lower_bound <- function(data = NULL,
                                                    fpr = NULL,
@@ -500,6 +575,7 @@ add_fpauc_partially_proper_lower_bound <- function(data = NULL,
   }
 }
 
+#' @rdname fpauc_lower_bounds
 #' @export
 add_fpauc_concave_lower_bound <- function(data = NULL,
                                           fpr = NULL,
@@ -557,6 +633,21 @@ add_fpauc_concave_lower_bound <- function(data = NULL,
   }
 }
 
+#' @title Add fpauc lower bound to a ROC plot
+#' @description
+#' Calculate and plot lower bound defined by FpAUC sensitivity index.
+#' @details
+#' `add_fpauc_lower_bound()` provides a upper level function which automatically
+#' calculates curve shape and plots a lower bound that ajust to it.
+#'
+#' To enforce specific bounds lower level functions
+#' `add_fpauc_partially_proper_lower_bound` and `add_fpauc_concave_lower_bound`
+#' are provided, which plot lower bound when curve shape partially proper (
+#' presents some kind of hook) or is concave in region of interest.
+#' @inheritParams roc_points
+#' @param threshold A number between 0 and 1, representing lower TPR for the
+#' region of interest.
+#' @name fpauc_lower_bounds
 #' @export
 add_fpauc_lower_bound <- function(data = NULL,
                                   fpr = NULL,
@@ -598,6 +689,7 @@ add_fpauc_lower_bound <- function(data = NULL,
   bound
 }
 
+#' @rdname tpauc_lower_bounds
 #' @export
 add_tpauc_concave_lower_bound <- function(data = NULL,
                                           fpr = NULL,
@@ -673,6 +765,7 @@ add_tpauc_concave_lower_bound <- function(data = NULL,
   }
 }
 
+#' @rdname tpauc_lower_bounds
 #' @export
 add_tpauc_partially_proper_lower_bound <- function(data = NULL,
                                                    fpr = NULL,
@@ -802,6 +895,7 @@ add_tpauc_partially_proper_lower_bound <- function(data = NULL,
   }
 }
 
+#' @rdname tpauc_lower_bounds
 #' @export
 add_tpauc_under_chance_lower_bound <- function(data = NULL,
                                                fpr = NULL,
@@ -874,6 +968,25 @@ add_tpauc_under_chance_lower_bound <- function(data = NULL,
   }
 }
 
+#' @title Add tpauc lower bound to a ROC plot
+#' @description
+#' Calculate and plot lower bound defined by TpAUC specificity index.
+#'
+#' `add_tpauc_lower_bound()` provides a upper level function which automatically
+#' calculates curve shape in selected region and plots a lower bound that
+#' ajust to it.
+#'
+#' To enforce specific bounds followeing lower level functions are provided:
+#' * `add_tpauc_concave_lower_bound`. Plot lower bound corresponding to a ROC
+#' curve with concave shape selected region.
+#' * `add_tpauc_partially_proper_lower_bound`. Plot lower bound corresponding to
+#' a ROC curve with partially proper (presence of some hook) in selected region.
+#' * `add_tpauc_under_chance_lower_bound`. Plot lower bound corresponding to
+#' a ROC curve with a hook under chance line in selected region.
+#' @inheritParams roc_points
+#' @param lower_threshold, upper_threshold Two numbers between 0 and 1,
+#' representing lower and upper FPR for a region of interest.
+#' @name tpauc_lower_bounds
 #' @export
 add_tpauc_lower_bound <- function(data = NULL,
                                   fpr = NULL,
@@ -926,6 +1039,19 @@ add_tpauc_lower_bound <- function(data = NULL,
   bound
 }
 
+#' @title Add NpAUC lower bound to a ROC plot
+#' @description
+#' Calculate and plot lower bound defined by NpAUC specificity index.
+#'
+#' `add_npauc_normalized_lower_bound()` allows to plot normalized
+#' lower bound, which is used to formally calculate NpAUC.
+#'
+#' `add_npauc_lower_bound()` provides a way to plot lower bound previous to
+#' normalization and consecuently corresponds to a lower level function.
+#' @inheritParams roc_points
+#' @param threshold A number between 0 and 1 representing lower TPR for the
+#' region of interest.
+#' @name npauc_lower_bounds
 #' @export
 add_npauc_lower_bound <- function(data = NULL,
                                   fpr = NULL,
@@ -970,6 +1096,7 @@ add_npauc_lower_bound <- function(data = NULL,
   }
 }
 
+#' @rdname npauc_lower_bounds
 #' @export
 add_npauc_normalized_lower_bound <- function(data = NULL,
                                              fpr = NULL,
@@ -1015,6 +1142,21 @@ add_npauc_normalized_lower_bound <- function(data = NULL,
   }
 }
 
+#' @title Add SpAUC lower bound to a ROC plot
+#' @description
+#' Calculate and plot lower bound defined by SpAUC specificity index.
+#' @details
+#' SpAUC presents some limitations regarding its lower bound. The bound defined
+#' by this index cannot be applied to sections where ROC curve is defined under
+#' chance line.
+#'
+#' `add_spauc_lower_bound()` doesn't make any check to ensure the index can be
+#' safely applied, consequently it allows to enforce representation even though
+#' SpAUC cound't be calculated in the region.
+#' @inheritParams roc_points
+#' @param lower_threshold,upper_threshold Two numbers between 0 and 1,
+#' representing lower and upper FPR for a region of interest.
+#' @name spauc_lower_bounds
 #' @export
 add_spauc_lower_bound <- function(data = NULL,
                                   fpr = NULL,
@@ -1086,6 +1228,9 @@ add_spauc_lower_bound <- function(data = NULL,
   }
 }
 
+#' @title Hide legend in a ROC plot
+#' @description Hide legend showing name of ploted classifiers and bounds in a
+#' ROC curve plot.
 #' @export
 hide_legend <- function() {
   theme(legend.position = "none")

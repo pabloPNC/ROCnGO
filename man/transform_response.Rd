@@ -30,3 +30,4 @@ response.
 \code{unique(response)} after using \code{sort}.
 }
 }
+\keyword{internal}

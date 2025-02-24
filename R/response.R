@@ -15,6 +15,7 @@
 #' response.
 #' * character. Function considers the condition of interest the first value in
 #' `unique(response)` after using `sort`.
+#' @keywords internal
 transform_response <- function(response) {
   UseMethod("transform_response")
 }
@@ -57,6 +58,7 @@ transform_response.character <- function(response) {
 #' @param absent Character vector of categories not corresponding to the
 #' condition of interest.
 #' @returns `factor`with values (0, 1) where 1 matches condition of interest.
+#' @keywords internal
 reorder_response_factor <- function(response_fct, condition, absent) {
   response_fct %>%
     fct_collapse("1" = condition, "0" = absent) %>%
