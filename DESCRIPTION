@@ -2,7 +2,7 @@ Package: ROCnGO
 Title: Fast analysis of ROC curves
 Version: 0.0.0.9000
 Authors@R: 
-    person("Pablo", "Navarro", , role = c("aut", "cre"))
+    person("Pablo", "Navarro", , "pablo.navarrocarpio@gmail.com", role = c("aut", "cre"))
 Description: Tools for working with receiver operating characteristic (ROC) 
     curves and evaluate global or local performance of classifiers. 
 License: GPL (>= 3)
@@ -11,9 +11,17 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Imports: 
     dplyr,
+    forcats,
+    ggplot2,
     magrittr,
+    pROC,
     purrr,
+    rlang,
+    stringr,
     tibble
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+VignetteBuilder: knitr

@@ -1,0 +1,211 @@
+---
+title: "Introduction to ROCnGO"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to ROCnGO}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+ROCnGO is an R package which allows to analyze the performance of a classifier by using receiver operating characteristic ($ROC$) curves. Conventional ROC based analyses tend to just use area under $ROC$ curve ($AUC$) as a metric of global performance, besides this functionality, the package allows deeper analysis options by calculating partial area under $ROC$ curve ($pAUC$) when prioritizing local performance.
+
+Furthermore, ROCnGO implements different $pAUC$ transformations described in literature which:
+
+* Make interpretation easier.
+* Allow to work with ROC curves which are not completely concave or not at all (improper).
+* Provide additional discrimination power when comparing classifiers with identical local performance (equal $pAUC$).
+
+This document provides an introduction to ROCnGO tools and workflow to study the global and local performance of a classifier.
+
+## Prerequisites
+
+In order to reproduce the example, following packages are needed:
+
+```{r setup, warning=FALSE, message=FALSE}
+library(ROCnGO)
+library(dplyr)
+library(forcats)
+```
+
+## Data
+
+To explore basic tools in the package we will be using `iris` dataset. The dataset contains 5 variables for 150 flowers of 3 different species: *setosa*, *versicolor* and *virginica*.
+
+For the purpose of simplicity, we will only work with a subset of `iris` considering only *setosa* and *virginica* species. In the following sections, the performance of different variables to classify cases in the different species will be evaluated. 
+
+```{r}
+# Filter cases of versicolor species
+iris_subset <- as_tibble(iris) %>% filter(Species != "versicolor")
+iris_subset
+``` 
+
+## Global performance
+
+### Calculate ROC curve
+
+The foundation of this type of analyses implies to plot $ROC$ curve of a classifier. This type of curves represent the classifier probability of correctly classify a case with a condition of interest, also known as *true positive rate* or $\text{Sensitivity}$ ($TPR$), and the complementary probability of correctly classify a case without the condition; also known as *false positive rate*, $1 - \text{Specificity}$, or $1 - TNR$, ($FPR$).
+
+When working with a classifier that returns a series of numeric values, it can be complex to say when it is classifying a case as having the condition of interest (positive) or not (negative). To solve this problem, $ROC$ curves represent $(FPR, TPR)$ points considering hypothetical thresholds ($c$) where a case is considered as positive if the its value is higher than the threshold ($X > c$).
+
+Curve points can be calculated by using `roc_points()`. As most functions in the package it takes a dataset, a data frame as its first argument. The second and third argument refer to variables in the data frame, corresponding the variable that will be used as a classifier and the response variable we want to predict.
+
+For example, we can calculate $ROC$ points for Sepal.Length as a classifier of setosa species.
+
+```{r, warning=FALSE}
+# Calculate ROC points for Sepal.Lenght
+points <- roc_points(
+  data = iris_subset,
+  predictor = Sepal.Length,
+  response = Species
+)
+points
+
+# Plot points
+plot(points$fpr, points$tpr)
+```
+
+As we may see, Sepal.Length doesn't perform very well predicting when a flower is from setosa species, in fact it's the other way around, the lower the Sepal.Length it's more probable to have a setosa flower. This can be tested if we change the condition of interest to virginica.
+
+### Changing condition of interest
+
+The condition of interest is automatically set to the first value in `levels(response)`, so we can change this value by changing the order of levels in data.
+
+```{r, warning=FALSE}
+# Check response levels
+levels(iris_subset$Species)
+
+# Set virginica as first value in levels
+iris_subset$Species <- fct_relevel(iris_subset$Species, "virginica")
+levels(iris_subset$Species)
+
+# Plot ROC curve
+points <- roc_points(
+  data = iris_subset,
+  predictor = Sepal.Length,
+  response = Species
+)
+plot(points$fpr, points$tpr)
+```
+
+
+## Local performance
+
+Sometimes a certain task may requiere prioritize e.g. high sensitivity over global performance. In these scenarios, it's preferable to work in specific regions of $ROC$ curve.
+
+We can calculate points in a specific region using `calc_partial_roc_points()`. Function uses same arguments as `roc_points()` but adding `lower_threshold`, `upper_threshold` and `ratio`, which delimit region in which we want to work.
+
+For example, if we require to work in high sensitivity conditions, we could check points in region $(0.9, 1)$ of $TPR$.
+
+```{r, warning=FALSE}
+# Calc partial ROC points
+p_points <- calc_partial_roc_points(
+  data = iris_subset,
+  predictor = Sepal.Length,
+  response = Species,
+  lower_threshold = 0.9,
+  upper_threshold = 1,
+  ratio = "tpr"
+)
+p_points
+
+# Plot partial ROC curve
+plot(p_points$partial_fpr, p_points$partial_tpr)
+```
+
+## Automating analysis
+
+### Performance metrics
+
+When working with a high number of classifiers, it can be difficult to check each $ROC$ individually. In these scenarios, metrics such as $AUC$ and $pAUC$ may present more interest. Thus, by using the function `summarize_predictor()` we can obtain an overview of the performance of a classifier.
+
+For example, we could consider the performance of Sepal.Length over a high sensitivity region, $TPR \in (0.9, 1)$, and high specificity region, $FPR \in (0, 0.1)$.
+
+```{r, warning=FALSE}
+# Summarize predictor in high sens region
+summarize_predictor(
+  data = iris_subset,
+  predictor = Sepal.Length,
+  response = Species,
+  threshold = 0.9,
+  ratio = "tpr"
+)
+
+# Summarize predictor in high spec region
+summarize_predictor(
+  data = iris_subset,
+  predictor = Sepal.Length,
+  response = Species,
+  threshold = 0.1,
+  ratio = "fpr"
+)
+```
+
+Besides $AUC$ and $pAUC$, the function also returns other partial indexes derived from $pAUC$ which provide a better interpretation of performance than $pAUC$.
+
+Furthermore, if we are interested in computing these metrics simultaneously for several classifiers `summarize_dataset()` can be used.
+
+```{r, warning=FALSE}
+# Select classifiers to compute
+classifiers <- c("Sepal.Length", "Sepal.Width", "Petal.Width", "Petal.Length")
+
+# Summarize classifiers in high sens region
+summarize_dataset(
+  data = iris_subset,
+  predictors = classifiers,
+  response = Species,
+  threshold = 0.9,
+  ratio = "tpr"
+)
+```
+
+### Plotting
+
+As we have seen, by using `roc_points()` we can plot $ROC$ curve. Nevertheless, these plots can be generated using `plot_*()` and `add_*()` functions, which furthermore, provide options to customize plot for classifier comparison.
+
+For example, we can plot $ROC$ points of Sepal.Length in this way.
+
+```{r, warning=FALSE}
+# Plot ROC points of Sepal.Length
+sepal_length_plot <- plot_roc_points(
+  data = iris_subset,
+  predictor = Sepal.Length,
+  response = Species
+)
+sepal_length_plot
+``` 
+
+Now by using `+` operator we can add further options to the plot. For example, including chance line, adding further $ROC$ points of other classifiers, etc.
+
+```{r, warning=FALSE}
+sepal_length_plot +
+  add_roc_curve(
+    data = iris_subset,
+    predictor = Sepal.Width,
+    response = Species
+  ) +
+  add_roc_points(
+    data = iris_subset,
+    predictor = Petal.Width,
+    response = Species
+  ) +
+  add_partial_roc_curve(
+    data = iris_subset,
+    predictor = Petal.Length,
+    response = Species,
+    ratio = "tpr",
+    threshold = 0.7
+  ) +
+  add_threshold_line(
+    threshold = 0.7,
+    ratio = "tpr"
+  ) +
+  add_chance_line()
+```
