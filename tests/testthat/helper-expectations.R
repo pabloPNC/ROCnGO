@@ -31,3 +31,7 @@ expect_faster <- function(expression_1, expression_2) {
         )
     )
 }
+
+expect_equal_nw <- function(object, expected) {
+  expect_equal(suppressWarnings(object), suppressWarnings(expected))
+}

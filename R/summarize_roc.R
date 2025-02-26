@@ -6,9 +6,9 @@ summarize_tpr_predictor <- function(data = NULL,
     predictor <- data %>% pull({{ predictor }})
     response <- data %>% pull({{ response }})
   }
-  if (!all(levels(response) == c(0, 1))) {
-    response <- transform_response(response)
-  }
+
+  response <- as_response(response)
+
   tpr_fpr <- roc_points(NULL, response, predictor)
   ptpr_pfpr <- calc_partial_roc_points(
     tpr = tpr_fpr$tpr,
@@ -53,9 +53,7 @@ summarize_fpr_predictor <- function(data = NULL,
     predictor <- data %>% pull({{ predictor }})
     response <- data %>% pull({{ response }})
   }
-  if (!all(levels(response) == c(0, 1))) {
-    response <- transform_response(response)
-  }
+  response <- as_response(response)
   tpr_fpr <- roc_points(NULL, response, predictor)
   ptpr_pfpr <- calc_partial_roc_points(
     tpr = tpr_fpr$tpr,
@@ -178,10 +176,12 @@ summarize_dataset <- function(data,
   if (!quo_is_null(predictors_expr)) {
     predictors_dataset <- data %>%
       select({{ predictors }})
-    response <- data %>% pull({{ response }})
   } else {
-    predictors_dataset <- data
+    predictors_dataset <- data %>%
+      select((where(is.integer) | where(is.double)) & !{{ response }})
   }
+
+  response <- data %>% pull({{ response }})
 
   for (i in 1:length(predictors_dataset)) {
     if (ratio == "tpr") {
@@ -204,7 +204,7 @@ summarize_dataset <- function(data,
     results[[id]] <- result
 
     if (.progress == TRUE) {
-      print(stringr::str_glue("[*] {length(results)}/{length(predictors_dataset)}"))
+      print(str_glue("[*] {length(results)}/{length(predictors_dataset)}"))
     }
   }
 
