@@ -2,3 +2,61 @@ url: https://pablopnc.github.io/ROCnGO/
 template:
   bootstrap: 5
 
+reference:
+  - title: ROC curve
+    desc: >
+      Functions that operate on the entire ROC curve.
+    contents:
+      - roc_points
+  
+  - title: Partial ROC curve
+    desc: >
+      Functions that operate on an specific ROC curve region.
+    contents:
+      - calc_partial_roc_points
+      - calc_curve_shape
+
+  - subtitle: Indexes
+    desc: >
+      Local performance metrics.
+    contents:
+      - sensitivity_indexes
+      - specificity_indexes
+
+  - title: Summarize
+    desc: >
+      Functions to quickly summarize a classifier.
+    contents:
+      - summarize_predictor
+      - summarize_dataset  
+
+  - title: Plot
+    desc: >
+      Functions to plot ROC curves of classifiers and derived metrics.
+  - subtitle: Initialize plot
+    contents:
+      - plot_roc_points
+      - plot_roc_curve
+      - plot_partial_roc_points
+      - plot_partial_roc_curve
+  - subtitle: Add points to plot
+    contents:
+      - add_roc_points
+      - add_roc_curve
+      - add_partial_roc_points
+      - add_partial_roc_curve
+  - subtitle: Add index bounds
+    contents:
+      - fpauc_lower_bounds  
+      - npauc_lower_bounds
+      - tpauc_lower_bounds
+      - spauc_lower_bounds
+  - subtitle: Customize plot
+    contents:
+      - add_chance_line
+      - plot_thresholds  
+      - hide_legend
+  
+
+
+
