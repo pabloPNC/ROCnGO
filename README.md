@@ -7,8 +7,6 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/ROCnGO)](https://CRAN.R-project.org/package=ROCnGO)
-[![Codecov test
-coverage](https://codecov.io/gh/pabloPNC/ROCnGO/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pabloPNC/ROCnGO?branch=master)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
