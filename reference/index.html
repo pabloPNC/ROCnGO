@@ -31,8 +31,205 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="roc-curve">ROC curve<a class="anchor" aria-label="anchor" href="#roc-curve"></a></h2>
 
+      <div class="section-desc"><p>Functions that operate on the entire ROC curve.</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="roc_points.html">roc_points()</a></code>
+
+        </dt>
+        <dd>Calculate ROC curve points</dd>
+      </dl></div><div class="section level2">
+      <h2 id="partial-roc-curve">Partial ROC curve<a class="anchor" aria-label="anchor" href="#partial-roc-curve"></a></h2>
+
+      <div class="section-desc"><p>Functions that operate on an specific ROC curve region.</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="calc_partial_roc_points.html">calc_partial_roc_points()</a></code>
+
+        </dt>
+        <dd>Calculate ROC curve partial points</dd>
+      </dl><dl><dt>
+
+          <code><a href="calc_curve_shape.html">calc_curve_shape()</a></code>
+
+        </dt>
+        <dd>Calculate curve shape over an specific region</dd>
+      </dl></div><div class="section level2">
+
+      <h3 id="indexes">Indexes<a class="anchor" aria-label="anchor" href="#indexes"></a></h3>
+      <div class="section-desc"><p>Local performance metrics.</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="sensitivity_indexes.html">fp_auc()</a></code> <code><a href="sensitivity_indexes.html">np_auc()</a></code>
+
+        </dt>
+        <dd>Sensitivity indexes</dd>
+      </dl><dl><dt>
+
+          <code><a href="specificity_indexes.html">sp_auc()</a></code> <code><a href="specificity_indexes.html">tp_auc()</a></code>
+
+        </dt>
+        <dd>Specificity indexes</dd>
+      </dl></div><div class="section level2">
+      <h2 id="summarize">Summarize<a class="anchor" aria-label="anchor" href="#summarize"></a></h2>
+
+      <div class="section-desc"><p>Functions to quickly summarize a classifier.</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="summarize_predictor.html">summarize_predictor()</a></code>
+
+        </dt>
+        <dd>Summarize classifier performance</dd>
+      </dl><dl><dt>
+
+          <code><a href="summarize_dataset.html">summarize_dataset()</a></code>
+
+        </dt>
+        <dd>Summarize classifiers performance in a dataset</dd>
+      </dl></div><div class="section level2">
+      <h2 id="plot">Plot<a class="anchor" aria-label="anchor" href="#plot"></a></h2>
+
+      <div class="section-desc"><p>Functions to plot ROC curves of classifiers and derived metrics.</p></div>
+
+
+    </div><div class="section level2">
+
+      <h3 id="initialize-plot">Initialize plot<a class="anchor" aria-label="anchor" href="#initialize-plot"></a></h3>
+
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="plot_roc_points.html">plot_roc_points()</a></code>
+
+        </dt>
+        <dd>Plot classifier points of a ROC curve</dd>
+      </dl><dl><dt>
+
+          <code><a href="plot_roc_curve.html">plot_roc_curve()</a></code>
+
+        </dt>
+        <dd>Plot a classifier ROC curve</dd>
+      </dl><dl><dt>
+
+          <code><a href="plot_partial_roc_points.html">plot_partial_roc_points()</a></code>
+
+        </dt>
+        <dd>Plot points in a region of a ROC curve.</dd>
+      </dl><dl><dt>
+
+          <code><a href="plot_partial_roc_curve.html">plot_partial_roc_curve()</a></code>
+
+        </dt>
+        <dd>Plot a section of a classifier ROC curve</dd>
+      </dl></div><div class="section level2">
+
+      <h3 id="add-points-to-plot">Add points to plot<a class="anchor" aria-label="anchor" href="#add-points-to-plot"></a></h3>
+
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="add_roc_points.html">add_roc_points()</a></code>
+
+        </dt>
+        <dd>Add ROC points plot to an existing one</dd>
+      </dl><dl><dt>
+
+          <code><a href="add_roc_curve.html">add_roc_curve()</a></code>
+
+        </dt>
+        <dd>Add a ROC curve plot to an existing one</dd>
+      </dl><dl><dt>
+
+          <code><a href="add_partial_roc_points.html">add_partial_roc_points()</a></code>
+
+        </dt>
+        <dd>Add points in a section of a ROC curve to an existing plot</dd>
+      </dl><dl><dt>
+
+          <code><a href="add_partial_roc_curve.html">add_partial_roc_curve()</a></code>
+
+        </dt>
+        <dd>Add a section of a ROC curve to an existing one</dd>
+      </dl></div><div class="section level2">
+
+      <h3 id="add-index-bounds">Add index bounds<a class="anchor" aria-label="anchor" href="#add-index-bounds"></a></h3>
+
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="fpauc_lower_bounds.html">add_fpauc_partially_proper_lower_bound()</a></code> <code><a href="fpauc_lower_bounds.html">add_fpauc_concave_lower_bound()</a></code> <code><a href="fpauc_lower_bounds.html">add_fpauc_lower_bound()</a></code>
+
+        </dt>
+        <dd>Add fpauc lower bound to a ROC plot</dd>
+      </dl><dl><dt>
+
+          <code><a href="npauc_lower_bounds.html">add_npauc_lower_bound()</a></code> <code><a href="npauc_lower_bounds.html">add_npauc_normalized_lower_bound()</a></code>
+
+        </dt>
+        <dd>Add NpAUC lower bound to a ROC plot</dd>
+      </dl><dl><dt>
+
+          <code><a href="tpauc_lower_bounds.html">add_tpauc_concave_lower_bound()</a></code> <code><a href="tpauc_lower_bounds.html">add_tpauc_partially_proper_lower_bound()</a></code> <code><a href="tpauc_lower_bounds.html">add_tpauc_under_chance_lower_bound()</a></code> <code><a href="tpauc_lower_bounds.html">add_tpauc_lower_bound()</a></code>
+
+        </dt>
+        <dd>Add tpauc lower bound to a ROC plot</dd>
+      </dl><dl><dt>
+
+          <code><a href="spauc_lower_bounds.html">add_spauc_lower_bound()</a></code>
+
+        </dt>
+        <dd>Add SpAUC lower bound to a ROC plot</dd>
+      </dl></div><div class="section level2">
+
+      <h3 id="customize-plot">Customize plot<a class="anchor" aria-label="anchor" href="#customize-plot"></a></h3>
 
 
 
@@ -49,132 +246,19 @@
         <dd>Show chance line in a ROC plot</dd>
       </dl><dl><dt>
 
-          <code><a href="add_partial_roc_curve.html">add_partial_roc_curve()</a></code>
-
-        </dt>
-        <dd>Add a section of a ROC curve to an existing one</dd>
-      </dl><dl><dt>
-
-          <code><a href="add_partial_roc_points.html">add_partial_roc_points()</a></code>
-
-        </dt>
-        <dd>Add points in a section of a ROC curve to an existing plot</dd>
-      </dl><dl><dt>
-
-          <code><a href="add_roc_curve.html">add_roc_curve()</a></code>
-
-        </dt>
-        <dd>Add a ROC curve plot to an existing one</dd>
-      </dl><dl><dt>
-
-          <code><a href="add_roc_points.html">add_roc_points()</a></code>
-
-        </dt>
-        <dd>Add ROC points plot to an existing one</dd>
-      </dl><dl><dt>
-
-          <code><a href="calc_curve_shape.html">calc_curve_shape()</a></code>
-
-        </dt>
-        <dd>Calculate curve shape over an specific region</dd>
-      </dl><dl><dt>
-
-          <code><a href="calc_partial_roc_points.html">calc_partial_roc_points()</a></code>
-
-        </dt>
-        <dd>Calculate ROC curve partial points</dd>
-      </dl><dl><dt>
-
-          <code><a href="fpauc_lower_bounds.html">add_fpauc_partially_proper_lower_bound()</a></code> <code><a href="fpauc_lower_bounds.html">add_fpauc_concave_lower_bound()</a></code> <code><a href="fpauc_lower_bounds.html">add_fpauc_lower_bound()</a></code>
-
-        </dt>
-        <dd>Add fpauc lower bound to a ROC plot</dd>
-      </dl><dl><dt>
-
-          <code><a href="hide_legend.html">hide_legend()</a></code>
-
-        </dt>
-        <dd>Hide legend in a ROC plot</dd>
-      </dl><dl><dt>
-
-          <code><a href="npauc_lower_bounds.html">add_npauc_lower_bound()</a></code> <code><a href="npauc_lower_bounds.html">add_npauc_normalized_lower_bound()</a></code>
-
-        </dt>
-        <dd>Add NpAUC lower bound to a ROC plot</dd>
-      </dl><dl><dt>
-
-          <code><a href="plot_partial_roc_curve.html">plot_partial_roc_curve()</a></code>
-
-        </dt>
-        <dd>Plot a section of a classifier ROC curve</dd>
-      </dl><dl><dt>
-
-          <code><a href="plot_partial_roc_points.html">plot_partial_roc_points()</a></code>
-
-        </dt>
-        <dd>Plot points in a region of a ROC curve.</dd>
-      </dl><dl><dt>
-
-          <code><a href="plot_roc_curve.html">plot_roc_curve()</a></code>
-
-        </dt>
-        <dd>Plot a classifier ROC curve</dd>
-      </dl><dl><dt>
-
-          <code><a href="plot_roc_points.html">plot_roc_points()</a></code>
-
-        </dt>
-        <dd>Plot classifier points of a ROC curve</dd>
-      </dl><dl><dt>
-
           <code><a href="plot_thresholds.html">add_fpr_threshold_line()</a></code> <code><a href="plot_thresholds.html">add_tpr_threshold_line()</a></code> <code><a href="plot_thresholds.html">add_threshold_line()</a></code>
 
         </dt>
         <dd>Add a threshold line to a ROC plot</dd>
       </dl><dl><dt>
 
-          <code><a href="roc_points.html">roc_points()</a></code>
+          <code><a href="hide_legend.html">hide_legend()</a></code>
 
         </dt>
-        <dd>Calculate ROC curve points</dd>
-      </dl><dl><dt>
-
-          <code><a href="sensitivity_indexes.html">fp_auc()</a></code> <code><a href="sensitivity_indexes.html">np_auc()</a></code>
-
-        </dt>
-        <dd>Sensitivity indexes</dd>
-      </dl><dl><dt>
-
-          <code><a href="spauc_lower_bounds.html">add_spauc_lower_bound()</a></code>
-
-        </dt>
-        <dd>Add SpAUC lower bound to a ROC plot</dd>
-      </dl><dl><dt>
-
-          <code><a href="specificity_indexes.html">sp_auc()</a></code> <code><a href="specificity_indexes.html">tp_auc()</a></code>
-
-        </dt>
-        <dd>Specificity indexes</dd>
-      </dl><dl><dt>
-
-          <code><a href="summarize_dataset.html">summarize_dataset()</a></code>
-
-        </dt>
-        <dd>Summarize classifiers performance in a dataset</dd>
-      </dl><dl><dt>
-
-          <code><a href="summarize_predictor.html">summarize_predictor()</a></code>
-
-        </dt>
-        <dd>Summarize classifier performance</dd>
-      </dl><dl><dt>
-
-          <code><a href="tpauc_lower_bounds.html">add_tpauc_concave_lower_bound()</a></code> <code><a href="tpauc_lower_bounds.html">add_tpauc_partially_proper_lower_bound()</a></code> <code><a href="tpauc_lower_bounds.html">add_tpauc_under_chance_lower_bound()</a></code> <code><a href="tpauc_lower_bounds.html">add_tpauc_lower_bound()</a></code>
-
-        </dt>
-        <dd>Add tpauc lower bound to a ROC plot</dd>
+        <dd>Hide legend in a ROC plot</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

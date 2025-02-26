@@ -139,14 +139,10 @@ partial area index for highly sensitive diagnostic tests. <em>Radiology</em>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Calculate fp_auc on TPR region (0.9, 1)</span></span></span>
 <span class="r-in"><span><span class="fu">fp_auc</span><span class="op">(</span><span class="va">iris</span>, response <span class="op">=</span> <span class="va">Species</span>, predictor <span class="op">=</span> <span class="va">Sepal.Width</span>, lower_tpr <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>longer object length is not a multiple of shorter object length</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>longer object length is not a multiple of shorter object length</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[*] Upper threshold already included in points ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.8516667</span>
 <span class="r-in"><span><span class="co"># Calculate np_auc on TPR region (0.9, 1)</span></span></span>
 <span class="r-in"><span><span class="fu">np_auc</span><span class="op">(</span><span class="va">iris</span>, response <span class="op">=</span> <span class="va">Species</span>, predictor <span class="op">=</span> <span class="va">Sepal.Width</span>, lower_tpr <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>longer object length is not a multiple of shorter object length</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>longer object length is not a multiple of shorter object length</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[*] Upper threshold already included in points ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.472</span>
 </code></pre></div>
