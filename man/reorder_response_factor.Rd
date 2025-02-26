@@ -21,3 +21,4 @@ condition of interest.}
 Transforms levels in a \code{factor} to 1 if they match condition of interest (
 \code{condition}) or 0 otherwise (\code{absent}) or 0 otherwise (\code{absent}).
 }
+\keyword{internal}

@@ -14,18 +14,25 @@ calc_curve_shape(
 )
 }
 \arguments{
-\item{data}{data.frame}
+\item{data}{A data.frame or extension (e.g. a tibble) containing values for
+predictors and response variables.}
 
-\item{response}{NULL}
+\item{response}{A data variable which must be a factor, integer or character
+vector representing the class to predict on each observation or
+\emph{Gold Standard}. For more info on how to select class of interest see
+\emph{Methods} below.}
 
-\item{predictor}{NULL}
+\item{predictor}{A data variable wich must be numeric, representing values of
+a classifier or predictor for each observation.}
 
-\item{lower_threshold, upper_threshold}{NULL}
+\item{lower_threshold, upper_threshold}{Ranges in which to calculate curve
+shape, they can take values from 0 to 1.}
 
-\item{ratio}{NULL}
+\item{ratio}{If \code{"tpr"}, shape will calculated over TPR ratio. Otherwise, if
+\code{"fpr"} it will be calculated over FPR ratio.}
 }
 \value{
-A character vector indicating ROC curve shape in the specified region which
+A character indicating ROC curve shape in the specified region. Result
 can take any of the following values:
 \itemize{
 \item \code{Concave}. ROC curve is concave over the entire region.
@@ -39,4 +46,19 @@ region and it lies below chance line.
 \code{calc_curve_shape()} calculates ROC curve shape over a prespecified region.
 The prespecified region can be either a range of values in $TPR$ axis, or in
 $FPR$ axis.
+}
+\section{Data masking variables}{
+
+Both response and predictor support \code{data-masking} variables. For more
+information please check \emph{General usage} in
+\link[rlang:args_data_masking]{this article}.
+
+Nevertheless, function may use environment variables as well. In order to use
+this type of variables simply set \code{data = NULL} and provide response and
+predictor as normal, whithout data-masking.
+}
+
+\examples{
+# Calc curve shape in TPR region (0.9, 1)
+calc_curve_shape(iris, Species, Sepal.Width, 0.9, 1, "tpr")
 }

@@ -2,7 +2,7 @@
 #' @importFrom dplyr select rename arrange pull filter slice_max slice_min
 #' bind_rows group_by summarize n
 #' @importFrom rlang enquo as_name quo_is_null quo_is_symbol quo_is_call
-#' call_args
+#' call_args .data
 #' @importFrom magrittr %>%
 #' @importFrom purrr map
 #' @importFrom stringr str_c str_glue

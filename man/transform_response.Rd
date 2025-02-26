@@ -19,3 +19,15 @@ interest and 0 absence of it.
 further steps. Function transforms input into a \code{factor} of values 1 and 0
 corresponding to the condition of interest and absence of it respectively.
 }
+\details{
+By default function takes some assumption on how to make transformation,
+depending on the class of \code{response}:
+\itemize{
+\item factor. Function considers the condition of interest first level in factor.
+\item integer. Function considers the condition of interest the \code{min} value of\
+response.
+\item character. Function considers the condition of interest the first value in
+\code{unique(response)} after using \code{sort}.
+}
+}
+\keyword{internal}

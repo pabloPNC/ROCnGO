@@ -31,7 +31,6 @@ is_over_chance_line <- function(partial_fpr, partial_tpr) {
   all(partial_tpr >= partial_fpr)
 }
 
-#' @export
 calc_fpr_curve_shape <- function(partial_fpr, partial_tpr) {
   if (is_concave_plr(partial_fpr, partial_tpr)) {
     curve_shape <- "Concave"
@@ -123,7 +122,6 @@ is_over_chance_line_nlr <- function(partial_nlr) {
   all(partial_nlr <= 1)
 }
 
-#' @export
 calc_tpr_curve_shape <- function(partial_fpr, partial_tpr) {
   partial_nlr <- calc_partial_nlr(partial_fpr, partial_tpr)
   if (is_concave_nlr(partial_fpr, partial_tpr)) {
@@ -173,11 +171,32 @@ calc_tpr_bounds <- function(partial_fpr, partial_tpr) {
   )
 }
 
+#' @title Calculate curve shape over an specific region
+#' @description
+#' `calc_curve_shape()` calculates ROC curve shape over a prespecified region.
+#' The prespecified region can be either a range of values in $TPR$ axis, or in
+#' $FPR$ axis.
+#' @returns
+#' A character indicating ROC curve shape in the specified region. Result
+#' can take any of the following values:
+#' * `Concave`. ROC curve is concave over the entire region.
+#' * `Partially proper`. ROC curve loses concavity at some point of the
+#' region.
+#' * `Hook under chance`. ROC curve loses concavity at some point of the
+#' region and it lies below chance line.
+#' @inheritParams roc_points
+#' @inherit roc_points details
+#' @inheritSection roc_points Data masking variables
+#' @param lower_threshold,upper_threshold Ranges in which to calculate curve
+#' shape, they can take values from 0 to 1.
+#' @param ratio If `"tpr"`, shape will calculated over TPR ratio. Otherwise, if
+#' `"fpr"` it will be calculated over FPR ratio.
+#' @examples
+#' # Calc curve shape in TPR region (0.9, 1)
+#' calc_curve_shape(iris, Species, Sepal.Width, 0.9, 1, "tpr")
 #' @export
 calc_curve_shape <- function(
     data = NULL,
-    fpr = NULL,
-    tpr = NULL,
     response = NULL,
     predictor = NULL,
     lower_threshold,

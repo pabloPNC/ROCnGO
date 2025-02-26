@@ -6,6 +6,9 @@ summarize_tpr_predictor <- function(data = NULL,
     predictor <- data %>% pull({{ predictor }})
     response <- data %>% pull({{ response }})
   }
+  if (!all(levels(response) == c(0, 1))) {
+    response <- transform_response(response)
+  }
   tpr_fpr <- roc_points(NULL, response, predictor)
   ptpr_pfpr <- calc_partial_roc_points(
     tpr = tpr_fpr$tpr,
@@ -49,6 +52,9 @@ summarize_fpr_predictor <- function(data = NULL,
   if (!is.null(data)) {
     predictor <- data %>% pull({{ predictor }})
     response <- data %>% pull({{ response }})
+  }
+  if (!all(levels(response) == c(0, 1))) {
+    response <- transform_response(response)
   }
   tpr_fpr <- roc_points(NULL, response, predictor)
   ptpr_pfpr <- calc_partial_roc_points(
@@ -97,6 +103,29 @@ summarize_fpr_predictor <- function(data = NULL,
   )
 }
 
+#' @title Summarize classifier performance
+#' @description
+#' Calculates a series of metrics describing global classifier performance and
+#' performance over a region of interest.
+#' @inheritParams roc_points
+#' @param ratio Ratio in which to apply calculations. If `"tpr"` they will be
+#' applied over TPR ratio, if `"fpr"` it will be calculated over FPR ratio.
+#' @param threshold Theshold in which to make partial area calculations. When
+#' working in TPR it represents lower threshold up to 1, and upper threshold
+#' in FPR up to 0.
+#' @inheritSection roc_points Methods
+#' @inheritSection roc_points Data masking variables
+#' @details
+#' Metrics calculated to evaluate are the following:
+#'
+#' * Area under curve (AUC) as a metric of global performances.
+#' * Partial area under curve (pAUC) as a metric of local performance.
+#' * Indexes derived from pAUC, depending on the selected ratio.
+#' [Sensitivity indexes][ROCnGO::sensitivity_indexes] will be used for
+#' TPR and [specificity indexes][ROCnGO::specificity_indexes] for FPR.
+#' * [Curve shape][ROCnGO::calc_curve_shape] in the specified region.
+#' @returns
+#' A single row tibble with different predictor metrics as columns.
 #' @export
 summarize_predictor <- function(data = NULL,
                                 predictor,
@@ -120,6 +149,22 @@ summarize_predictor <- function(data = NULL,
   }
 }
 
+#' @title Summarize classifiers performance in a dataset
+#' @description
+#' Calculate a series of metrics describing global classifier performance and
+#' performance over a region of interest for selected classifiers in a dataset.
+#' @inheritParams summarize_predictor
+#' @param predictors A vector of data variables. Each variable must be a factor,
+#' integer or character vector representing the class to predict on each
+#' observation or *Gold Standard*. For more info on how to select class of
+#' interest see *Methods*.
+#' @param .progress If `TRUE`, show progress of calculations.
+#' @inheritSection roc_points Methods
+#' @inheritSection roc_points Data masking variables
+#' @inherit roc_points details
+#' @returns
+#' List with different keys with different metrics for each of the specified
+#' classifiers in dataset.
 #' @export
 summarize_dataset <- function(data,
                               predictors = NULL,
