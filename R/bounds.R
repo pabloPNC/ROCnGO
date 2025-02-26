@@ -192,7 +192,8 @@ calc_tpr_bounds <- function(partial_fpr, partial_tpr) {
 #' @param ratio If `"tpr"`, shape will calculated over TPR ratio. Otherwise, if
 #' `"fpr"` it will be calculated over FPR ratio.
 #' @examples
-#' NULL
+#' # Calc curve shape in TPR region (0.9, 1)
+#' calc_curve_shape(iris, Species, Sepal.Width, 0.9, 1, "tpr")
 #' @export
 calc_curve_shape <- function(
     data = NULL,

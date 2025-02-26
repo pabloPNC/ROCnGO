@@ -75,3 +75,13 @@ this type of variables simply set \code{data = NULL} and provide response and
 predictor as normal, whithout data-masking.
 }
 
+\examples{
+calc_partial_roc_points(
+ iris,
+ response = Species,
+ predictor = Sepal.Width,
+ lower_threshold = 0.9,
+ upper_threshold = 1,
+ ratio = "tpr"
+)
+}

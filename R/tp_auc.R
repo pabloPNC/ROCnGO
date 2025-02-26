@@ -17,7 +17,22 @@
 #' A numeric indicating the partial area under curve in the selected region.
 #' @name specificity_indexes
 #' @examples
-#' NULL
+#' # Calc sp_auc in FPR region (0, 0.1)
+#' sp_auc(
+#'  iris,
+#'  response = Species,
+#'  predictor = Sepal.Width,
+#'  lower_fpr = 0,
+#'  upper_fpr = 0.1
+#' )
+#' # Calc tp_auc in FPR region (0, 0.1)
+#' tp_auc(
+#'  iris,
+#'  response = Species,
+#'  predictor = Sepal.Width,
+#'  lower_fpr = 0,
+#'  upper_fpr = 0.1
+#' )
 NULL
 
 #' @rdname specificity_indexes

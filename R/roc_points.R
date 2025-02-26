@@ -101,7 +101,7 @@ calc_ratios <- function(data = NULL, thresholds, response, predictor) {
 #' this type of variables simply set `data = NULL` and provide response and
 #' predictor as normal, whithout data-masking.
 #' @examples
-#' NULL
+#' roc_points(iris, response = Species, predictor = Sepal.Width)
 #' @export
 roc_points <- function(data = NULL, response, predictor) {
   if (!is.null(data)) {

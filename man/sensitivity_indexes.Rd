@@ -73,7 +73,10 @@ predictor as normal, whithout data-masking.
 }
 
 \examples{
-NULL
+# Calculate fp_auc on TPR region (0.9, 1)
+fp_auc(iris, response = Species, predictor = Sepal.Width, lower_tpr = 0.9)
+# Calculate np_auc on TPR region (0.9, 1)
+np_auc(iris, response = Species, predictor = Sepal.Width, lower_tpr = 0.9)
 }
 \references{
 Franco M. y Vivo J.-M. Evaluating the Performances of Biomarkers over a

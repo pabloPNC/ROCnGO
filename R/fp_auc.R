@@ -17,7 +17,10 @@
 #' A numeric indicating the partial area under curve in the selected region.
 #' @name sensitivity_indexes
 #' @examples
-#' NULL
+#' # Calculate fp_auc on TPR region (0.9, 1)
+#' fp_auc(iris, response = Species, predictor = Sepal.Width, lower_tpr = 0.9)
+#' # Calculate np_auc on TPR region (0.9, 1)
+#' np_auc(iris, response = Species, predictor = Sepal.Width, lower_tpr = 0.9)
 NULL
 
 #' @rdname sensitivity_indexes

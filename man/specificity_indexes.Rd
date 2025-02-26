@@ -73,7 +73,22 @@ predictor as normal, whithout data-masking.
 }
 
 \examples{
-NULL
+# Calc sp_auc in FPR region (0, 0.1)
+sp_auc(
+ iris,
+ response = Species,
+ predictor = Sepal.Width,
+ lower_fpr = 0,
+ upper_fpr = 0.1
+)
+# Calc tp_auc in FPR region (0, 0.1)
+tp_auc(
+ iris,
+ response = Species,
+ predictor = Sepal.Width,
+ lower_fpr = 0,
+ upper_fpr = 0.1
+)
 }
 \references{
 McClish D. K. Analyzing a Portion of the ROC Curve. \emph{Medical Decision Making}

@@ -61,5 +61,5 @@ predictor as normal, whithout data-masking.
 }
 
 \examples{
-NULL
+roc_points(iris, response = Species, predictor = Sepal.Width)
 }

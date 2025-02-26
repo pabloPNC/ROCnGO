@@ -59,3 +59,6 @@ this type of variables simply set \code{data = NULL} and provide response and
 predictor as normal, whithout data-masking.
 }
 
+\examples{
+plot_roc_points(iris, response = Species, predictor = Sepal.Width)
+}

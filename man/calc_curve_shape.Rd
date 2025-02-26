@@ -59,5 +59,6 @@ predictor as normal, whithout data-masking.
 }
 
 \examples{
-NULL
+# Calc curve shape in TPR region (0.9, 1)
+calc_curve_shape(iris, Species, Sepal.Width, 0.9, 1, "tpr")
 }

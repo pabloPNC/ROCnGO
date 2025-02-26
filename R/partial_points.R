@@ -258,6 +258,15 @@ calc_partial_roc_points_from_predictor <- function(data = NULL,
 #' @returns
 #' A tibble with two columns: "partial_fpr" and "partial_tpr", which contain
 #' FPR and TPR values for each point in ROC in specified region.
+#' @examples
+#' calc_partial_roc_points(
+#'  iris,
+#'  response = Species,
+#'  predictor = Sepal.Width,
+#'  lower_threshold = 0.9,
+#'  upper_threshold = 1,
+#'  ratio = "tpr"
+#' )
 #' @export
 calc_partial_roc_points <- function(data = NULL,
                                     fpr = NULL,

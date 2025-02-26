@@ -9,6 +9,8 @@ plot_roc <- function(data) {
 #' @inheritParams roc_points
 #' @inheritSection roc_points Methods
 #' @inheritSection roc_points Data masking variables
+#' @examples
+#' plot_roc_points(iris, response = Species, predictor = Sepal.Width)
 #' @export
 plot_roc_points <- function(data,
                             fpr = NULL,
@@ -47,6 +49,8 @@ plot_roc_points <- function(data,
 #' @inheritParams roc_points
 #' @inheritSection roc_points Methods
 #' @inheritSection roc_points Data masking variables
+#' @examples
+#' plot_roc_curve(iris, response = Species, predictor = Sepal.Width)
 #' @export
 plot_roc_curve <- function(data,
                            fpr = NULL,
@@ -480,6 +484,14 @@ add_partial_roc_points <- function(data = NULL,
 #' @param threshold Theshold in which to make partial area calculations. When
 #' working in TPR it represents lower threshold up to 1, and upper threshold
 #' in FPR up to 0.
+#' @examples
+#' plot_partial_roc_curve(
+#'  iris,
+#'  response = Species,
+#'  predictor = Sepal.Width,
+#'  ratio = "tpr",
+#'  threshold = 0.9
+#' )
 #' @export
 plot_partial_roc_curve <- function(data,
                                    fpr = NULL,
@@ -509,6 +521,14 @@ plot_partial_roc_curve <- function(data,
 #' @param threshold Theshold in which to make partial area calculations. When
 #' working in TPR it represents lower threshold up to 1, and upper threshold
 #' in FPR up to 0.
+#' @examples
+#' plot_partial_roc_points(
+#'  iris,
+#'  response = Species,
+#'  predictor = Sepal.Width,
+#'  ratio = "tpr",
+#'  threshold = 0.9
+#' )
 #' @export
 plot_partial_roc_points <- function(data,
                                     fpr = NULL,
