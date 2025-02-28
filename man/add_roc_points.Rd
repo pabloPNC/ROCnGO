@@ -16,6 +16,10 @@ add_roc_points(
 \item{data}{A data.frame or extension (e.g. a tibble) containing values for
 predictors and response variables.}
 
+\item{fpr, tpr}{Numeric vectors representing FPR and TPR for the classifier.
+These arguments will be used when no data, response and predictor are
+supplied.}
+
 \item{response}{A data variable which must be a factor, integer or character
 vector representing the class to predict on each observation or
 \emph{Gold Standard}. For more info on how to select class of interest see

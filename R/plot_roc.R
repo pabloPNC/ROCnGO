@@ -6,7 +6,7 @@ plot_roc <- function(data) {
 #' @title Plot classifier points of a ROC curve
 #' @description
 #' Create an scatterplot using pairs of points (FPR, TPR) of a ROC curve.
-#' @inheritParams roc_points
+#' @inheritParams calc_partial_roc_points
 #' @inheritSection roc_points Methods
 #' @inheritSection roc_points Data masking variables
 #' @examples
@@ -46,7 +46,7 @@ plot_roc_points <- function(data,
 #' @title Plot a classifier ROC curve
 #' @description
 #' Create a plot of a ROC curve.
-#' @inheritParams roc_points
+#' @inheritParams calc_partial_roc_points
 #' @inheritSection roc_points Methods
 #' @inheritSection roc_points Data masking variables
 #' @examples
@@ -173,7 +173,7 @@ add_roc_points_from_ratios <- function(data,
 #' @title Add a ROC curve plot to an existing one
 #' @description
 #' Add a ROC curve to an existing ROC plot.
-#' @inheritParams roc_points
+#' @inheritParams calc_partial_roc_points
 #' @inheritSection roc_points Methods
 #' @inheritSection roc_points Data masking variables
 #' @export
@@ -194,7 +194,7 @@ add_roc_curve <- function(data = NULL,
 #' @title Add ROC points plot to an existing one
 #' @description
 #' Add ROC points to an existing ROC plot.
-#' @inheritParams roc_points
+#' @inheritParams calc_partial_roc_points
 #' @inheritSection roc_points Methods
 #' @inheritSection roc_points Data masking variables
 #' @export
@@ -618,7 +618,7 @@ add_fpauc_concave_lower_bound <- function(data = NULL,
   )
   threshold_fpr <- partial_points[["partial_fpr"]][1]
 
-  if (!quo_is_null(predictor_expr) & !quo_is_null(response_expr)) {
+  if (!quo_is_null(predictor_expr) && !quo_is_null(response_expr)) {
     geom_polygon(
       data = tibble(
         x = c(threshold_fpr, 1, 1),
@@ -664,7 +664,7 @@ add_fpauc_concave_lower_bound <- function(data = NULL,
 #' `add_fpauc_partially_proper_lower_bound` and `add_fpauc_concave_lower_bound`
 #' are provided, which plot lower bound when curve shape partially proper (
 #' presents some kind of hook) or is concave in region of interest.
-#' @inheritParams roc_points
+#' @inheritParams calc_partial_roc_points
 #' @param threshold A number between 0 and 1, representing lower TPR for the
 #' region of interest.
 #' @name fpauc_lower_bounds
@@ -1003,8 +1003,8 @@ add_tpauc_under_chance_lower_bound <- function(data = NULL,
 #' a ROC curve with partially proper (presence of some hook) in selected region.
 #' * `add_tpauc_under_chance_lower_bound`. Plot lower bound corresponding to
 #' a ROC curve with a hook under chance line in selected region.
-#' @inheritParams roc_points
-#' @param lower_threshold, upper_threshold Two numbers between 0 and 1,
+#' @inheritParams calc_partial_roc_points
+#' @param lower_threshold,upper_threshold Two numbers between 0 and 1,
 #' representing lower and upper FPR for a region of interest.
 #' @name tpauc_lower_bounds
 #' @export
@@ -1068,7 +1068,7 @@ add_tpauc_lower_bound <- function(data = NULL,
 #'
 #' `add_npauc_lower_bound()` provides a way to plot lower bound previous to
 #' normalization and consecuently corresponds to a lower level function.
-#' @inheritParams roc_points
+#' @inheritParams calc_partial_roc_points
 #' @param threshold A number between 0 and 1 representing lower TPR for the
 #' region of interest.
 #' @name npauc_lower_bounds
@@ -1173,7 +1173,7 @@ add_npauc_normalized_lower_bound <- function(data = NULL,
 #' `add_spauc_lower_bound()` doesn't make any check to ensure the index can be
 #' safely applied, consequently it allows to enforce representation even though
 #' SpAUC cound't be calculated in the region.
-#' @inheritParams roc_points
+#' @inheritParams calc_partial_roc_points
 #' @param lower_threshold,upper_threshold Two numbers between 0 and 1,
 #' representing lower and upper FPR for a region of interest.
 #' @name spauc_lower_bounds

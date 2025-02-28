@@ -52,6 +52,10 @@ add_tpauc_lower_bound(
 \item{data}{A data.frame or extension (e.g. a tibble) containing values for
 predictors and response variables.}
 
+\item{fpr, tpr}{Numeric vectors representing FPR and TPR for the classifier.
+These arguments will be used when no data, response and predictor are
+supplied.}
+
 \item{response}{A data variable which must be a factor, integer or character
 vector representing the class to predict on each observation or
 \emph{Gold Standard}. For more info on how to select class of interest see
@@ -60,7 +64,7 @@ vector representing the class to predict on each observation or
 \item{predictor}{A data variable wich must be numeric, representing values of
 a classifier or predictor for each observation.}
 
-\item{lower_threshold, }{upper_threshold Two numbers between 0 and 1,
+\item{lower_threshold, upper_threshold}{Two numbers between 0 and 1,
 representing lower and upper FPR for a region of interest.}
 }
 \description{

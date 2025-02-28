@@ -255,6 +255,9 @@ calc_partial_roc_points_from_predictor <- function(data = NULL,
 #' partial points.
 #' @param ratio If `"tpr"` only points with a TPR in delimited region will be
 #' calculated, if `"fpr"` only points with a FPR in the region will do.
+#' @param fpr,tpr Numeric vectors representing FPR and TPR for the classifier.
+#' These arguments will be used when no data, response and predictor are
+#' supplied.
 #' @returns
 #' A tibble with two columns: "partial_fpr" and "partial_tpr", which contain
 #' FPR and TPR values for each point in ROC in specified region.
