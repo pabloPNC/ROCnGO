@@ -59,14 +59,14 @@ plot_roc_curve <- function(data,
                            predictor = NULL) {
   predictor_expr <- enquo(predictor)
   response_expr <- enquo(response)
-  if (!quo_is_null(predictor_expr) & !quo_is_null(response_expr)) {
+  if (!quo_is_null(predictor_expr) && !quo_is_null(response_expr)) {
     if (quo_is_symbol(predictor_expr)) {
       color <- as_name({{ predictor_expr }})
     } else if (quo_is_call(predictor_expr)) {
       expr_args <- rlang::call_args(
         rlang::get_expr(predictor_expr)
       )
-      if (expr_args[[1]] == ".data" | expr_args[[1]] == ".env") {
+      if (expr_args[[1]] == ".data" || expr_args[[1]] == ".env") {
         color <- expr_args[[2]]
       } else {
         color <- NULL
@@ -205,7 +205,7 @@ add_roc_points <- function(data = NULL,
                            predictor = NULL) {
   predictor_expr <- enquo(predictor)
   response_expr <- enquo(response)
-  if (!quo_is_null(predictor_expr) & !quo_is_null(response_expr)) {
+  if (!quo_is_null(predictor_expr) && !quo_is_null(response_expr)) {
     add_roc_points_from_predictor(data, {{ response }}, {{ predictor }})
   } else {
     add_roc_points_from_ratios(data, {{ fpr }}, {{ tpr }})
@@ -396,7 +396,7 @@ add_partial_roc <- function(data,
                             geom) {
   predictor_expr <- enquo(predictor)
   response_expr <- enquo(response)
-  if (!quo_is_null(predictor_expr) & !quo_is_null(response_expr)) {
+  if (!quo_is_null(predictor_expr) && !quo_is_null(response_expr)) {
     add_partial_roc_from_predictor(
       data,
       {{ response }},
@@ -567,8 +567,8 @@ add_fpauc_partially_proper_lower_bound <- function(data = NULL,
         y = c(threshold, 1, threshold)
       ),
       mapping = aes(
-        x,
-        y,
+        .data$x,
+        .data$y,
         color = mask_name(predictor_expr),
         fill = str_c(
           mask_name(predictor_expr),
@@ -585,8 +585,8 @@ add_fpauc_partially_proper_lower_bound <- function(data = NULL,
         y = c(threshold, 1, threshold)
       ),
       mapping = aes(
-        x,
-        y
+        .data$x,
+        .data$y
       ),
       color = "black",
       alpha = 1 / 5,
@@ -625,8 +625,8 @@ add_fpauc_concave_lower_bound <- function(data = NULL,
         y = c(threshold, threshold, 1)
       ),
       mapping = aes(
-        x,
-        y,
+        .data$x,
+        .data$y,
         color = mask_name(predictor_expr),
         fill = str_c(
           mask_name(predictor_expr),
@@ -643,8 +643,8 @@ add_fpauc_concave_lower_bound <- function(data = NULL,
         y = c(threshold, threshold, 1)
       ),
       mapping = aes(
-        x,
-        y
+        .data$x,
+        .data$y
       ),
       color = "black",
       alpha = 1 / 5,
@@ -729,18 +729,18 @@ add_tpauc_concave_lower_bound <- function(data = NULL,
     "fpr"
   )
   lower_threshold_tpr <- partial_points %>%
-    filter(partial_fpr == lower_threshold) %>%
-    slice_min(partial_tpr) %>%
-    pull(partial_tpr)
+    filter(.data$partial_fpr == lower_threshold) %>%
+    slice_min(.data$partial_tpr) %>%
+    pull(.data$partial_tpr)
   upper_threshold_tpr <- partial_points %>%
-    filter(partial_fpr == upper_threshold) %>%
-    slice_max(partial_tpr) %>%
-    pull(partial_tpr)
+    filter(.data$partial_fpr == upper_threshold) %>%
+    slice_max(.data$partial_tpr) %>%
+    pull(.data$partial_tpr)
 
   predictor_expr <- enquo(predictor)
   response_expr <- enquo(response)
 
-  if (!quo_is_null(predictor_expr) & !quo_is_null(response_expr)) {
+  if (!quo_is_null(predictor_expr) && !quo_is_null(response_expr)) {
     geom_polygon(
       data = tibble(
         x = c(
@@ -752,8 +752,8 @@ add_tpauc_concave_lower_bound <- function(data = NULL,
         y = c(0, 0, upper_threshold_tpr, lower_threshold_tpr)
       ),
       mapping = aes(
-        x,
-        y,
+        .data$x,
+        .data$y,
         color = mask_name(predictor_expr),
         fill = str_c(
           mask_name(predictor_expr),
@@ -775,8 +775,8 @@ add_tpauc_concave_lower_bound <- function(data = NULL,
         y = c(0, 0, upper_threshold_tpr, lower_threshold_tpr)
       ),
       mapping = aes(
-        x,
-        y
+        .data$x,
+        .data$y
       ),
       color = "black",
       alpha = 1 / 5,
@@ -808,9 +808,9 @@ add_tpauc_partially_proper_lower_bound <- function(data = NULL,
     "fpr"
   )
   lower_threshold_tpr <- partial_points %>%
-    filter(partial_fpr == lower_threshold) %>%
-    slice_min(partial_tpr) %>%
-    pull(partial_tpr)
+    filter(.data$partial_fpr == lower_threshold) %>%
+    slice_min(.data$partial_tpr) %>%
+    pull(.data$partial_tpr)
   diagonal_area <- calc_fpr_diagonal_lower_bound(
     partial_points[["partial_fpr"]],
     partial_points[["partial_tpr"]]
@@ -820,7 +820,7 @@ add_tpauc_partially_proper_lower_bound <- function(data = NULL,
     partial_points[["partial_tpr"]]
   )
 
-  if (!quo_is_null(predictor_expr) & !quo_is_null(response_expr)) {
+  if (!quo_is_null(predictor_expr) && !quo_is_null(response_expr)) {
     if (diagonal_area > square_area) {
       geom_polygon(
         data = tibble(
@@ -835,8 +835,8 @@ add_tpauc_partially_proper_lower_bound <- function(data = NULL,
           )
         ),
         mapping = aes(
-          x,
-          y,
+          .data$x,
+          .data$y,
           color = mask_name(predictor_expr),
           fill = str_c(
             mask_name(predictor_expr),
@@ -858,8 +858,8 @@ add_tpauc_partially_proper_lower_bound <- function(data = NULL,
           y = c(0, 0, lower_threshold_tpr, lower_threshold_tpr)
         ),
         mapping = aes(
-          x,
-          y,
+          .data$x,
+          .data$y,
           color = mask_name(predictor_expr),
           fill = str_c(
             mask_name(predictor_expr),
@@ -885,8 +885,8 @@ add_tpauc_partially_proper_lower_bound <- function(data = NULL,
           )
         ),
         mapping = aes(
-          x,
-          y
+          .data$x,
+          .data$y
         ),
         color = "black",
         alpha = 1 / 5,
@@ -904,8 +904,8 @@ add_tpauc_partially_proper_lower_bound <- function(data = NULL,
           y = c(0, 0, lower_threshold_tpr, lower_threshold_tpr)
         ),
         mapping = aes(
-          x,
-          y
+          .data$x,
+          .data$y
         ),
         color = "black",
         alpha = 1 / 5,
@@ -939,9 +939,9 @@ add_tpauc_under_chance_lower_bound <- function(data = NULL,
     "fpr"
   )
   lower_threshold_tpr <- partial_points %>%
-    filter(partial_fpr == lower_threshold) %>%
-    slice_min(partial_tpr) %>%
-    pull(partial_tpr)
+    filter(.data$partial_fpr == lower_threshold) %>%
+    slice_min(.data$partial_tpr) %>%
+    pull(.data$partial_tpr)
 
   if (!quo_is_null(response_expr) && !quo_is_null(predictor_expr)) {
     geom_polygon(
@@ -955,8 +955,8 @@ add_tpauc_under_chance_lower_bound <- function(data = NULL,
         y = c(0, 0, lower_threshold_tpr, lower_threshold_tpr)
       ),
       mapping = aes(
-        x,
-        y,
+        .data$x,
+        .data$y,
         color = mask_name(predictor_expr),
         fill = str_c(
           mask_name(predictor_expr),
@@ -978,8 +978,8 @@ add_tpauc_under_chance_lower_bound <- function(data = NULL,
         y = c(0, 0, lower_threshold_tpr, lower_threshold_tpr)
       ),
       mapping = aes(
-        x,
-        y
+        .data$x,
+        .data$y
       ),
       color = "black",
       alpha = 1 / 5,
@@ -1081,15 +1081,15 @@ add_npauc_lower_bound <- function(data = NULL,
                                   threshold) {
   predictor_expr <- enquo(predictor)
   response_expr <- enquo(response)
-  if (!quo_is_null(predictor_expr) & !quo_is_null(response_expr)) {
+  if (!quo_is_null(predictor_expr) && !quo_is_null(response_expr)) {
     geom_polygon(
       data = tibble(
         x = c(threshold, 1, 1),
         y = c(threshold, 1, threshold)
       ),
       mapping = aes(
-        x,
-        y,
+        .data$x,
+        .data$y,
         color = mask_name(predictor_expr),
         fill = str_c(
           mask_name(predictor_expr),
@@ -1106,8 +1106,8 @@ add_npauc_lower_bound <- function(data = NULL,
         y = c(threshold, 1, threshold)
       ),
       mapping = aes(
-        x,
-        y
+        .data$x,
+        .data$y
       ),
       color = "black",
       alpha = 1 / 5,
@@ -1134,8 +1134,8 @@ add_npauc_normalized_lower_bound <- function(data = NULL,
         y = c(threshold, 1, threshold)
       ),
       mapping = aes(
-        x,
-        y,
+        .data$x,
+        .data$y,
         color = mask_name(predictor_expr),
         fill = str_c(
           mask_name(predictor_expr),
@@ -1152,8 +1152,8 @@ add_npauc_normalized_lower_bound <- function(data = NULL,
         y = c(threshold, 1, threshold)
       ),
       mapping = aes(
-        x,
-        y
+        .data$x,
+        .data$y
       ),
       color = "black",
       alpha = 1 / 5,
@@ -1188,17 +1188,6 @@ add_spauc_lower_bound <- function(data = NULL,
   predictor_expr <- enquo(predictor)
   response_expr <- enquo(response)
 
-  partial_points <- calc_partial_roc_points(
-    data,
-    {{ fpr }},
-    {{ tpr }},
-    {{ response }},
-    {{ predictor }},
-    lower_threshold,
-    upper_threshold,
-    "fpr"
-  )
-
   if (!quo_is_null(response_expr) && !quo_is_null(predictor_expr)) {
     geom_polygon(
       data = tibble(
@@ -1213,8 +1202,8 @@ add_spauc_lower_bound <- function(data = NULL,
         )
       ),
       mapping = aes(
-        x,
-        y,
+        .data$x,
+        .data$y,
         color = mask_name(predictor_expr),
         fill = str_c(
           mask_name(predictor_expr),
@@ -1238,8 +1227,8 @@ add_spauc_lower_bound <- function(data = NULL,
         )
       ),
       mapping = aes(
-        x,
-        y
+        .data$x,
+        .data$y
       ),
       color = "black",
       alpha = 1 / 5,
