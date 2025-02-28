@@ -677,8 +677,6 @@ add_fpauc_lower_bound <- function(data = NULL,
                                   threshold) {
   curve_shape <- calc_curve_shape(
     data,
-    fpr,
-    tpr,
     response = {{ response }},
     predictor = {{ predictor }},
     lower_threshold = threshold,
@@ -1017,8 +1015,6 @@ add_tpauc_lower_bound <- function(data = NULL,
                                   upper_threshold) {
   curve_shape <- calc_curve_shape(
     data,
-    fpr,
-    tpr,
     response = {{ response }},
     predictor = {{ predictor }},
     lower_threshold = lower_threshold,

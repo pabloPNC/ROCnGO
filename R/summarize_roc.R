@@ -212,7 +212,7 @@ summarize_dataset <- function(data,
     data = bind_rows(results, .id = "identifier")
   )
   metrics[["curve_shape"]] <- metrics$data %>%
-    group_by(curve_shape) %>%
+    group_by(.data$curve_shape) %>%
     summarize(count = n())
 
   metrics[["auc"]] <- metrics$data %>%
