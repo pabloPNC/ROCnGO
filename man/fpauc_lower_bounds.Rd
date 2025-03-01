@@ -38,6 +38,10 @@ add_fpauc_lower_bound(
 \item{data}{A data.frame or extension (e.g. a tibble) containing values for
 predictors and response variables.}
 
+\item{fpr, tpr}{Numeric vectors representing FPR and TPR for the classifier.
+These arguments will be used when no data, response and predictor are
+supplied.}
+
 \item{response}{A data variable which must be a factor, integer or character
 vector representing the class to predict on each observation or
 \emph{Gold Standard}. For more info on how to select class of interest see
@@ -60,4 +64,14 @@ To enforce specific bounds lower level functions
 \code{add_fpauc_partially_proper_lower_bound} and \code{add_fpauc_concave_lower_bound}
 are provided, which plot lower bound when curve shape partially proper (
 presents some kind of hook) or is concave in region of interest.
+}
+\examples{
+# Add lower bound based on cuve shape (Concave)
+plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
+  add_fpauc_lower_bound(
+    data = iris,
+    response = Species,
+    predictor = Sepal.Width,
+    threshold = 0.9
+  )
 }

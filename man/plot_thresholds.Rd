@@ -23,3 +23,15 @@ will be displayed in TPR axis, if \code{"fpr"} it will be displayed in FPR axis.
 \description{
 Include a threshold line in an specified axis.
 }
+\examples{
+# Add two threshold line in TPR = 0.9 and FPR = 0.1
+plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
+ add_threshold_line(threshold = 0.9, ratio = "tpr") +
+ add_threshold_line(threshold = 0.1, ratio = "fpr")
+# Add threshold line in TPR = 0.9
+plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
+ add_tpr_threshold_line(threshold = 0.9)
+# Add threshold line in FPR = 0.1
+plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
+ add_fpr_threshold_line(threshold = 0.1)
+}

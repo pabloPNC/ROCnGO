@@ -18,6 +18,10 @@ add_partial_roc_points(
 \item{data}{A data.frame or extension (e.g. a tibble) containing values for
 predictors and response variables.}
 
+\item{fpr, tpr}{Numeric vectors representing FPR and TPR for the classifier.
+These arguments will be used when no data, response and predictor are
+supplied.}
+
 \item{response}{A data variable which must be a factor, integer or character
 vector representing the class to predict on each observation or
 \emph{Gold Standard}. For more info on how to select class of interest see
@@ -68,3 +72,13 @@ this type of variables simply set \code{data = NULL} and provide response and
 predictor as normal, whithout data-masking.
 }
 
+\examples{
+plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
+  add_partial_roc_points(
+    iris,
+    response = Species,
+    predictor = Sepal.Length,
+    ratio = "tpr",
+    threshold = 0.9
+  )
+}

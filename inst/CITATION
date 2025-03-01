@@ -3,5 +3,5 @@ bibentry(
   title = "Fast analysis of ROC curves",
   author = "Pablo Navarro",
   year = "2025",
-  note = "R package version 0.0.0.9"
+  note = "R package version 0.0.0.9000"
 )
