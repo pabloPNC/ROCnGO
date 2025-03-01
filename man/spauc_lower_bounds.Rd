@@ -46,3 +46,13 @@ chance line.
 safely applied, consequently it allows to enforce representation even though
 SpAUC cound't be calculated in the region.
 }
+\examples{
+plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
+  add_spauc_lower_bound(
+    iris,
+    response = Species,
+    predictor = Sepal.Width,
+    lower_threshold = 0,
+    upper_threshold = 0.1
+  )
+}

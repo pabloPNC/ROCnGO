@@ -124,6 +124,14 @@ summarize_fpr_predictor <- function(data = NULL,
 #' * [Curve shape][ROCnGO::calc_curve_shape] in the specified region.
 #' @returns
 #' A single row tibble with different predictor metrics as columns.
+#' @examples
+#' summarize_predictor(
+#'  data = iris,
+#'  predictor = Sepal.Width,
+#'  response = Species,
+#'  ratio = "tpr",
+#'  threshold = 0.9
+#' )
 #' @export
 summarize_predictor <- function(data = NULL,
                                 predictor,
@@ -163,6 +171,8 @@ summarize_predictor <- function(data = NULL,
 #' @returns
 #' List with different keys with different metrics for each of the specified
 #' classifiers in dataset.
+#' @examples
+#' summarize_dataset(iris, response = Species, ratio = "tpr", threshold = 0.9)
 #' @export
 summarize_dataset <- function(data,
                               predictors = NULL,

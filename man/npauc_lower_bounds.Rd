@@ -52,3 +52,12 @@ lower bound, which is used to formally calculate NpAUC.
 \code{add_npauc_lower_bound()} provides a way to plot lower bound previous to
 normalization and consecuently corresponds to a lower level function.
 }
+\examples{
+plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
+  add_npauc_lower_bound(
+    iris,
+    response = Species,
+    predictor = Sepal.Width,
+    threshold = 0.9
+  )
+}

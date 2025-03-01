@@ -84,3 +84,13 @@ a ROC curve with partially proper (presence of some hook) in selected region.
 a ROC curve with a hook under chance line in selected region.
 }
 }
+\examples{
+plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
+  add_tpauc_lower_bound(
+    data = iris,
+    response = Species,
+    predictor = Sepal.Width,
+    upper_threshold =  0.1,
+    lower_threshold = 0
+  )
+}

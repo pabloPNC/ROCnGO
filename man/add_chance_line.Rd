@@ -9,3 +9,7 @@ add_chance_line()
 \description{
 Plot chance line in a ROC plot.
 }
+\examples{
+plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
+ add_chance_line()
+}

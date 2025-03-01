@@ -63,3 +63,7 @@ this type of variables simply set \code{data = NULL} and provide response and
 predictor as normal, whithout data-masking.
 }
 
+\examples{
+plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
+ add_roc_curve(iris, response = Species, predictor = Sepal.Length)
+}

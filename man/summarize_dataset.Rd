@@ -76,3 +76,6 @@ this type of variables simply set \code{data = NULL} and provide response and
 predictor as normal, whithout data-masking.
 }
 
+\examples{
+summarize_dataset(iris, response = Species, ratio = "tpr", threshold = 0.9)
+}

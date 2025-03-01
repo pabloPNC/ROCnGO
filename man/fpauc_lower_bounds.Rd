@@ -65,3 +65,13 @@ To enforce specific bounds lower level functions
 are provided, which plot lower bound when curve shape partially proper (
 presents some kind of hook) or is concave in region of interest.
 }
+\examples{
+# Add lower bound based on cuve shape (Concave)
+plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
+  add_fpauc_lower_bound(
+    data = iris,
+    response = Species,
+    predictor = Sepal.Width,
+    threshold = 0.9
+  )
+}

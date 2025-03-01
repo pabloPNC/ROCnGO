@@ -94,10 +94,12 @@ plot_roc_curve <- function(data,
   }
 }
 
-
 #' @title Show chance line in a ROC plot
 #' @description
 #' Plot chance line in a ROC plot.
+#' @examples
+#' plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
+#'  add_chance_line()
 #' @export
 add_chance_line <- function() {
   geom_abline(slope = 1, linetype = "dashed", alpha = 1 / 5)
@@ -176,6 +178,9 @@ add_roc_points_from_ratios <- function(data,
 #' @inheritParams calc_partial_roc_points
 #' @inheritSection roc_points Methods
 #' @inheritSection roc_points Data masking variables
+#' @examples
+#' plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
+#'  add_roc_curve(iris, response = Species, predictor = Sepal.Length)
 #' @export
 add_roc_curve <- function(data = NULL,
                           fpr = NULL,
@@ -197,6 +202,9 @@ add_roc_curve <- function(data = NULL,
 #' @inheritParams calc_partial_roc_points
 #' @inheritSection roc_points Methods
 #' @inheritSection roc_points Data masking variables
+#' @examples
+#' plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
+#'  add_roc_points(iris, response = Species, predictor = Sepal.Length)
 #' @export
 add_roc_points <- function(data = NULL,
                            fpr = NULL,
@@ -232,6 +240,17 @@ add_tpr_threshold_line <- function(threshold) {
 #' @param ratio Ratio in which to display the threshold. If `"tpr"` threshold
 #' will be displayed in TPR axis, if `"fpr"` it will be displayed in FPR axis.
 #' @name plot_thresholds
+#' @examples
+#' # Add two threshold line in TPR = 0.9 and FPR = 0.1
+#' plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
+#'  add_threshold_line(threshold = 0.9, ratio = "tpr") +
+#'  add_threshold_line(threshold = 0.1, ratio = "fpr")
+#' # Add threshold line in TPR = 0.9
+#' plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
+#'  add_tpr_threshold_line(threshold = 0.9)
+#' # Add threshold line in FPR = 0.1
+#' plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
+#'  add_fpr_threshold_line(threshold = 0.1)
 #' @export
 add_threshold_line <- function(threshold,
                                ratio = NULL) {
@@ -426,6 +445,15 @@ add_partial_roc <- function(data,
 #' @param threshold Theshold in which to make partial area calculations. When
 #' working in TPR it represents lower threshold up to 1, and upper threshold
 #' in FPR up to 0.
+#' @examples
+#' plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
+#'   add_partial_roc_curve(
+#'     iris,
+#'     response = Species,
+#'     predictor = Sepal.Length,
+#'     ratio = "tpr",
+#'     threshold = 0.9
+#'   )
 #' @export
 add_partial_roc_curve <- function(data = NULL,
                                   fpr = NULL,
@@ -455,6 +483,15 @@ add_partial_roc_curve <- function(data = NULL,
 #' @param threshold Theshold in which to make partial area calculations. When
 #' working in TPR it represents lower threshold up to 1, and upper threshold
 #' in FPR up to 0.
+#' @examples
+#' plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
+#'   add_partial_roc_points(
+#'     iris,
+#'     response = Species,
+#'     predictor = Sepal.Length,
+#'     ratio = "tpr",
+#'     threshold = 0.9
+#'   )
 #' @export
 add_partial_roc_points <- function(data = NULL,
                                    fpr = NULL,
@@ -653,6 +690,8 @@ add_fpauc_concave_lower_bound <- function(data = NULL,
   }
 }
 
+
+
 #' @title Add fpauc lower bound to a ROC plot
 #' @description
 #' Calculate and plot lower bound defined by FpAUC sensitivity index.
@@ -668,6 +707,15 @@ add_fpauc_concave_lower_bound <- function(data = NULL,
 #' @param threshold A number between 0 and 1, representing lower TPR for the
 #' region of interest.
 #' @name fpauc_lower_bounds
+#' @examples
+#' # Add lower bound based on cuve shape (Concave)
+#' plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
+#'   add_fpauc_lower_bound(
+#'     data = iris,
+#'     response = Species,
+#'     predictor = Sepal.Width,
+#'     threshold = 0.9
+#'   )
 #' @export
 add_fpauc_lower_bound <- function(data = NULL,
                                   fpr = NULL,
@@ -728,11 +776,11 @@ add_tpauc_concave_lower_bound <- function(data = NULL,
   )
   lower_threshold_tpr <- partial_points %>%
     filter(.data$partial_fpr == lower_threshold) %>%
-    slice_min(.data$partial_tpr) %>%
+    slice_min(.data$partial_tpr, n = 1, with_ties = FALSE) %>%
     pull(.data$partial_tpr)
   upper_threshold_tpr <- partial_points %>%
     filter(.data$partial_fpr == upper_threshold) %>%
-    slice_max(.data$partial_tpr) %>%
+    slice_max(.data$partial_tpr, n = 1, with_ties = FALSE) %>%
     pull(.data$partial_tpr)
 
   predictor_expr <- enquo(predictor)
@@ -807,8 +855,9 @@ add_tpauc_partially_proper_lower_bound <- function(data = NULL,
   )
   lower_threshold_tpr <- partial_points %>%
     filter(.data$partial_fpr == lower_threshold) %>%
-    slice_min(.data$partial_tpr) %>%
+    slice_min(.data$partial_tpr, n = 1, with_ties = FALSE) %>%
     pull(.data$partial_tpr)
+
   diagonal_area <- calc_fpr_diagonal_lower_bound(
     partial_points[["partial_fpr"]],
     partial_points[["partial_tpr"]]
@@ -938,7 +987,7 @@ add_tpauc_under_chance_lower_bound <- function(data = NULL,
   )
   lower_threshold_tpr <- partial_points %>%
     filter(.data$partial_fpr == lower_threshold) %>%
-    slice_min(.data$partial_tpr) %>%
+    slice_min(.data$partial_tpr, n = 1, with_ties = FALSE) %>%
     pull(.data$partial_tpr)
 
   if (!quo_is_null(response_expr) && !quo_is_null(predictor_expr)) {
@@ -1005,6 +1054,15 @@ add_tpauc_under_chance_lower_bound <- function(data = NULL,
 #' @param lower_threshold,upper_threshold Two numbers between 0 and 1,
 #' representing lower and upper FPR for a region of interest.
 #' @name tpauc_lower_bounds
+#' @examples
+#' plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
+#'   add_tpauc_lower_bound(
+#'     data = iris,
+#'     response = Species,
+#'     predictor = Sepal.Width,
+#'     upper_threshold =  0.1,
+#'     lower_threshold = 0
+#'   )
 #' @export
 add_tpauc_lower_bound <- function(data = NULL,
                                   fpr = NULL,
@@ -1068,6 +1126,14 @@ add_tpauc_lower_bound <- function(data = NULL,
 #' @param threshold A number between 0 and 1 representing lower TPR for the
 #' region of interest.
 #' @name npauc_lower_bounds
+#' @examples
+#' plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
+#'   add_npauc_lower_bound(
+#'     iris,
+#'     response = Species,
+#'     predictor = Sepal.Width,
+#'     threshold = 0.9
+#'   )
 #' @export
 add_npauc_lower_bound <- function(data = NULL,
                                   fpr = NULL,
@@ -1173,6 +1239,15 @@ add_npauc_normalized_lower_bound <- function(data = NULL,
 #' @param lower_threshold,upper_threshold Two numbers between 0 and 1,
 #' representing lower and upper FPR for a region of interest.
 #' @name spauc_lower_bounds
+#' @examples
+#' plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
+#'   add_spauc_lower_bound(
+#'     iris,
+#'     response = Species,
+#'     predictor = Sepal.Width,
+#'     lower_threshold = 0,
+#'     upper_threshold = 0.1
+#'   )
 #' @export
 add_spauc_lower_bound <- function(data = NULL,
                                   fpr = NULL,
