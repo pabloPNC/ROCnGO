@@ -14,22 +14,22 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 ## Overview
 
 ROCnGO provides a set of tools to study a classifier performance by
-using ROC curve based analysis. Package may address common challenges in
-this type of analysis such as:
+using $`ROC`$ curve based analysis. Package may address tasks in these
+type of analysis such as:
 
 - Evaluating global classifier performance.
 - Evaluating local classifier performance when a high specificity or
-  sensitivity is required.
-  - Implementation of indexes that provide a better interpretation of
-    performance and discrimination power between classifier with similar
+  sensitivity is required, by using different indexes that provide:
+  - Better interpretation of local performance.
+  - Better power of discrimination between classifiers with similar
     performance.
-- Evaluate performance on several classifier simultaneously.
-- Plot whole, or relevant regions, of classifier ROC curves.
+- Evaluating performance on several classifier simultaneously.
+- Plot whole, or specific regions, of $`ROC`$ curves.
 
 ## Installation
 
 Last version of ROCnGO can be installed from its
-[GitHub](https://github.com/) repository with:
+[GitHub](https://github.com/pabloPNC/ROCnGO) repository with:
 
 ``` r
 # install.packages("devtools")
@@ -42,7 +42,7 @@ devtools::install_github("pabloPNC/ROCnGO")
 library(ROCnGO)
 
 # Iris subset
-iris_subset <- iris[iris$Species != "versicolor",]
+iris_subset <- iris[iris$Species != "versicolor", ]
 
 # Select Species = "virginica" as the condition of interest
 iris_subset$Species <- relevel(iris_subset$Species, "virginica")
