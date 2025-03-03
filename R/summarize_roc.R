@@ -1,13 +1,14 @@
 summarize_tpr_predictor <- function(data = NULL,
                                     predictor,
                                     response,
-                                    threshold) {
+                                    threshold,
+                                    .condition = NULL) {
   if (!is.null(data)) {
     predictor <- data %>% pull({{ predictor }})
     response <- data %>% pull({{ response }})
   }
 
-  response <- as_response(response)
+  response <- as_response(response, .condition)
 
   tpr_fpr <- roc_points(NULL, response, predictor)
   ptpr_pfpr <- calc_partial_roc_points(
@@ -48,12 +49,13 @@ summarize_tpr_predictor <- function(data = NULL,
 summarize_fpr_predictor <- function(data = NULL,
                                     predictor,
                                     response,
-                                    threshold) {
+                                    threshold,
+                                    .condition = NULL) {
   if (!is.null(data)) {
     predictor <- data %>% pull({{ predictor }})
     response <- data %>% pull({{ response }})
   }
-  response <- as_response(response)
+  response <- as_response(response, .condition)
   tpr_fpr <- roc_points(NULL, response, predictor)
   ptpr_pfpr <- calc_partial_roc_points(
     tpr = tpr_fpr$tpr,
