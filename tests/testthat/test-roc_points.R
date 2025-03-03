@@ -153,3 +153,33 @@ test_that("roc_points is faster/equal than points.curve", {
     points.curve(data[["disease"]], data[[predictor]])
   )
 })
+
+test_that("roc_points works selecting a .condition", {
+  test_iris <- create_iris_df()
+  virg_fct_roc_points <- roc_points(
+    test_iris,
+    response = Species,
+    predictor = Sepal.Length,
+    .condition = "virginica"
+  )
+  virg_int_roc_points <- roc_points(
+    test_iris,
+    response = Species_int,
+    predictor = Sepal.Length,
+    .condition = 3
+  )
+  virg_chr_roc_points <- roc_points(
+    test_iris,
+    response = Species_chr,
+    predictor = Sepal.Length,
+    .condition = "virginica"
+  )
+  expected_roc_points <- roc_points(
+    test_iris,
+    response = Species_bin_fct_virg,
+    predictor = Sepal.Length
+  )
+  expect_equal(virg_fct_roc_points, expected_roc_points)
+  expect_equal(virg_int_roc_points, expected_roc_points)
+  expect_equal(virg_chr_roc_points, expected_roc_points)
+})
