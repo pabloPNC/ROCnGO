@@ -61,10 +61,10 @@ reorder_response_factor <- function(response_fct, condition, absent) {
     fct_relevel("0", "1")
 }
 
-as_response <- function(x) {
+as_response <- function(x, .condition = NULL) {
   inv_fct_cond <- is.factor(x) && !all(levels(x) %in% c(0, 1))
   if (is.character(x) || is.integer(x) || inv_fct_cond) {
-    x <- transform_response(x)
+    x <- transform_response(x, .condition)
   }
   x
 }
