@@ -17,7 +17,6 @@
 #' `unique(response)` after using `sort`.
 #' @keywords internal
 transform_response <- function(response, .condition = NULL) {
-  # delete methods
   UseMethod("transform_response")
 }
 
