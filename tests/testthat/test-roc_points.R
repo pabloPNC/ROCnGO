@@ -147,7 +147,6 @@ test_that("get_thresholds is faster/equal than points.thresholds", {
 })
 
 test_that("roc_points is faster/equal than points.curve", {
-# TODO: need to check more sure
     skip()
     expect_faster(
         roc_points(NULL, data[["disease"]], data[[predictor]]),
