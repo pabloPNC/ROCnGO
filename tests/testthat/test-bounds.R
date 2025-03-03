@@ -133,3 +133,26 @@ test_that("fpr calc_fpr_bounds are equal", {
     expected_bounds[["tp_auc_min"]]
   )
 })
+
+test_that("curve_shape works with .condition", {
+  test_iris <- create_iris_df()
+  expect_equal_nw(
+    calc_curve_shape(
+      test_iris,
+      Species,
+      Sepal.Length,
+      0,
+      0.5,
+      "tpr",
+      "virginica"
+    ),
+    calc_curve_shape(
+      test_iris,
+      Species_bin_fct_virg,
+      Sepal.Length,
+      0,
+      0.5,
+      "tpr"
+    )
+  )
+})
