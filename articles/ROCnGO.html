@@ -61,7 +61,9 @@
 <p>ROCnGO is an R package which allows to analyze the performance of a
 classifier by using receiver operating characteristic
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>O</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">ROC</annotation></semantics></math>)
-curves. Conventional ROC based analyses tend to just use area under
+curves. Conventional
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>O</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">ROC</annotation></semantics></math>
+based analyses just tend to use area under
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>O</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">ROC</annotation></semantics></math>
 curve
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mi>U</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">AUC</annotation></semantics></math>)
@@ -70,14 +72,15 @@ package allows deeper analysis options by calculating partial area under
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>O</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">ROC</annotation></semantics></math>
 curve
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mi>A</mi><mi>U</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">pAUC</annotation></semantics></math>)
-when prioritizing local performance.</p>
+when prioritizing local performance is preferred.</p>
 <p>Furthermore, ROCnGO implements different
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mi>A</mi><mi>U</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">pAUC</annotation></semantics></math>
 transformations described in literature which:</p>
 <ul>
-<li>Make interpretation easier.</li>
-<li>Allow to work with ROC curves which are not completely concave or
-not at all (improper).</li>
+<li>Make local performance interpretation easier.</li>
+<li>Allow to work with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>O</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">ROC</annotation></semantics></math>
+curves which are not completely concave or not at all (improper).</li>
 <li>Provide additional discrimination power when comparing classifiers
 with identical local performance (equal
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mi>A</mi><mi>U</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">pAUC</annotation></semantics></math>).</li>
@@ -101,10 +104,10 @@ to study the global and local performance of a classifier.</p>
 flowers of 3 different species: <em>setosa</em>, <em>versicolor</em> and
 <em>virginica</em>.</p>
 <p>For the purpose of simplicity, we will only work with a subset of
-<code>iris</code> considering only <em>setosa</em> and
-<em>virginica</em> species. In the following sections, the performance
-of different variables to classify cases in the different species will
-be evaluated.</p>
+<code>iris</code>, considering only <em>setosa</em> and
+<em>virginica</em> species. In the following sections, performance of
+different variables to classify cases in the different species will be
+evaluated.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Filter cases of versicolor species</span></span>
 <span><span class="va">iris_subset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Species</span> <span class="op">!=</span> <span class="st">"versicolor"</span><span class="op">)</span></span>
@@ -130,9 +133,9 @@ be evaluated.</p>
 <div class="section level3">
 <h3 id="calculate-roc-curve">Calculate ROC curve<a class="anchor" aria-label="anchor" href="#calculate-roc-curve"></a>
 </h3>
-<p>The foundation of this type of analyses implies to plot
+<p>The foundation of this type of analyses implies to plot the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>O</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">ROC</annotation></semantics></math>
-curve of a classifier. This type of curves represent the classifier
+curve of a classifier. This type of curves represent a classifier
 probability of correctly classify a case with a condition of interest,
 also known as <em>true positive rate</em> or
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtext mathvariant="normal">Sensitivity</mtext><annotation encoding="application/x-tex">\text{Sensitivity}</annotation></semantics></math>
@@ -152,17 +155,19 @@ curves represent
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>F</mi><mi>P</mi><mi>R</mi><mo>,</mo><mi>T</mi><mi>P</mi><mi>R</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(FPR, TPR)</annotation></semantics></math>
 points considering hypothetical thresholds
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math>)
-where a case is considered as positive if the its value is higher than
-the threshold
+where a case is considered as positive if its value is higher than the
+defined threshold
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>&gt;</mo><mi>c</mi></mrow><annotation encoding="application/x-tex">X &gt; c</annotation></semantics></math>).</p>
-<p>Curve points can be calculated by using <code><a href="../reference/roc_points.html">roc_points()</a></code>. As
-most functions in the package it takes a dataset, a data frame as its
-first argument. The second and third argument refer to variables in the
-data frame, corresponding the variable that will be used as a classifier
-and the response variable we want to predict.</p>
+<p>These curve points can be calculated by using
+<code><a href="../reference/roc_points.html">roc_points()</a></code>. As most functions in the package, it takes a
+dataset, a data frame, as its first argument. The second and third
+argument refer to variables in the data frame, corresponding the
+variable that will be used as a classifier (<code>predictor</code>) and
+the response variable we want to predict (<code>response</code>).</p>
 <p>For example, we can calculate
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>O</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">ROC</annotation></semantics></math>
-points for Sepal.Length as a classifier of setosa species.</p>
+points for Sepal.Length as a classifier of <strong>setosa</strong>
+species.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Calculate ROC points for Sepal.Lenght</span></span>
 <span><span class="va">points</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/roc_points.html">roc_points</a></span><span class="op">(</span></span>
@@ -191,15 +196,16 @@ points for Sepal.Length as a classifier of setosa species.</p>
 <p><img src="ROCnGO_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 <p>As we may see, Sepal.Length doesn’t perform very well predicting when
 a flower is from setosa species, in fact it’s the other way around, the
-lower the Sepal.Length it’s more probable to have a setosa flower. This
-can be tested if we change the condition of interest to virginica.</p>
+lower the Sepal.Length the more probable to be working with a
+<strong>setosa</strong> flower. This can be tested if we change the
+condition of interest to <strong>virginica</strong>.</p>
 </div>
 <div class="section level3">
 <h3 id="changing-condition-of-interest">Changing condition of interest<a class="anchor" aria-label="anchor" href="#changing-condition-of-interest"></a>
 </h3>
-<p>The condition of interest is automatically set to the first value in
-<code>levels(response)</code>, so we can change this value by changing
-the order of levels in data.</p>
+<p>By default, condition of interest is automatically set to the first
+value in <code>levels(response)</code>, so we can change this value by
+changing the order of levels in data.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check response levels</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">iris_subset</span><span class="op">$</span><span class="va">Species</span><span class="op">)</span></span>
@@ -319,21 +325,17 @@ and high specificity region,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mi>U</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">AUC</annotation></semantics></math>
 and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mi>A</mi><mi>U</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">pAUC</annotation></semantics></math>,
-the function also returns other partial indexes derived from
+function also returns other partial indexes derived from
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mi>A</mi><mi>U</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">pAUC</annotation></semantics></math>
 which provide a better interpretation of performance than
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mi>A</mi><mi>U</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">pAUC</annotation></semantics></math>.</p>
 <p>Furthermore, if we are interested in computing these metrics
 simultaneously for several classifiers <code><a href="../reference/summarize_dataset.html">summarize_dataset()</a></code>
-can be used.</p>
+can be used, which also provides some metrics of analysed
+classifiers.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Select classifiers to compute</span></span>
-<span><span class="va">classifiers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Sepal.Length"</span>, <span class="st">"Sepal.Width"</span>, <span class="st">"Petal.Width"</span>, <span class="st">"Petal.Length"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Summarize classifiers in high sens region</span></span>
-<span><span class="fu"><a href="../reference/summarize_dataset.html">summarize_dataset</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/summarize_dataset.html">summarize_dataset</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">iris_subset</span>,</span>
-<span>  predictors <span class="op">=</span> <span class="va">classifiers</span>,</span>
 <span>  response <span class="op">=</span> <span class="va">Species</span>,</span>
 <span>  threshold <span class="op">=</span> <span class="fl">0.9</span>,</span>
 <span>  ratio <span class="op">=</span> <span class="st">"tpr"</span></span>
@@ -344,8 +346,8 @@ can be used.</p>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Sepal.Length 0.985 0.084<span style="text-decoration: underline;">7</span> 0.847   0.852 Concave          </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Sepal.Width  0.166 0.001<span style="text-decoration: underline;">6</span> 0.016<span style="text-decoration: underline;">0</span>  0.9   Hook under chance</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Petal.Width  1     0.1    1       1     Concave          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Petal.Length 1     0.1    1       1     Concave          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Petal.Length 1     0.1    1       1     Concave          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Petal.Width  1     0.1    1       1     Concave          </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $curve_shape</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 2</span></span></span>
@@ -365,12 +367,12 @@ can be used.</p>
 <div class="section level3">
 <h3 id="plotting">Plotting<a class="anchor" aria-label="anchor" href="#plotting"></a>
 </h3>
-<p>As we have seen, by using <code><a href="../reference/roc_points.html">roc_points()</a></code> we can plot
+<p>As we have seen, by using the output of <code><a href="../reference/roc_points.html">roc_points()</a></code> we
+can plot
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>O</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">ROC</annotation></semantics></math>
-curve. Nevertheless, these plots can be generated using
-<code>plot_*()</code> and <code>add_*()</code> functions, which
-furthermore, provide options to customize plot for classifier
-comparison.</p>
+curve. Nevertheless, these plots can also be generated using
+<code>plot_*()</code> and <code>add_*()</code> functions, which provide
+further options to customize plot for classifier comparison.</p>
 <p>For example, we can plot
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>O</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">ROC</annotation></semantics></math>
 points of Sepal.Length in this way.</p>

@@ -53,22 +53,23 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>ROCnGO provides a set of tools to study a classifier performance by using ROC curve based analysis. Package may address common challenges in this type of analysis such as:</p>
+<p>ROCnGO provides a set of tools to study a classifier performance by using <span class="math inline">$`ROC`$</span> curve based analysis. Package may address tasks in these type of analysis such as:</p>
 <ul>
 <li>Evaluating global classifier performance.</li>
-<li>Evaluating local classifier performance when a high specificity or sensitivity is required.
+<li>Evaluating local classifier performance when a high specificity or sensitivity is required, by using different indexes that provide:
 <ul>
-<li>Implementation of indexes that provide a better interpretation of performance and discrimination power between classifier with similar performance.</li>
+<li>Better interpretation of local performance.</li>
+<li>Better power of discrimination between classifiers with similar performance.</li>
 </ul>
 </li>
-<li>Evaluate performance on several classifier simultaneously.</li>
-<li>Plot whole, or relevant regions, of classifier ROC curves.</li>
+<li>Evaluating performance on several classifier simultaneously.</li>
+<li>Plot whole, or specific regions, of <span class="math inline">$`ROC`$</span> curves.</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Last version of ROCnGO can be installed from its <a href="https://github.com/" class="external-link">GitHub</a> repository with:</p>
+<p>Last version of ROCnGO can be installed from its <a href="https://github.com/pabloPNC/ROCnGO" class="external-link">GitHub</a> repository with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"pabloPNC/ROCnGO"</span><span class="op">)</span></span></code></pre></div>
@@ -80,7 +81,7 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pablopnc.github.io/ROCnGO/">ROCnGO</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Iris subset</span></span>
-<span><span class="va">iris_subset</span> <span class="op">&lt;-</span> <span class="va">iris</span><span class="op">[</span><span class="va">iris</span><span class="op">$</span><span class="va">Species</span> <span class="op">!=</span> <span class="st">"versicolor"</span>,<span class="op">]</span></span>
+<span><span class="va">iris_subset</span> <span class="op">&lt;-</span> <span class="va">iris</span><span class="op">[</span><span class="va">iris</span><span class="op">$</span><span class="va">Species</span> <span class="op">!=</span> <span class="st">"versicolor"</span>, <span class="op">]</span></span>
 <span></span>
 <span><span class="co"># Select Species = "virginica" as the condition of interest</span></span>
 <span><span class="va">iris_subset</span><span class="op">$</span><span class="va">Species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/relevel.html" class="external-link">relevel</a></span><span class="op">(</span><span class="va">iris_subset</span><span class="op">$</span><span class="va">Species</span>, <span class="st">"virginica"</span><span class="op">)</span></span>
