@@ -8,11 +8,13 @@ sp_auc <- function(
     response,
     predictor,
     lower_fpr,
-    upper_fpr) {
+    upper_fpr,
+    .condition = NULL) {
   if (!is.null(data)) {
     response <- pull(data, {{ response }})
     predictor <- pull(data, {{ predictor }})
   }
+  response <- as_response(response, .condition)
   auc(
     response = response,
     predictor = predictor,

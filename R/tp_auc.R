@@ -45,13 +45,14 @@ tp_auc <- function(data = NULL,
                    response,
                    predictor,
                    lower_fpr,
-                   upper_fpr) {
+                   upper_fpr,
+                   .condition = NULL) {
   if (!is.null(data)) {
-    tpr_fpr <- data %>% roc_points({{ response }}, {{ predictor }})
+    tpr_fpr <- data %>% roc_points({{ response }}, {{ predictor }}, .condition)
     tpr <- tpr_fpr %>% pull(tpr)
     fpr <- tpr_fpr %>% pull(fpr)
   } else {
-    tpr_fpr <- roc_points(NULL, response, predictor)
+    tpr_fpr <- NULL %>% roc_points(response, predictor, .condition)
     tpr <- tpr_fpr[["tpr"]]
     fpr <- tpr_fpr[["fpr"]]
   }
