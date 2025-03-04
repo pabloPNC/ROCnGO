@@ -185,7 +185,6 @@ calc_tpr_bounds <- function(partial_fpr, partial_tpr) {
 #' * `Hook under chance`. ROC curve loses concavity at some point of the
 #' region and it lies below chance line.
 #' @inheritParams roc_points
-#' @inherit roc_points details
 #' @inheritSection roc_points Data masking variables
 #' @param lower_threshold,upper_threshold Ranges in which to calculate curve
 #' shape, they can take values from 0 to 1.
@@ -207,7 +206,7 @@ calc_curve_shape <- function(
     response <- data %>% pull({{ response }})
     predictor <- data %>% pull({{ predictor }})
   }
-  tpr_fpr <- roc_points(NULL, response, predictor, .condition)
+  tpr_fpr <- NULL %>% roc_points(response, predictor, .condition)
   ptpr_pfpr <- calc_partial_roc_points(
     tpr = tpr_fpr$tpr,
     fpr = tpr_fpr$fpr,
