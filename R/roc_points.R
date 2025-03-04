@@ -10,36 +10,48 @@ get_thresholds <- function(data = NULL, predictor) {
   thresholds <- c(min(sorted_pred) - 1, thresholds, max(sorted_pred) + 1)
 }
 
-calc_tpr <- function(data = NULL, thresholds, response, predictor) {
+calc_tpr <- function(data = NULL,
+                     thresholds,
+                     response,
+                     predictor,
+                     .condition = NULL) {
   if (!is.null(data)) {
     response <- data %>% pull({{ response }})
     predictor <- data %>% pull({{ predictor }})
   }
-  response <- as_response(response)
+  response <- as_response(response, .condition)
   purrr::map_dbl(
     thresholds,
     \(t) sum(((predictor > t) == 1) * (response == 1)) / sum(response == 1)
   )
 }
 
-calc_fpr <- function(data = NULL, thresholds, response, predictor) {
+calc_fpr <- function(data = NULL,
+                     thresholds,
+                     response,
+                     predictor,
+                     .condition = NULL) {
   if (!is.null(data)) {
     response <- data %>% pull({{ response }})
     predictor <- data %>% pull({{ predictor }})
   }
-  response <- as_response(response)
+  response <- as_response(response, .condition)
   purrr::map_dbl(
     thresholds,
     \(t) sum(((predictor > t) == 1) * (response == 0)) / sum(response == 0)
   )
 }
 
-calc_ratios <- function(data = NULL, thresholds, response, predictor) {
+calc_ratios <- function(data = NULL,
+                        thresholds,
+                        response,
+                        predictor,
+                        .condition = NULL) {
   if (!is.null(data)) {
     response <- data %>% pull({{ response }})
     predictor <- data %>% pull({{ predictor }})
   }
-  response <- as_response(response)
+  response <- as_response(response, .condition)
   result <- map(
     thresholds,
     \(t) list(
@@ -54,9 +66,9 @@ calc_ratios <- function(data = NULL, thresholds, response, predictor) {
 
 #' @title Calculate ROC curve points
 #' @description
-#' Calculates a series of pairs of (FPR, TPR) points which correspond to ROC
-#' curve displayed points. x axis will represent "false positive ratio", while y
-#' axis the "true positive ratio".
+#' Calculates a series of pairs of \eqn{(FPR, TPR)} points which correspond to
+#' \eqn{ROC} curve displayed points. \eqn{x} axis will represent "false positive
+#' ratio", while \eqn{y} axis the "true positive ratio".
 #' @param data A data.frame or extension (e.g. a tibble) containing values for
 #' predictors and response variables.
 #' @param response A data variable which must be a factor, integer or character
@@ -65,6 +77,7 @@ calc_ratios <- function(data = NULL, thresholds, response, predictor) {
 #' *Methods* below.
 #' @param predictor A data variable wich must be numeric, representing values of
 #' a classifier or predictor for each observation.
+#' @param .condition NULL
 #' @returns
 #' A tibble with two columns: "tpr", which contains values for "true positive
 #' ratio" or y axis, and "fpr", which contains values for "false positive ratio"
@@ -97,11 +110,16 @@ calc_ratios <- function(data = NULL, thresholds, response, predictor) {
 #' @examples
 #' roc_points(iris, response = Species, predictor = Sepal.Width)
 #' @export
-roc_points <- function(data = NULL, response, predictor) {
+roc_points <- function(data = NULL,
+                       response,
+                       predictor,
+                       .condition = NULL) {
   if (!is.null(data)) {
     thresholds <- data %>% get_thresholds({{ predictor }})
-    tpr <- data %>% calc_tpr(thresholds, {{ response }}, {{ predictor }})
-    fpr <- data %>% calc_fpr(thresholds, {{ response }}, {{ predictor }})
+    tpr <- data %>%
+      calc_tpr(thresholds, {{ response }}, {{ predictor }}, .condition)
+    fpr <- data %>%
+      calc_fpr(thresholds, {{ response }}, {{ predictor }}, .condition)
     result <- tibble::tibble(
       tpr = tpr,
       fpr = fpr
@@ -111,7 +129,8 @@ roc_points <- function(data = NULL, response, predictor) {
     ratios <- calc_ratios(
       thresholds = thresholds,
       response = response,
-      predictor = predictor
+      predictor = predictor,
+      .condition = .condition
     )
     result <- tibble::tibble(
       tpr = ratios[["tpr"]],

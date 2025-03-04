@@ -3,154 +3,183 @@ response <- "disease"
 predictor <- "ENSG00000000003.15"
 
 test_that("get_thresholds == points.thresholds", {
-    expect_equal(
-        get_thresholds(predictor = data[[predictor]]),
-        points.thresholds(data[[response]], data[[predictor]])
-    )
+  expect_equal(
+    get_thresholds(predictor = data[[predictor]]),
+    points.thresholds(data[[response]], data[[predictor]])
+  )
 })
 
 test_that("get_thresholds == points.thresholds - tidy", {
-    expect_equal(
-        get_thresholds(data, ENSG00000000003.15),
-        points.thresholds(data[[response]], data[[predictor]])
-    )
+  expect_equal(
+    get_thresholds(data, ENSG00000000003.15),
+    points.thresholds(data[[response]], data[[predictor]])
+  )
 })
 
 test_that("calc_ratios, calc_fpr and calc_tpr == points.curve", {
-    expect_equal(
-        rev(
-            calc_tpr(
-                thresholds = get_thresholds(
-                    predictor = data[[predictor]],
-                ),
-                response = data[[response]],
-                predictor = data[[predictor]]
-            )
+  expect_equal(
+    rev(
+      calc_tpr(
+        thresholds = get_thresholds(
+          predictor = data[[predictor]],
         ),
-        points.curve(data[[response]], data[[predictor]])[, 2]
-    )
-    expect_equal(
-        rev(
-            calc_fpr(
-                thresholds = get_thresholds(
-                    predictor = data[[predictor]],
-                ),
-                response = data[[response]],
-                predictor = data[[predictor]]
-            )
+        response = data[[response]],
+        predictor = data[[predictor]]
+      )
+    ),
+    points.curve(data[[response]], data[[predictor]])[, 2]
+  )
+  expect_equal(
+    rev(
+      calc_fpr(
+        thresholds = get_thresholds(
+          predictor = data[[predictor]],
         ),
-        points.curve(data[[response]], data[[predictor]])[, 1]
-    )
-    expect_equal(
-        rev(
-            calc_ratios(
-                thresholds = get_thresholds(
-                    predictor = data[[predictor]],
-                ),
-                response = data[[response]],
-                predictor = data[[predictor]]
-            )[["fpr"]]
+        response = data[[response]],
+        predictor = data[[predictor]]
+      )
+    ),
+    points.curve(data[[response]], data[[predictor]])[, 1]
+  )
+  expect_equal(
+    rev(
+      calc_ratios(
+        thresholds = get_thresholds(
+          predictor = data[[predictor]],
         ),
-        points.curve(data[[response]], data[[predictor]])[, 1]
-    )
-    expect_equal(
-        rev(
-            calc_ratios(
-                thresholds = get_thresholds(
-                    predictor = data[[predictor]],
-                ),
-                response = data[[response]],
-                predictor = data[[predictor]]
-            )[["tpr"]]
+        response = data[[response]],
+        predictor = data[[predictor]]
+      )[["fpr"]]
+    ),
+    points.curve(data[[response]], data[[predictor]])[, 1]
+  )
+  expect_equal(
+    rev(
+      calc_ratios(
+        thresholds = get_thresholds(
+          predictor = data[[predictor]],
         ),
-        points.curve(data[[response]], data[[predictor]])[, 2]
-    )
+        response = data[[response]],
+        predictor = data[[predictor]]
+      )[["tpr"]]
+    ),
+    points.curve(data[[response]], data[[predictor]])[, 2]
+  )
 })
 
 test_that("calc_ratios, calc_fpr and calc_tpr == points.curve - tidy", {
-    expect_equal(
-        rev(
-            calc_tpr(
-                data,
-                thresholds = get_thresholds(
-                    predictor = data[[predictor]],
-                ),
-                response = disease,
-                predictor = ENSG00000000003.15
-            )
+  expect_equal(
+    rev(
+      calc_tpr(
+        data,
+        thresholds = get_thresholds(
+          predictor = data[[predictor]],
         ),
-        points.curve(data[[response]], data[[predictor]])[, 2]
-    )
-    expect_equal(
-        rev(
-            calc_fpr(
-                data,
-                thresholds = get_thresholds(
-                    predictor = data[[predictor]],
-                ),
-                response = disease,
-                predictor = ENSG00000000003.15
-            )
+        response = disease,
+        predictor = ENSG00000000003.15
+      )
+    ),
+    points.curve(data[[response]], data[[predictor]])[, 2]
+  )
+  expect_equal(
+    rev(
+      calc_fpr(
+        data,
+        thresholds = get_thresholds(
+          predictor = data[[predictor]],
         ),
-        points.curve(data[[response]], data[[predictor]])[, 1]
-    )
-    expect_equal(
-        rev(
-            calc_ratios(
-                data,
-                thresholds = get_thresholds(
-                    predictor = data[[predictor]],
-                ),
-                response = disease,
-                predictor = ENSG00000000003.15
-            )[["fpr"]]
+        response = disease,
+        predictor = ENSG00000000003.15
+      )
+    ),
+    points.curve(data[[response]], data[[predictor]])[, 1]
+  )
+  expect_equal(
+    rev(
+      calc_ratios(
+        data,
+        thresholds = get_thresholds(
+          predictor = data[[predictor]],
         ),
-        points.curve(data[[response]], data[[predictor]])[, 1]
-    )
-    expect_equal(
-        rev(
-            calc_ratios(
-                data,
-                thresholds = get_thresholds(
-                    predictor = data[[predictor]],
-                ),
-                response = disease,
-                predictor = ENSG00000000003.15
-            )[["tpr"]]
+        response = disease,
+        predictor = ENSG00000000003.15
+      )[["fpr"]]
+    ),
+    points.curve(data[[response]], data[[predictor]])[, 1]
+  )
+  expect_equal(
+    rev(
+      calc_ratios(
+        data,
+        thresholds = get_thresholds(
+          predictor = data[[predictor]],
         ),
-        points.curve(data[[response]], data[[predictor]])[, 2]
-    )
+        response = disease,
+        predictor = ENSG00000000003.15
+      )[["tpr"]]
+    ),
+    points.curve(data[[response]], data[[predictor]])[, 2]
+  )
 })
 
 test_that("sorting when getting points not needed", {
-    points_calc_ratios <- as.data.frame(
-        calc_ratios(
-            thresholds = get_thresholds(
-                predictor = data[[predictor]],
-            ),
-            response = data[[response]],
-            predictor = data[[predictor]]
-        )
+  points_calc_ratios <- as.data.frame(
+    calc_ratios(
+      thresholds = get_thresholds(
+        predictor = data[[predictor]],
+      ),
+      response = data[[response]],
+      predictor = data[[predictor]]
     )
-    points_points_curve <- data.frame(
-        fpr = points.curve(data[[response]], data[[predictor]])[, 1],
-        tpr = points.curve(data[[response]], data[[predictor]])[, 2]
-    )
-    expect_true(dplyr::setequal(points_calc_ratios, points_points_curve))
+  )
+  points_points_curve <- data.frame(
+    fpr = points.curve(data[[response]], data[[predictor]])[, 1],
+    tpr = points.curve(data[[response]], data[[predictor]])[, 2]
+  )
+  expect_true(dplyr::setequal(points_calc_ratios, points_points_curve))
 })
 
 test_that("get_thresholds is faster/equal than points.thresholds", {
-    expect_faster(
-        get_thresholds(predictor = data[[predictor]]),
-        points.thresholds(data[[response]], data[[predictor]])
-    )
+  expect_faster(
+    get_thresholds(predictor = data[[predictor]]),
+    points.thresholds(data[[response]], data[[predictor]])
+  )
 })
 
 test_that("roc_points is faster/equal than points.curve", {
-# TODO: need to check more sure
-    skip()
-    expect_faster(
-        roc_points(NULL, data[["disease"]], data[[predictor]]),
-        points.curve(data[["disease"]], data[[predictor]])
-    )
+  skip()
+  expect_faster(
+    roc_points(NULL, data[["disease"]], data[[predictor]]),
+    points.curve(data[["disease"]], data[[predictor]])
+  )
+})
+
+test_that("roc_points works selecting a .condition", {
+  test_iris <- create_iris_df()
+  virg_fct_roc_points <- roc_points(
+    test_iris,
+    response = Species,
+    predictor = Sepal.Length,
+    .condition = "virginica"
+  )
+  virg_int_roc_points <- roc_points(
+    test_iris,
+    response = Species_int,
+    predictor = Sepal.Length,
+    .condition = 3
+  )
+  virg_chr_roc_points <- roc_points(
+    test_iris,
+    response = Species_chr,
+    predictor = Sepal.Length,
+    .condition = "virginica"
+  )
+  expected_roc_points <- roc_points(
+    test_iris,
+    response = Species_bin_fct_virg,
+    predictor = Sepal.Length
+  )
+  expect_equal(virg_fct_roc_points, expected_roc_points)
+  expect_equal(virg_int_roc_points, expected_roc_points)
+  expect_equal(virg_chr_roc_points, expected_roc_points)
 })

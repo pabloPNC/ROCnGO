@@ -16,14 +16,15 @@ plot_roc_points <- function(data,
                             fpr = NULL,
                             tpr = NULL,
                             response = NULL,
-                            predictor = NULL) {
+                            predictor = NULL,
+                            .condition = NULL) {
   predictor_expr <- enquo(predictor)
   response_expr <- enquo(response)
   if (!quo_is_null(predictor_expr) && !quo_is_null(response_expr)) {
     predictor_name <- as_name(enquo(predictor))
     plot_roc(data) +
       geom_point(
-        data = roc_points(data, {{ response }}, {{ predictor }}),
+        data = data %>% roc_points({{ response }}, {{ predictor }}, .condition),
         mapping = aes(
           x = .data[["fpr"]],
           y = .data[["tpr"]],
@@ -56,7 +57,8 @@ plot_roc_curve <- function(data,
                            fpr = NULL,
                            tpr = NULL,
                            response = NULL,
-                           predictor = NULL) {
+                           predictor = NULL,
+                           .condition) {
   predictor_expr <- enquo(predictor)
   response_expr <- enquo(response)
   if (!quo_is_null(predictor_expr) && !quo_is_null(response_expr)) {
@@ -74,7 +76,7 @@ plot_roc_curve <- function(data,
     }
     plot_roc(data) +
       geom_path(
-        data = roc_points(data, {{ response }}, {{ predictor }}),
+        data = data %>% roc_points({{ response }}, {{ predictor }}, .condition),
         mapping = aes(
           x = .data[["fpr"]],
           y = .data[["tpr"]],
@@ -108,12 +110,13 @@ add_chance_line <- function() {
 add_roc_from_predictor <- function(data,
                                    response,
                                    predictor,
-                                   geom = NULL) {
+                                   geom = NULL,
+                                   .condition = NULL) {
   predictor_expr <- enquo(predictor)
   predictor_name <- mask_name(predictor_expr)
   if (is.null(data)) {
     geom(
-      data = . %>% roc_points({{ response }}, {{ predictor }}),
+      data = . %>% roc_points({{ response }}, {{ predictor }}, .condition),
       mapping = aes(
         x = .data[["fpr"]],
         y = .data[["tpr"]],
@@ -123,7 +126,7 @@ add_roc_from_predictor <- function(data,
     )
   } else {
     geom(
-      data = roc_points(data, {{ response }}, {{ predictor }}),
+      data = data %>% roc_points({{ response }}, {{ predictor }}, .condition),
       mapping = aes(
         x = .data[["fpr"]],
         y = .data[["tpr"]],
@@ -150,8 +153,15 @@ add_roc_from_ratios <- function(data,
 
 add_roc_curve_from_predictor <- function(data,
                                          response,
-                                         predictor) {
-  add_roc_from_predictor(data, {{ response }}, {{ predictor }}, geom_path)
+                                         predictor,
+                                         .condition = NULL) {
+  add_roc_from_predictor(
+    data,
+    {{ response }},
+    {{ predictor }},
+    geom_path,
+    .condition
+  )
 }
 
 add_roc_curve_from_ratios <- function(data,
@@ -162,8 +172,15 @@ add_roc_curve_from_ratios <- function(data,
 
 add_roc_points_from_predictor <- function(data,
                                           response,
-                                          predictor) {
-  add_roc_from_predictor(data, {{ response }}, {{ predictor }}, geom_point)
+                                          predictor,
+                                          .condition = NULL) {
+  add_roc_from_predictor(
+    data,
+    {{ response }},
+    {{ predictor }},
+    geom_point,
+    .condition
+  )
 }
 
 add_roc_points_from_ratios <- function(data,
@@ -186,11 +203,13 @@ add_roc_curve <- function(data = NULL,
                           fpr = NULL,
                           tpr = NULL,
                           response = NULL,
-                          predictor = NULL) {
+                          predictor = NULL,
+                          .condition = NULL) {
   predictor_expr <- enquo(predictor)
   response_expr <- enquo(response)
   if (!quo_is_null(predictor_expr) && !quo_is_null(response_expr)) {
-    add_roc_curve_from_predictor(data, {{ response }}, {{ predictor }})
+    data %>%
+      add_roc_curve_from_predictor({{ response }}, {{ predictor }}, .condition)
   } else {
     add_roc_curve_from_ratios(data, {{ fpr }}, {{ tpr }})
   }
@@ -210,11 +229,13 @@ add_roc_points <- function(data = NULL,
                            fpr = NULL,
                            tpr = NULL,
                            response = NULL,
-                           predictor = NULL) {
+                           predictor = NULL,
+                           .condition = NULL) {
   predictor_expr <- enquo(predictor)
   response_expr <- enquo(response)
   if (!quo_is_null(predictor_expr) && !quo_is_null(response_expr)) {
-    add_roc_points_from_predictor(data, {{ response }}, {{ predictor }})
+    data %>%
+      add_roc_points_from_predictor({{ response }}, {{ predictor }}, .condition)
   } else {
     add_roc_points_from_ratios(data, {{ fpr }}, {{ tpr }})
   }
@@ -320,12 +341,13 @@ add_partial_roc_from_predictor_tpr <- function(data,
                                                response,
                                                predictor,
                                                threshold,
-                                               geom) {
+                                               geom,
+                                               .condition = NULL) {
   predictor_name <- as_name(enquo(predictor))
   if (is.null(data)) {
     geom(
       data = . %>%
-        roc_points({{ response }}, {{ predictor }}) %>%
+        roc_points({{ response }}, {{ predictor }}, .condition) %>%
         filter(.data[["tpr"]] >= threshold),
       mapping = aes(
         x = .data[["fpr"]],
@@ -336,7 +358,8 @@ add_partial_roc_from_predictor_tpr <- function(data,
     )
   } else {
     geom(
-      data = roc_points(data, {{ response }}, {{ predictor }}) %>%
+      data = data %>%
+        roc_points({{ response }}, {{ predictor }}, .condition) %>%
         filter(.data[["tpr"]] >= threshold),
       mapping = aes(
         x = .data[["fpr"]],
@@ -352,12 +375,13 @@ add_partial_roc_from_predictor_fpr <- function(data,
                                                response,
                                                predictor,
                                                threshold,
-                                               geom) {
+                                               geom,
+                                               .condition = NULL) {
   predictor_name <- as_name(enquo(predictor))
   if (is.null(data)) {
     geom(
       data = . %>%
-        roc_points({{ response }}, {{ predictor }}) %>%
+        roc_points({{ response }}, {{ predictor }}, .condition) %>%
         filter(.data[["fpr"]] <= threshold),
       mapping = aes(
         x = .data[["fpr"]],
@@ -385,14 +409,16 @@ add_partial_roc_from_predictor <- function(data,
                                            predictor,
                                            ratio,
                                            threshold,
-                                           geom) {
+                                           geom,
+                                           .condition = NULL) {
   if (ratio == "tpr") {
     add_partial_roc_from_predictor_tpr(
       data,
       {{ response }},
       {{ predictor }},
       threshold,
-      geom
+      geom,
+      .condition
     )
   } else if (ratio == "fpr") {
     add_partial_roc_from_predictor_fpr(
@@ -412,7 +438,8 @@ add_partial_roc <- function(data,
                             predictor,
                             ratio,
                             threshold,
-                            geom) {
+                            geom,
+                            .condition = NULL) {
   predictor_expr <- enquo(predictor)
   response_expr <- enquo(response)
   if (!quo_is_null(predictor_expr) && !quo_is_null(response_expr)) {
@@ -422,7 +449,8 @@ add_partial_roc <- function(data,
       {{ predictor }},
       ratio,
       threshold,
-      geom
+      geom,
+      .condition
     )
   } else {
     add_partial_roc_from_ratios(
@@ -461,7 +489,8 @@ add_partial_roc_curve <- function(data = NULL,
                                   response = NULL,
                                   predictor = NULL,
                                   ratio,
-                                  threshold) {
+                                  threshold,
+                                  .condition = NULL) {
   add_partial_roc(
     data,
     {{ fpr }},
@@ -470,7 +499,8 @@ add_partial_roc_curve <- function(data = NULL,
     {{ predictor }},
     ratio,
     threshold,
-    geom_path
+    geom_path,
+    .condition = NULL
   )
 }
 
@@ -499,7 +529,8 @@ add_partial_roc_points <- function(data = NULL,
                                    response = NULL,
                                    predictor = NULL,
                                    ratio,
-                                   threshold) {
+                                   threshold,
+                                   .condition = NULL) {
   add_partial_roc(
     data,
     {{ fpr }},
@@ -508,7 +539,8 @@ add_partial_roc_points <- function(data = NULL,
     {{ predictor }},
     ratio,
     threshold,
-    geom_point
+    geom_point,
+    .condition
   )
 }
 
@@ -536,7 +568,8 @@ plot_partial_roc_curve <- function(data,
                                    response = NULL,
                                    predictor = NULL,
                                    ratio,
-                                   threshold) {
+                                   threshold,
+                                   .condition = NULL) {
   plot_roc(data) +
     add_partial_roc_curve(
       data,
@@ -545,7 +578,8 @@ plot_partial_roc_curve <- function(data,
       {{ response }},
       {{ predictor }},
       ratio,
-      threshold
+      threshold,
+      .condition
     )
 }
 
@@ -573,7 +607,8 @@ plot_partial_roc_points <- function(data,
                                     response = NULL,
                                     predictor = NULL,
                                     ratio,
-                                    threshold) {
+                                    threshold,
+                                    .condition = NULL) {
   plot_roc(data) +
     add_partial_roc_points(
       data,
@@ -582,7 +617,8 @@ plot_partial_roc_points <- function(data,
       {{ response }},
       {{ predictor }},
       ratio,
-      threshold
+      threshold,
+      .condition
     )
 }
 
@@ -593,7 +629,8 @@ add_fpauc_partially_proper_lower_bound <- function(data = NULL,
                                                    tpr = NULL,
                                                    response = NULL,
                                                    predictor = NULL,
-                                                   threshold) {
+                                                   threshold,
+                                                   .condition = NULL) {
   predictor_expr <- enquo(predictor)
   response_expr <- enquo(response)
 
@@ -639,20 +676,22 @@ add_fpauc_concave_lower_bound <- function(data = NULL,
                                           tpr = NULL,
                                           response = NULL,
                                           predictor = NULL,
-                                          threshold) {
+                                          threshold,
+                                          .condition = NULL) {
   predictor_expr <- enquo(predictor)
   response_expr <- enquo(response)
 
-  partial_points <- calc_partial_roc_points(
-    data,
-    {{ fpr }},
-    {{ tpr }},
-    {{ response }},
-    {{ predictor }},
-    threshold,
-    1,
-    "tpr"
-  )
+  partial_points <- data %>%
+    calc_partial_roc_points(
+      {{ fpr }},
+      {{ tpr }},
+      {{ response }},
+      {{ predictor }},
+      threshold,
+      1,
+      "tpr",
+      .condition
+    )
   threshold_fpr <- partial_points[["partial_fpr"]][1]
 
   if (!quo_is_null(predictor_expr) && !quo_is_null(response_expr)) {
@@ -722,15 +761,17 @@ add_fpauc_lower_bound <- function(data = NULL,
                                   tpr = NULL,
                                   response = NULL,
                                   predictor = NULL,
-                                  threshold) {
-  curve_shape <- calc_curve_shape(
-    data,
-    response = {{ response }},
-    predictor = {{ predictor }},
-    lower_threshold = threshold,
-    upper_threshold = 1,
-    ratio = "tpr"
-  )
+                                  threshold,
+                                  .condition = NULL) {
+  curve_shape <- data %>%
+    calc_curve_shape(
+      response = {{ response }},
+      predictor = {{ predictor }},
+      lower_threshold = threshold,
+      upper_threshold = 1,
+      ratio = "tpr",
+      .condition = .condition
+    )
   if (curve_shape == "Concave") {
     bound <- add_fpauc_concave_lower_bound(
       data,
@@ -738,7 +779,8 @@ add_fpauc_lower_bound <- function(data = NULL,
       tpr,
       response = {{ response }},
       predictor = {{ predictor }},
-      threshold
+      threshold,
+      .condition
     )
   } else if (curve_shape == "Partially proper") {
     bound <- add_fpauc_partially_proper_lower_bound(
@@ -747,7 +789,8 @@ add_fpauc_lower_bound <- function(data = NULL,
       tpr,
       response = {{ response }},
       predictor = {{ predictor }},
-      threshold
+      threshold,
+      .condition
     )
   } else if (curve_shape == "Hook under chance") {
     bound <- NULL
@@ -763,17 +806,19 @@ add_tpauc_concave_lower_bound <- function(data = NULL,
                                           response = NULL,
                                           predictor = NULL,
                                           lower_threshold,
-                                          upper_threshold) {
-  partial_points <- calc_partial_roc_points(
-    data,
-    {{ fpr }},
-    {{ tpr }},
-    {{ response }},
-    {{ predictor }},
-    lower_threshold,
-    upper_threshold,
-    "fpr"
-  )
+                                          upper_threshold,
+                                          .condition = NULL) {
+  partial_points <- data %>%
+    calc_partial_roc_points(
+      {{ fpr }},
+      {{ tpr }},
+      {{ response }},
+      {{ predictor }},
+      lower_threshold,
+      upper_threshold,
+      "fpr",
+      .condition
+    )
   lower_threshold_tpr <- partial_points %>%
     filter(.data$partial_fpr == lower_threshold) %>%
     slice_min(.data$partial_tpr, n = 1, with_ties = FALSE) %>%
@@ -839,19 +884,20 @@ add_tpauc_partially_proper_lower_bound <- function(data = NULL,
                                                    response = NULL,
                                                    predictor = NULL,
                                                    lower_threshold,
-                                                   upper_threshold) {
+                                                   upper_threshold,
+                                                   .condition = NULL) {
   predictor_expr <- enquo(predictor)
   response_expr <- enquo(response)
 
-  partial_points <- calc_partial_roc_points(
-    data,
+  partial_points <- data %>% calc_partial_roc_points(
     {{ fpr }},
     {{ tpr }},
     {{ response }},
     {{ predictor }},
     lower_threshold,
     upper_threshold,
-    "fpr"
+    "fpr",
+    .condition
   )
   lower_threshold_tpr <- partial_points %>%
     filter(.data$partial_fpr == lower_threshold) %>%
@@ -970,20 +1016,20 @@ add_tpauc_under_chance_lower_bound <- function(data = NULL,
                                                response = NULL,
                                                predictor = NULL,
                                                lower_threshold,
-                                               upper_threshold) {
+                                               upper_threshold,
+                                               .condition = NULL) {
   predictor_expr <- enquo(predictor)
   response_expr <- enquo(response)
 
-
-  partial_points <- calc_partial_roc_points(
-    data,
+  partial_points <- data %>% calc_partial_roc_points(
     {{ fpr }},
     {{ tpr }},
     {{ response }},
     {{ predictor }},
     lower_threshold,
     upper_threshold,
-    "fpr"
+    "fpr",
+    .condition
   )
   lower_threshold_tpr <- partial_points %>%
     filter(.data$partial_fpr == lower_threshold) %>%
@@ -1070,15 +1116,17 @@ add_tpauc_lower_bound <- function(data = NULL,
                                   response = NULL,
                                   predictor = NULL,
                                   lower_threshold,
-                                  upper_threshold) {
-  curve_shape <- calc_curve_shape(
-    data,
-    response = {{ response }},
-    predictor = {{ predictor }},
-    lower_threshold = lower_threshold,
-    upper_threshold = upper_threshold,
-    ratio = "fpr"
-  )
+                                  upper_threshold,
+                                  .condition = NULL) {
+  curve_shape <- data %>%
+    calc_curve_shape(
+      response = {{ response }},
+      predictor = {{ predictor }},
+      lower_threshold = lower_threshold,
+      upper_threshold = upper_threshold,
+      ratio = "fpr",
+      .condition = .condition
+    )
   if (curve_shape == "Concave") {
     bound <- add_tpauc_concave_lower_bound(
       data,
@@ -1087,7 +1135,8 @@ add_tpauc_lower_bound <- function(data = NULL,
       response = {{ response }},
       predictor = {{ predictor }},
       upper_threshold = upper_threshold,
-      lower_threshold = lower_threshold
+      lower_threshold = lower_threshold,
+      .condition = .condition
     )
   } else if (curve_shape == "Partially Proper") {
     bound <- add_tpauc_partially_proper_lower_bound(
@@ -1097,7 +1146,8 @@ add_tpauc_lower_bound <- function(data = NULL,
       response = {{ response }},
       predictor = {{ predictor }},
       upper_threshold = upper_threshold,
-      lower_threshold = lower_threshold
+      lower_threshold = lower_threshold,
+      .condition = .condition
     )
   } else if (curve_shape == "Hook under chance") {
     bound <- add_tpauc_under_chance_lower_bound(
@@ -1107,7 +1157,8 @@ add_tpauc_lower_bound <- function(data = NULL,
       response = {{ response }},
       predictor = {{ predictor }},
       upper_threshold = upper_threshold,
-      lower_threshold = lower_threshold
+      lower_threshold = lower_threshold,
+      .condition = .condition
     )
   }
   bound
@@ -1140,7 +1191,8 @@ add_npauc_lower_bound <- function(data = NULL,
                                   tpr = NULL,
                                   response = NULL,
                                   predictor = NULL,
-                                  threshold) {
+                                  threshold,
+                                  .condition = NULL) {
   predictor_expr <- enquo(predictor)
   response_expr <- enquo(response)
   if (!quo_is_null(predictor_expr) && !quo_is_null(response_expr)) {
@@ -1185,7 +1237,8 @@ add_npauc_normalized_lower_bound <- function(data = NULL,
                                              tpr = NULL,
                                              response = NULL,
                                              predictor = NULL,
-                                             threshold) {
+                                             threshold,
+                                             .condition = NULL) {
   predictor_expr <- enquo(predictor)
   response_expr <- enquo(response)
 
@@ -1255,7 +1308,8 @@ add_spauc_lower_bound <- function(data = NULL,
                                   response = NULL,
                                   predictor = NULL,
                                   lower_threshold,
-                                  upper_threshold) {
+                                  upper_threshold,
+                                  .condition = NULL) {
   predictor_expr <- enquo(predictor)
   response_expr <- enquo(response)
 

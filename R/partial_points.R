@@ -186,9 +186,10 @@ calc_partial_roc_points_from_predictor <- function(data = NULL,
                                                    response,
                                                    lower_threshold,
                                                    upper_threshold,
-                                                   ratio) {
+                                                   ratio,
+                                                   .condition = NULL) {
   roc_points <- data %>%
-    roc_points({{ response }}, {{ predictor }}) %>%
+    roc_points({{ response }}, {{ predictor }}, .condition) %>%
     arrange(.data[["tpr"]], .data[["fpr"]])
 
   if (ratio == "tpr") {
@@ -278,7 +279,8 @@ calc_partial_roc_points <- function(data = NULL,
                                     predictor = NULL,
                                     lower_threshold,
                                     upper_threshold,
-                                    ratio) {
+                                    ratio,
+                                    .condition = NULL) {
   predic_exp <- enquo(predictor)
   resp_exp <- enquo(response)
   if (!quo_is_null(predic_exp) && !quo_is_null(resp_exp)) {
@@ -288,7 +290,8 @@ calc_partial_roc_points <- function(data = NULL,
       {{ response }},
       lower_threshold,
       upper_threshold,
-      ratio
+      ratio,
+      .condition
     )
   } else {
     result <- calc_partial_roc_points_from_ratios(

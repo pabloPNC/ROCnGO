@@ -28,3 +28,26 @@ test_that("transform_response works with characters", {
   transformed_species <- transform_response(as.character(iris$Species))
   expect_equal(transformed_species, expected_species)
 })
+
+test_that("tranform_response works with fct and .condition is selected", {
+  test_iris <- create_iris_df()
+  expected_species <- test_iris$Species_bin_fct_virg
+  transformed_species <- transform_response(test_iris$Species, "virginica")
+  expect_equal(transformed_species, expected_species)
+})
+
+
+test_that("tranform_response works with int and .condition is selected", {
+  test_iris <- create_iris_df()
+  expected_species <- test_iris$Species_bin_fct_virg
+  transformed_species <- transform_response(test_iris$Species_int, 3)
+  expect_equal(transformed_species, expected_species)
+})
+
+
+test_that("tranform_response works with chr and .condition is selected", {
+  test_iris <- create_iris_df()
+  expected_species <- test_iris$Species_bin_fct_virg
+  transformed_species <- transform_response(test_iris$Species_chr, "virginica")
+  expect_equal(transformed_species, expected_species)
+})

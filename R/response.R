@@ -16,37 +16,33 @@
 #' * character. Function considers the condition of interest the first value in
 #' `unique(response)` after using `sort`.
 #' @keywords internal
-transform_response <- function(response) {
+transform_response <- function(response, .condition = NULL) {
   UseMethod("transform_response")
 }
 
 #' @export
-transform_response.factor <- function(response) {
-  condition <- levels(response)[1]
-  absent <- levels(response)[-1]
-  reorder_response_factor(response, condition, absent)
+transform_response.factor <- function(response, .condition = NULL) {
+  condition <- select_condition(response, .condition)
+  absents <- select_absents(response, condition)
+  reorder_response_factor(response, condition, absents)
 }
 
 #' @export
-transform_response.integer <- function(response) {
-  categories <- unique(response)
-  condition <- min(categories)
-  absent <- categories[categories != condition]
-  categories <- as.character(categories)
-  condition <- as.character(condition)
-  absent <- as.character(absent)
-  response <- as.character(response)
-  fct(response, levels = categories) %>%
-    reorder_response_factor(condition, absent)
+transform_response.integer <- function(response, .condition = NULL) {
+  categories <- calc_categories(response)
+  condition <- select_condition(response, .condition)
+  absents <- select_absents(response, condition)
+  fct(as.character(response), levels = categories) %>%
+    reorder_response_factor(condition, absents)
 }
 
 #' @export
-transform_response.character <- function(response) {
-  categories <- sort(unique(response))
-  condition <- categories[1]
-  absent <- categories[categories != condition]
+transform_response.character <- function(response, .condition = NULL) {
+  categories <- calc_categories(response)
+  condition <- select_condition(response, .condition)
+  absents <- select_absents(response, condition)
   fct(response, levels = categories) %>%
-    reorder_response_factor(condition, absent)
+    reorder_response_factor(condition, absents)
 }
 
 #' @title Establish condition of interest as 1 and absence as 0.
@@ -65,10 +61,76 @@ reorder_response_factor <- function(response_fct, condition, absent) {
     fct_relevel("0", "1")
 }
 
-as_response <- function(x) {
+as_response <- function(x, .condition = NULL) {
   inv_fct_cond <- is.factor(x) && !all(levels(x) %in% c(0, 1))
   if (is.character(x) || is.integer(x) || inv_fct_cond) {
-    x <- transform_response(x)
+    x <- transform_response(x, .condition)
   }
   x
+}
+
+calc_categories <- function(response) {
+  UseMethod("calc_categories")
+}
+
+#' @export
+calc_categories.factor <- function(response) {
+  levels(response)
+}
+
+#' @export
+calc_categories.integer <- function(response) {
+  as.character(unique(response))
+}
+
+#' @export
+calc_categories.character <- function(response) {
+  unique(response)
+}
+
+#' @keywords internal
+select_condition <- function(response, .condition = NULL) {
+  categories <- calc_categories(response)
+  if (!is.null(.condition) && !.condition %in% categories) {
+    rlang::abort("`.condition` should be among `resonse` values")
+  }
+  UseMethod("select_condition")
+}
+
+#' @export
+select_condition.factor <- function(response, .condition = NULL) {
+  categories <- calc_categories(response)
+  if (is.null(.condition)) {
+    condition <- categories[1]
+  } else {
+    condition <- .condition
+  }
+  condition
+}
+
+#' @export
+select_condition.integer <- function(response, .condition = NULL) {
+  categories <- calc_categories(response)
+  if (is.null(.condition)) {
+    condition <- min(categories)
+  } else {
+    condition <- .condition
+  }
+  condition
+}
+
+#' @export
+select_condition.character <- function(response, .condition = NULL) {
+  categories <- calc_categories(response)
+  if (is.null(.condition)) {
+    condition <- sort(categories)[1]
+  } else {
+    condition <- .condition
+  }
+  condition
+}
+
+select_absents <- function(response, condition) {
+  categories <- calc_categories(response)
+  categories[categories != condition]
 }
