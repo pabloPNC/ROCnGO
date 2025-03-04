@@ -139,20 +139,23 @@ summarize_predictor <- function(data = NULL,
                                 predictor,
                                 response,
                                 ratio,
-                                threshold) {
+                                threshold,
+                                .condition = NULL) {
   if (ratio == "tpr") {
     summarize_tpr_predictor(
       data,
       {{ predictor }},
       {{ response }},
-      threshold
+      threshold,
+      .condition
     )
   } else if (ratio == "fpr") {
     summarize_fpr_predictor(
       data,
       {{ predictor }},
       {{ response }},
-      threshold
+      threshold,
+      .condition
     )
   }
 }
@@ -181,6 +184,7 @@ summarize_dataset <- function(data,
                               response,
                               ratio,
                               threshold,
+                              .condition = NULL,
                               .progress = FALSE) {
   results <- list()
   predictors_expr <- enquo(predictors)
@@ -201,14 +205,16 @@ summarize_dataset <- function(data,
         NULL,
         predictors_dataset[[i]],
         response,
-        threshold
+        threshold,
+        .condition
       )
     } else if (ratio == "fpr") {
       result <- summarize_fpr_predictor(
         NULL,
         predictors_dataset[[i]],
         response,
-        threshold
+        threshold,
+        .condition
       )
     }
 
