@@ -241,18 +241,53 @@ test_that("calc_partial_roc_points == pHSpoints - tpr", {
   )
 })
 
-    expected_partial_points <- pHSpoints(
-        xsample = data[[response]],
-        ysample = data[[predictor]],
-        lower.sen = 0.9
-    )
+test_that("calc_partial_points works with .condition", {
+  test_iris <- create_iris_df()
 
-    expect_equal(
-        actual_partial_points[["partial_fpr"]],
-        expected_partial_points[,1]
+  partial_points_fct <- suppressWarnings(
+    calc_partial_roc_points(
+      test_iris,
+      response = Species,
+      predictor = Sepal.Length,
+      lower_threshold = 0,
+      upper_threshold = 0.9,
+      ratio = "fpr",
+      .condition = "virginica"
     )
-    expect_equal(
-        actual_partial_points[["partial_tpr"]],
-        expected_partial_points[,2]
+  )
+  partial_points_int <- suppressWarnings(
+    calc_partial_roc_points(
+      test_iris,
+      response = Species_int,
+      predictor = Sepal.Length,
+      lower_threshold = 0,
+      upper_threshold = 0.9,
+      ratio = "fpr",
+      .condition = 3
     )
+  )
+  partial_points_chr <- suppressWarnings(
+    calc_partial_roc_points(
+      test_iris,
+      response = Species_chr,
+      predictor = Sepal.Length,
+      lower_threshold = 0,
+      upper_threshold = 0.9,
+      ratio = "fpr",
+      .condition = "virginica"
+    )
+  )
+  expected_partial_points <- suppressWarnings(
+    calc_partial_roc_points(
+      test_iris,
+      response = Species_bin_fct_virg,
+      predictor = Sepal.Length,
+      lower_threshold = 0,
+      upper_threshold = 0.9,
+      ratio = "fpr"
+    )
+  )
+  expect_equal(partial_points_fct, expected_partial_points)
+  expect_equal(partial_points_int, expected_partial_points)
+  expect_equal(partial_points_chr, expected_partial_points)
 })
