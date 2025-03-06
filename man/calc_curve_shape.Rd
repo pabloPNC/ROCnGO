@@ -10,7 +10,8 @@ calc_curve_shape(
   predictor = NULL,
   lower_threshold,
   upper_threshold,
-  ratio
+  ratio,
+  .condition = NULL
 )
 }
 \arguments{
@@ -18,47 +19,66 @@ calc_curve_shape(
 predictors and response variables.}
 
 \item{response}{A data variable which must be a factor, integer or character
-vector representing the class to predict on each observation or
-\emph{Gold Standard}. For more info on how to select class of interest see
-\emph{Methods} below.}
+vector representing the prediction outcome on each observation
+(\emph{Gold Standard}).
 
-\item{predictor}{A data variable wich must be numeric, representing values of
-a classifier or predictor for each observation.}
+If the variable presents more than two possible outcomes, classes or
+categories:
+\itemize{
+\item The outcome of interest (the one to be predicted) will remain distinct.
+\item All other categories will be combined into a single category.
+}
 
-\item{lower_threshold, upper_threshold}{Ranges in which to calculate curve
-shape, they can take values from 0 to 1.}
+New combined category represents the "absence" of the condition to predict.
+See \code{.condition} for more information.}
 
-\item{ratio}{If \code{"tpr"}, shape will calculated over TPR ratio. Otherwise, if
-\code{"fpr"} it will be calculated over FPR ratio.}
+\item{predictor}{A data variable which must be numeric, representing values
+of a classifier or predictor for each observation.}
+
+\item{lower_threshold, upper_threshold}{Two numbers between 0 and 1,
+inclusive.
+These numbers represent lower and upper bounds of the region where to
+apply calculations.}
+
+\item{ratio}{Ratio or axis where to apply calculations.
+\itemize{
+\item If \code{"tpr"}, only points within the specified region of TPR, y axis, will be
+considered for calculations.
+\item If \code{"fpr"}, only points within the specified region of FPR, x axis, will be
+considered for calculations.
+}}
+
+\item{.condition}{A value from response that represents class, category or
+condition of interest which wants to be predicted.
+
+If \code{NULL}, condition of interest will be selected automatically depending on
+\code{response} type.
+
+Once the class of interest is selected, rest of them will be collapsed in a
+common category, representing the "absence" of the condition to be predicted.
+
+See \code{vignette("selecting-condition")} for further information on how
+automatic selection is performed and details on selecting the condition of
+interest.}
 }
 \value{
-A character indicating ROC curve shape in the specified region. Result
+A string indicating ROC curve shape in the specified region. Result
 can take any of the following values:
 \itemize{
-\item \code{Concave}. ROC curve is concave over the entire region.
-\item \verb{Partially proper}. ROC curve loses concavity at some point of the
-region.
-\item \verb{Hook under chance}. ROC curve loses concavity at some point of the
+\item \code{"Concave"}. ROC curve is concave over the entire specified region.
+\item \code{"Partially proper"}. ROC curve loses concavity at some point of the
+specified region.
+\item \code{"Hook under chance"}. ROC curve loses concavity at some point of the
 region and it lies below chance line.
 }
 }
 \description{
-\code{calc_curve_shape()} calculates ROC curve shape over a prespecified region.
-The prespecified region can be either a range of values in $TPR$ axis, or in
-$FPR$ axis.
+\code{calc_curve_shape()} calculates ROC curve shape over a specified region.
 }
-\section{Data masking variables}{
-
-Both response and predictor support \code{data-masking} variables. For more
-information please check \emph{General usage} in
-\link[rlang:args_data_masking]{this article}.
-
-Nevertheless, function may use environment variables as well. In order to use
-this type of variables simply set \code{data = NULL} and provide response and
-predictor as normal, whithout data-masking.
-}
-
 \examples{
-# Calc curve shape in TPR region (0.9, 1)
+# Calc ROC curve shape of Sepal.Width as a classifier of setosa species
+# in TPR = (0.9, 1)
 calc_curve_shape(iris, Species, Sepal.Width, 0.9, 1, "tpr")
+# Change class to virginica
+calc_curve_shape(iris, Species, Sepal.Width, 0.9, 1, "tpr", .condition = "virginica")
 }
