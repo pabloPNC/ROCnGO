@@ -5,7 +5,7 @@
 \title{Transforms a response variable into a valid factor that can be
 processed downstream.}
 \usage{
-transform_response(response)
+transform_response(response, .condition = NULL)
 }
 \arguments{
 \item{response}{A factor, integer or character vector of categories.}
