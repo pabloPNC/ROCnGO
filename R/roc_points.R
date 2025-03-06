@@ -66,49 +66,48 @@ calc_ratios <- function(data = NULL,
 
 #' @title Calculate ROC curve points
 #' @description
-#' Calculates a series of pairs of \eqn{(FPR, TPR)} points which correspond to
-#' \eqn{ROC} curve displayed points. \eqn{x} axis will represent "false positive
-#' ratio", while \eqn{y} axis the "true positive ratio".
+#' Calculates a series pairs of (FPR, TPR) which correspond to
+#' points displayed by ROC curve. "false positive ratio" will be represented on
+#' x axis, while "true positive ratio" on y one.
 #' @param data A data.frame or extension (e.g. a tibble) containing values for
 #' predictors and response variables.
 #' @param response A data variable which must be a factor, integer or character
-#' vector representing the class to predict on each observation or
-#' *Gold Standard*. For more info on how to select class of interest see
-#' *Methods* below.
-#' @param predictor A data variable wich must be numeric, representing values of
-#' a classifier or predictor for each observation.
-#' @param .condition NULL
+#' vector representing the prediction outcome on each observation
+#' (*Gold Standard*).
+#'
+#' If the variable presents more than two possible outcomes, classes or
+#' categories:
+#'
+#' * The outcome of interest (the one to be predicted) will remain distinct.
+#' * All other categories will be combined into a single category.
+#'
+#' New combined category represents the "absence" of the condition to predict.
+#' See `.condition` for more information.
+#' @param predictor A data variable which must be numeric, representing values
+#' of a classifier or predictor for each observation.
+#' @param .condition A value from response that represents class, category or
+#' condition of interest which wants to be predicted.
+#'
+#' If `NULL`, condition of interest will be selected automatically depending on
+#' `response` type.
+#'
+#' Once the class of interest is selected, rest of them will be collapsed in a
+#' common category, representing the "absence" of the condition to be predicted.
+#'
+#' See `vignette("selecting-condition")` for further information on how
+#' automatic selection is performed and details on selecting the condition of
+#' interest.
 #' @returns
-#' A tibble with two columns: "tpr", which contains values for "true positive
-#' ratio" or y axis, and "fpr", which contains values for "false positive ratio"
-#' or x axis.
-#' @section Methods:
-#' When performing calculations response will be transformed internally to a
-#' factor with levels (0,1), which represent absence or presence of the class we
-#' want to predict. In order to select which class is the one to predict among
-#' availables in response, function follows some criteria according to var type:
+#' A tibble with two columns:
 #'
-#' * integer. When working with an integer vector, function will consider the
-#' smallest as the class to predict.
-#' * character. When working with a character vector, function will consider the
-#' first value after using [sort()] over all posible options.
-#' * factor. When working with a factor var, function will select first class in
-#' [levels()].
-#'
-#' Al other classes which are not identified as the class to predict will be
-#' collapsed into 0. For this reason, try to provide convenient names when
-#' working or alternatively provide a factor where levels are equal to 0 and 1,
-#' being 1 cases with the condition of interest.
-#' @section Data masking variables:
-#' Both response and predictor support `data-masking` variables. For more
-#' information please check *General usage* in
-#' [this article][rlang::args_data_masking].
-#'
-#' Nevertheless, function may use environment variables as well. In order to use
-#' this type of variables simply set `data = NULL` and provide response and
-#' predictor as normal, whithout data-masking.
+#' * "tpr". Containing values for "true positive ratio", or y axis.
+#' * "fpr". Containing values for "false positive ratio", or x axis.
+
 #' @examples
-#' roc_points(iris, response = Species, predictor = Sepal.Width)
+#' # Calc ROC points of Sepal.Width as a classifier of setosa species
+#' roc_points(iris, Species, Sepal.Width)
+#' # Change class to predict to virginica
+#' roc_points(iris, Species, Sepal.Width, .condition = "virginica")
 #' @export
 roc_points <- function(data = NULL,
                        response,
