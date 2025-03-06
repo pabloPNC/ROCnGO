@@ -6,80 +6,84 @@
 \usage{
 calc_partial_roc_points(
   data = NULL,
-  fpr = NULL,
-  tpr = NULL,
   response = NULL,
   predictor = NULL,
+  fpr = NULL,
+  tpr = NULL,
   lower_threshold,
   upper_threshold,
-  ratio
+  ratio,
+  .condition = NULL
 )
 }
 \arguments{
 \item{data}{A data.frame or extension (e.g. a tibble) containing values for
 predictors and response variables.}
 
-\item{fpr, tpr}{Numeric vectors representing FPR and TPR for the classifier.
-These arguments will be used when no data, response and predictor are
-supplied.}
-
 \item{response}{A data variable which must be a factor, integer or character
-vector representing the class to predict on each observation or
-\emph{Gold Standard}. For more info on how to select class of interest see
-\emph{Methods} below.}
+vector representing the prediction outcome on each observation
+(\emph{Gold Standard}).
 
-\item{predictor}{A data variable wich must be numeric, representing values of
-a classifier or predictor for each observation.}
+If the variable presents more than two possible outcomes, classes or
+categories:
+\itemize{
+\item The outcome of interest (the one to be predicted) will remain distinct.
+\item All other categories will be combined into a single category.
+}
 
-\item{lower_threshold, upper_threshold}{Two numbers between 0 and 1, which
-indicate lower and upper limits for the region in which to calculate ROC
-partial points.}
+New combined category represents the "absence" of the condition to predict.
+See \code{.condition} for more information.}
 
-\item{ratio}{If \code{"tpr"} only points with a TPR in delimited region will be
-calculated, if \code{"fpr"} only points with a FPR in the region will do.}
+\item{predictor}{A data variable which must be numeric, representing values
+of a classifier or predictor for each observation.}
+
+\item{fpr, tpr}{Numeric vectors representing FPR and TPR for the classifier.
+
+These arguments may be used when neither of \code{data}, \code{response} and
+\code{predictor} are supplied.}
+
+\item{lower_threshold, upper_threshold}{Two numbers between 0 and 1,
+inclusive.
+These numbers represent lower and upper bounds of the region where to
+apply calculations.}
+
+\item{ratio}{Ratio or axis where to apply calculations.
+\itemize{
+\item If \code{"tpr"}, only points within the specified region of TPR, y axis, will be
+considered for calculations.
+\item If \code{"fpr"}, only points within the specified region of FPR, x axis, will be
+considered for calculations.
+}}
+
+\item{.condition}{A value from response that represents class, category or
+condition of interest which wants to be predicted.
+
+If \code{NULL}, condition of interest will be selected automatically depending on
+\code{response} type.
+
+Once the class of interest is selected, rest of them will be collapsed in a
+common category, representing the "absence" of the condition to be predicted.
+
+See \code{vignette("selecting-condition")} for further information on how
+automatic selection is performed and details on selecting the condition of
+interest.}
 }
 \value{
-A tibble with two columns: "partial_fpr" and "partial_tpr", which contain
-FPR and TPR values for each point in ROC in specified region.
+A tibble with two columns:
+\itemize{
+\item "partial_tpr". Containing "true positive ratio", or y, values of points
+within the specified region.
+\item "partial_fpr". Containing "false positive ratio", or x, values of points
+within the specified region.
+}
 }
 \description{
-Calculates a series of pairs of (FPR, TPR) points which correspond to ROC
-curve points in the specified region. x axis will correspond to
-"false positive ratio", while y axis the "true positive ratio".
+Calculates a series pairs of (FPR, TPR) which correspond to ROC curve points
+in a specified region.
 }
-\section{Methods}{
-
-When performing calculations response will be transformed internally to a
-factor with levels (0,1), which represent absence or presence of the class we
-want to predict. In order to select which class is the one to predict among
-availables in response, function follows some criteria according to var type:
-\itemize{
-\item integer. When working with an integer vector, function will consider the
-smallest as the class to predict.
-\item character. When working with a character vector, function will consider the
-first value after using \code{\link[=sort]{sort()}} over all posible options.
-\item factor. When working with a factor var, function will select first class in
-\code{\link[=levels]{levels()}}.
-}
-
-Al other classes which are not identified as the class to predict will be
-collapsed into 0. For this reason, try to provide convenient names when
-working or alternatively provide a factor where levels are equal to 0 and 1,
-being 1 cases with the condition of interest.
-}
-
-\section{Data masking variables}{
-
-Both response and predictor support \code{data-masking} variables. For more
-information please check \emph{General usage} in
-\link[rlang:args_data_masking]{this article}.
-
-Nevertheless, function may use environment variables as well. In order to use
-this type of variables simply set \code{data = NULL} and provide response and
-predictor as normal, whithout data-masking.
-}
-
 \examples{
+# Calc ROC points of Sepal.Width as a classifier of setosa species
+# in TPR = (0.9, 1)
 calc_partial_roc_points(
  iris,
  response = Species,
@@ -87,5 +91,16 @@ calc_partial_roc_points(
  lower_threshold = 0.9,
  upper_threshold = 1,
  ratio = "tpr"
+)
+
+# Change class to virginica
+calc_partial_roc_points(
+ iris,
+ response = Species,
+ predictor = Sepal.Width,
+ lower_threshold = 0.9,
+ upper_threshold = 1,
+ ratio = "tpr",
+ .condition = "virginica"
 )
 }
