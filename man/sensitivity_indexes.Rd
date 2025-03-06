@@ -6,76 +6,71 @@
 \alias{np_auc}
 \title{Sensitivity indexes}
 \usage{
-fp_auc(data = NULL, response, predictor, lower_tpr)
+fp_auc(data = NULL, response, predictor, lower_tpr, .condition = NULL)
 
-np_auc(data = NULL, response, predictor, lower_tpr)
+np_auc(data = NULL, response, predictor, lower_tpr, .condition = NULL)
 }
 \arguments{
 \item{data}{A data.frame or extension (e.g. a tibble) containing values for
 predictors and response variables.}
 
 \item{response}{A data variable which must be a factor, integer or character
-vector representing the class to predict on each observation or
-\emph{Gold Standard}. For more info on how to select class of interest see
-\emph{Methods} below.}
+vector representing the prediction outcome on each observation
+(\emph{Gold Standard}).
 
-\item{predictor}{A data variable wich must be numeric, representing values of
-a classifier or predictor for each observation.}
+If the variable presents more than two possible outcomes, classes or
+categories:
+\itemize{
+\item The outcome of interest (the one to be predicted) will remain distinct.
+\item All other categories will be combined into a single category.
+}
 
-\item{lower_tpr}{Lower value of TPR for the region in which to calculate the
-partial area under curve.}
+New combined category represents the "absence" of the condition to predict.
+See \code{.condition} for more information.}
+
+\item{predictor}{A data variable which must be numeric, representing values
+of a classifier or predictor for each observation.}
+
+\item{lower_tpr}{A numeric value between 0 and 1, inclusive, which represents
+lower value of TPR for the region where to calculate the
+partial area under curve.
+
+Because of definition of sensitivity indexes, upper bound of the region will
+be established as 1.}
+
+\item{.condition}{A value from response that represents class, category or
+condition of interest which wants to be predicted.
+
+If \code{NULL}, condition of interest will be selected automatically depending on
+\code{response} type.
+
+Once the class of interest is selected, rest of them will be collapsed in a
+common category, representing the "absence" of the condition to be predicted.
+
+See \code{vignette("selecting-condition")} for further information on how
+automatic selection is performed and details on selecting the condition of
+interest.}
 }
 \value{
-A numeric indicating the partial area under curve in the selected region.
+A numeric value representing the index score for the partial area under
+ROC curve.
 }
 \description{
-Sensitivity indexes provide different ways of calculating partial area under
-ROC curve in a specific TPR range. Two different approaches to calculate this
-area are available:
+Sensitivity indexes provide different ways of calculating area under
+ROC curve in a specific TPR region. Two different approaches to calculate
+this area are available:
 \itemize{
-\item \code{fp_aup()} applies \emph{fitted partial area under curve} index (FpAUC). This
-one calculates area under curve adjusting to points defined by curve in
-selected region.
+\item \code{fp_auc()} applies \emph{fitted partial area under curve} index (FpAUC). This
+one calculates area under curve adjusting to points defined by the curve
+in the selected region.
 \item \code{np_auc()} applies \emph{normalized partial area under curve} index (NpAUC),
 which calculates area under curve over the whole specified region.
 }
 }
-\section{Methods}{
-
-When performing calculations response will be transformed internally to a
-factor with levels (0,1), which represent absence or presence of the class we
-want to predict. In order to select which class is the one to predict among
-availables in response, function follows some criteria according to var type:
-\itemize{
-\item integer. When working with an integer vector, function will consider the
-smallest as the class to predict.
-\item character. When working with a character vector, function will consider the
-first value after using \code{\link[=sort]{sort()}} over all posible options.
-\item factor. When working with a factor var, function will select first class in
-\code{\link[=levels]{levels()}}.
-}
-
-Al other classes which are not identified as the class to predict will be
-collapsed into 0. For this reason, try to provide convenient names when
-working or alternatively provide a factor where levels are equal to 0 and 1,
-being 1 cases with the condition of interest.
-}
-
-\section{Data masking variables}{
-
-Both response and predictor support \code{data-masking} variables. For more
-information please check \emph{General usage} in
-\link[rlang:args_data_masking]{this article}.
-
-Nevertheless, function may use environment variables as well. In order to use
-this type of variables simply set \code{data = NULL} and provide response and
-predictor as normal, whithout data-masking.
-}
-
 \examples{
-# Calculate fp_auc on TPR region (0.9, 1)
+# Calculate fp_auc of Sepal.Width as a classifier of setosa species
 fp_auc(iris, response = Species, predictor = Sepal.Width, lower_tpr = 0.9)
-# Calculate np_auc on TPR region (0.9, 1)
+# Calculate np_auc of Sepal.Width as a classifier of setosa species
 np_auc(iris, response = Species, predictor = Sepal.Width, lower_tpr = 0.9)
 }
 \references{
