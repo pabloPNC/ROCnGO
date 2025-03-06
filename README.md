@@ -14,8 +14,8 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 ## Overview
 
 ROCnGO provides a set of tools to study a classifier performance by
-using $`ROC`$ curve based analysis. Package may address tasks in these
-type of analysis such as:
+using ROC curve based analysis. Package may address tasks in these type
+of analysis such as:
 
 - Evaluating global classifier performance.
 - Evaluating local classifier performance when a high specificity or
@@ -24,7 +24,7 @@ type of analysis such as:
   - Better power of discrimination between classifiers with similar
     performance.
 - Evaluating performance on several classifier simultaneously.
-- Plot whole, or specific regions, of $`ROC`$ curves.
+- Plot whole, or specific regions, of ROC curves.
 
 ## Installation
 

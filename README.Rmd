@@ -22,14 +22,14 @@ knitr::opts_chunk$set(
 
 ## Overview
 
-ROCnGO provides a set of tools to study a classifier performance by using $ROC$ curve based analysis. Package may address tasks in these type of analysis such as:
+ROCnGO provides a set of tools to study a classifier performance by using ROC curve based analysis. Package may address tasks in these type of analysis such as:
 
 * Evaluating global classifier performance.
 * Evaluating local classifier performance when a high specificity or sensitivity is required, by using different indexes that provide: 
   * Better interpretation of local performance.
   * Better power of discrimination between classifiers with similar performance.
 * Evaluating performance on several classifier simultaneously.
-* Plot whole, or specific regions, of $ROC$ curves.
+* Plot whole, or specific regions, of ROC curves.
 
 ## Installation
 
