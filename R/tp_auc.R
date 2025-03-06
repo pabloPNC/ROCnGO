@@ -1,23 +1,22 @@
 #' @title Specificity indexes
 #' @description
-#' Specifity indexes provide different ways of calculating partial area under
-#' ROC curve in a specific FPR range. Two different approaches to calculate this
-#' area are available:
-#' * `sp_aup()` applies *standardized partial area under curve* index (SpAUC).
-#' This one calculates area under curve adjusting to points defined by curve in
-#' selected region.
-#' * `tp_auc()` applies *tighter partial area under curve* index (TpAUC),
+#' Specificity indexes provide different ways of calculating area under
+#' ROC curve in a specific FPR region. Two different approaches to calculate
+#' this area are available:
+#' * `tp_auc()` applies *tighter partial area under curve* index (SpAUC).
+#' This one calculates area under curve adjusting to points defined by the curve
+#' in the selected region.
+#' * `sp_auc()` applies *standardized partial area under curve* index (TpAUC),
 #' which calculates area under curve over the whole specified region.
 #' @inheritParams roc_points
-#' @inheritSection roc_points Methods
-#' @inheritSection roc_points Data masking variables
-#' @param lower_fpr,upper_fpr Lower and upper values of FPR for the region
-#' in which to calculate the partial area under curve.
-#' @returns
-#' A numeric indicating the partial area under curve in the selected region.
+#' @param lower_fpr,upper_fpr Two numbers between 0 and 1, inclusive. These
+#' numbers represent lower and upper values of FPR region where to calculate
+#' partial area under curve.
+#' @inherit sensitivity_indexes return
 #' @name specificity_indexes
 #' @examples
-#' # Calc sp_auc in FPR region (0, 0.1)
+#' # Calculate sp_auc of Sepal.Width as a classifier of setosa species
+#  # in FPR = (0.9, 1)
 #' sp_auc(
 #'  iris,
 #'  response = Species,
@@ -25,7 +24,8 @@
 #'  lower_fpr = 0,
 #'  upper_fpr = 0.1
 #' )
-#' # Calc tp_auc in FPR region (0, 0.1)
+#' # Calculate tp_auc of Sepal.Width as a classifier of setosa species
+#  # in FPR = (0.9, 1)
 #' tp_auc(
 #'  iris,
 #'  response = Species,
