@@ -17,6 +17,10 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/ROCnGO.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/selecting-condition.html">Selecting condition of interest</a></li>
+  </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
       </ul></div>
@@ -43,7 +47,8 @@
 <span>  fpr <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  tpr <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  response <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  predictor <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  predictor <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .condition <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -57,58 +62,45 @@ predictors and response variables.</p></dd>
 
 
 <dt id="arg-fpr-tpr">fpr, tpr<a class="anchor" aria-label="anchor" href="#arg-fpr-tpr"></a></dt>
-<dd><p>Numeric vectors representing FPR and TPR for the classifier.
-These arguments will be used when no data, response and predictor are
-supplied.</p></dd>
+<dd><p>Numeric vectors representing FPR and TPR for the classifier.</p>
+<p>These arguments may be used when neither of <code>data</code>, <code>response</code> and
+<code>predictor</code> are supplied.</p></dd>
 
 
 <dt id="arg-response">response<a class="anchor" aria-label="anchor" href="#arg-response"></a></dt>
 <dd><p>A data variable which must be a factor, integer or character
-vector representing the class to predict on each observation or
-<em>Gold Standard</em>. For more info on how to select class of interest see
-<em>Methods</em> below.</p></dd>
+vector representing the prediction outcome on each observation
+(<em>Gold Standard</em>).</p>
+<p>If the variable presents more than two possible outcomes, classes or
+categories:</p><ul><li><p>The outcome of interest (the one to be predicted) will remain distinct.</p></li>
+<li><p>All other categories will be combined into a single category.</p></li>
+</ul><p>New combined category represents the "absence" of the condition to predict.
+See <code>.condition</code> for more information.</p></dd>
 
 
 <dt id="arg-predictor">predictor<a class="anchor" aria-label="anchor" href="#arg-predictor"></a></dt>
-<dd><p>A data variable wich must be numeric, representing values of
-a classifier or predictor for each observation.</p></dd>
+<dd><p>A data variable which must be numeric, representing values
+of a classifier or predictor for each observation.</p></dd>
+
+
+<dt id="arg--condition">.condition<a class="anchor" aria-label="anchor" href="#arg--condition"></a></dt>
+<dd><p>A value from response that represents class, category or
+condition of interest which wants to be predicted.</p>
+<p>If <code>NULL</code>, condition of interest will be selected automatically depending on
+<code>response</code> type.</p>
+<p>Once the class of interest is selected, rest of them will be collapsed in a
+common category, representing the "absence" of the condition to be predicted.</p>
+<p>See <code><a href="../articles/selecting-condition.html">vignette("selecting-condition")</a></code> for further information on how
+automatic selection is performed and details on selecting the condition of
+interest.</p></dd>
 
 </dl></div>
-    <div class="section level2">
-    <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
-
-
-<p>When performing calculations response will be transformed internally to a
-factor with levels (0,1), which represent absence or presence of the class we
-want to predict. In order to select which class is the one to predict among
-availables in response, function follows some criteria according to var type:</p><ul><li><p>integer. When working with an integer vector, function will consider the
-smallest as the class to predict.</p></li>
-<li><p>character. When working with a character vector, function will consider the
-first value after using <code><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort()</a></code> over all posible options.</p></li>
-<li><p>factor. When working with a factor var, function will select first class in
-<code><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels()</a></code>.</p></li>
-</ul><p>Al other classes which are not identified as the class to predict will be
-collapsed into 0. For this reason, try to provide convenient names when
-working or alternatively provide a factor where levels are equal to 0 and 1,
-being 1 cases with the condition of interest.</p>
-    </div>
-    <div class="section level2">
-    <h2 id="data-masking-variables">Data masking variables<a class="anchor" aria-label="anchor" href="#data-masking-variables"></a></h2>
-
-
-<p>Both response and predictor support <code>data-masking</code> variables. For more
-information please check <em>General usage</em> in
-<a href="https://rlang.r-lib.org/reference/args_data_masking.html" class="external-link">this article</a>.</p>
-<p>Nevertheless, function may use environment variables as well. In order to use
-this type of variables simply set <code>data = NULL</code> and provide response and
-predictor as normal, whithout data-masking.</p>
-    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="plot_roc_curve.html">plot_roc_curve</a></span><span class="op">(</span><span class="va">iris</span>, response <span class="op">=</span> <span class="va">Species</span>, predictor <span class="op">=</span> <span class="va">Sepal.Width</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span> <span class="fu">add_roc_curve</span><span class="op">(</span><span class="va">iris</span>, response <span class="op">=</span> <span class="va">Species</span>, predictor <span class="op">=</span> <span class="va">Sepal.Length</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> argument ".condition" is missing, with no default</span>
+<span class="r-plt img"><img src="add_roc_curve-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

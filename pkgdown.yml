@@ -3,7 +3,8 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   ROCnGO: ROCnGO.html
-last_built: 2025-03-04T10:47Z
+  selecting-condition: selecting-condition.html
+last_built: 2025-03-07T08:54Z
 urls:
   reference: https://pablopnc.github.io/ROCnGO/reference
   article: https://pablopnc.github.io/ROCnGO/articles

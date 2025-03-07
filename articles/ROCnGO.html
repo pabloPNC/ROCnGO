@@ -31,6 +31,12 @@
       <ul class="navbar-nav me-auto">
 <li class="active nav-item"><a class="nav-link" href="../articles/ROCnGO.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/selecting-condition.html">Selecting condition of interest</a></li>
+  </ul>
+</li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -166,8 +172,7 @@ variable that will be used as a classifier (<code>predictor</code>) and
 the response variable we want to predict (<code>response</code>).</p>
 <p>For example, we can calculate
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>O</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">ROC</annotation></semantics></math>
-points for Sepal.Length as a classifier of <strong>setosa</strong>
-species.</p>
+points for Sepal.Length as a classifier of <em>setosa</em> species.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Calculate ROC points for Sepal.Lenght</span></span>
 <span><span class="va">points</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/roc_points.html">roc_points</a></span><span class="op">(</span></span>
@@ -197,8 +202,8 @@ species.</p>
 <p>As we may see, Sepal.Length doesn’t perform very well predicting when
 a flower is from setosa species, in fact it’s the other way around, the
 lower the Sepal.Length the more probable to be working with a
-<strong>setosa</strong> flower. This can be tested if we change the
-condition of interest to <strong>virginica</strong>.</p>
+<em>setosa</em> flower. This can be tested if we change the condition of
+interest to <em>virginica</em>.</p>
 </div>
 <div class="section level3">
 <h3 id="changing-condition-of-interest">Changing condition of interest<a class="anchor" aria-label="anchor" href="#changing-condition-of-interest"></a>
