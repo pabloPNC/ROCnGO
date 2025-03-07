@@ -245,24 +245,33 @@ calc_partial_roc_points_from_predictor <- function(data = NULL,
 
 #' @title Calculate ROC curve partial points
 #' @description
-#' Calculates a series of pairs of (FPR, TPR) points which correspond to ROC
-#' curve points in the specified region. x axis will correspond to
-#' "false positive ratio", while y axis the "true positive ratio".
+#' Calculates a series pairs of (FPR, TPR) which correspond to ROC curve points
+#' in a specified region.
 #' @inheritParams roc_points
-#' @inheritSection roc_points Methods
-#' @inheritSection roc_points Data masking variables
-#' @param lower_threshold,upper_threshold Two numbers between 0 and 1, which
-#' indicate lower and upper limits for the region in which to calculate ROC
-#' partial points.
-#' @param ratio If `"tpr"` only points with a TPR in delimited region will be
-#' calculated, if `"fpr"` only points with a FPR in the region will do.
+#' @param lower_threshold,upper_threshold Two numbers between 0 and 1,
+#' inclusive.
+#' These numbers represent lower and upper bounds of the region where to
+#' apply calculations.
+#' @param ratio Ratio or axis where to apply calculations.
+#'
+#' * If `"tpr"`, only points within the specified region of TPR, y axis, will be
+#' considered for calculations.
+#' * If `"fpr"`, only points within the specified region of FPR, x axis, will be
+#' considered for calculations.
 #' @param fpr,tpr Numeric vectors representing FPR and TPR for the classifier.
-#' These arguments will be used when no data, response and predictor are
-#' supplied.
+#'
+#' These arguments may be used when neither of `data`, `response` and
+#' `predictor` are supplied.
 #' @returns
-#' A tibble with two columns: "partial_fpr" and "partial_tpr", which contain
-#' FPR and TPR values for each point in ROC in specified region.
+#' A tibble with two columns:
+#'
+#' * "partial_tpr". Containing "true positive ratio", or y, values of points
+#' within the specified region.
+#' * "partial_fpr". Containing "false positive ratio", or x, values of points
+#' within the specified region.
 #' @examples
+#' # Calc ROC points of Sepal.Width as a classifier of setosa species
+#' # in TPR = (0.9, 1)
 #' calc_partial_roc_points(
 #'  iris,
 #'  response = Species,
@@ -271,12 +280,23 @@ calc_partial_roc_points_from_predictor <- function(data = NULL,
 #'  upper_threshold = 1,
 #'  ratio = "tpr"
 #' )
+#'
+#' # Change class to virginica
+#' calc_partial_roc_points(
+#'  iris,
+#'  response = Species,
+#'  predictor = Sepal.Width,
+#'  lower_threshold = 0.9,
+#'  upper_threshold = 1,
+#'  ratio = "tpr",
+#'  .condition = "virginica"
+#' )
 #' @export
 calc_partial_roc_points <- function(data = NULL,
-                                    fpr = NULL,
-                                    tpr = NULL,
                                     response = NULL,
                                     predictor = NULL,
+                                    fpr = NULL,
+                                    tpr = NULL,
                                     lower_threshold,
                                     upper_threshold,
                                     ratio,

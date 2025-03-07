@@ -173,26 +173,22 @@ calc_tpr_bounds <- function(partial_fpr, partial_tpr) {
 
 #' @title Calculate curve shape over an specific region
 #' @description
-#' `calc_curve_shape()` calculates ROC curve shape over a prespecified region.
-#' The prespecified region can be either a range of values in $TPR$ axis, or in
-#' $FPR$ axis.
+#' `calc_curve_shape()` calculates ROC curve shape over a specified region.
 #' @returns
-#' A character indicating ROC curve shape in the specified region. Result
+#' A string indicating ROC curve shape in the specified region. Result
 #' can take any of the following values:
-#' * `Concave`. ROC curve is concave over the entire region.
-#' * `Partially proper`. ROC curve loses concavity at some point of the
-#' region.
-#' * `Hook under chance`. ROC curve loses concavity at some point of the
+#' * `"Concave"`. ROC curve is concave over the entire specified region.
+#' * `"Partially proper"`. ROC curve loses concavity at some point of the
+#' specified region.
+#' * `"Hook under chance"`. ROC curve loses concavity at some point of the
 #' region and it lies below chance line.
-#' @inheritParams roc_points
-#' @inheritSection roc_points Data masking variables
-#' @param lower_threshold,upper_threshold Ranges in which to calculate curve
-#' shape, they can take values from 0 to 1.
-#' @param ratio If `"tpr"`, shape will calculated over TPR ratio. Otherwise, if
-#' `"fpr"` it will be calculated over FPR ratio.
+#' @inheritParams calc_partial_roc_points
 #' @examples
-#' # Calc curve shape in TPR region (0.9, 1)
+#' # Calc ROC curve shape of Sepal.Width as a classifier of setosa species
+#' # in TPR = (0.9, 1)
 #' calc_curve_shape(iris, Species, Sepal.Width, 0.9, 1, "tpr")
+#' # Change class to virginica
+#' calc_curve_shape(iris, Species, Sepal.Width, 0.9, 1, "tpr", .condition = "virginica")
 #' @export
 calc_curve_shape <- function(
     data = NULL,

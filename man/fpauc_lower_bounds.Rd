@@ -13,7 +13,8 @@ add_fpauc_partially_proper_lower_bound(
   tpr = NULL,
   response = NULL,
   predictor = NULL,
-  threshold
+  threshold,
+  .condition = NULL
 )
 
 add_fpauc_concave_lower_bound(
@@ -22,7 +23,8 @@ add_fpauc_concave_lower_bound(
   tpr = NULL,
   response = NULL,
   predictor = NULL,
-  threshold
+  threshold,
+  .condition = NULL
 )
 
 add_fpauc_lower_bound(
@@ -31,7 +33,8 @@ add_fpauc_lower_bound(
   tpr = NULL,
   response = NULL,
   predictor = NULL,
-  threshold
+  threshold,
+  .condition = NULL
 )
 }
 \arguments{
@@ -39,34 +42,64 @@ add_fpauc_lower_bound(
 predictors and response variables.}
 
 \item{fpr, tpr}{Numeric vectors representing FPR and TPR for the classifier.
-These arguments will be used when no data, response and predictor are
-supplied.}
+
+These arguments may be used when neither of \code{data}, \code{response} and
+\code{predictor} are supplied.}
 
 \item{response}{A data variable which must be a factor, integer or character
-vector representing the class to predict on each observation or
-\emph{Gold Standard}. For more info on how to select class of interest see
-\emph{Methods} below.}
+vector representing the prediction outcome on each observation
+(\emph{Gold Standard}).
 
-\item{predictor}{A data variable wich must be numeric, representing values of
-a classifier or predictor for each observation.}
+If the variable presents more than two possible outcomes, classes or
+categories:
+\itemize{
+\item The outcome of interest (the one to be predicted) will remain distinct.
+\item All other categories will be combined into a single category.
+}
 
-\item{threshold}{A number between 0 and 1, representing lower TPR for the
-region of interest.}
+New combined category represents the "absence" of the condition to predict.
+See \code{.condition} for more information.}
+
+\item{predictor}{A data variable which must be numeric, representing values
+of a classifier or predictor for each observation.}
+
+\item{threshold}{A number between 0 and 1, inclusive. This number represents
+the lower value of TPR for the region where to calculate and plot
+lower bound.
+
+Because of definition of \code{\link[=fp_auc]{fp_auc()}}, region upper bound will be established
+as 1.}
+
+\item{.condition}{A value from response that represents class, category or
+condition of interest which wants to be predicted.
+
+If \code{NULL}, condition of interest will be selected automatically depending on
+\code{response} type.
+
+Once the class of interest is selected, rest of them will be collapsed in a
+common category, representing the "absence" of the condition to be predicted.
+
+See \code{vignette("selecting-condition")} for further information on how
+automatic selection is performed and details on selecting the condition of
+interest.}
 }
 \description{
 Calculate and plot lower bound defined by FpAUC sensitivity index.
+\itemize{
+\item \code{add_fpauc_lower_bound()} provides an upper level function which
+automatically calculates curve shape and plots a lower bound that better fits
+it.
+\item \code{add_fpauc_partially_proper_lower_bound()} and
+\code{add_fpauc_concave_lower_bound()} are lower level functions that enforce the
+plot of specific bounds.
 }
-\details{
-\code{add_fpauc_lower_bound()} provides a upper level function which automatically
-calculates curve shape and plots a lower bound that ajust to it.
 
-To enforce specific bounds lower level functions
-\code{add_fpauc_partially_proper_lower_bound} and \code{add_fpauc_concave_lower_bound}
-are provided, which plot lower bound when curve shape partially proper (
-presents some kind of hook) or is concave in region of interest.
+First one plots lower bound when curve shape is
+partially proper (presents some kind of hook). Second one plots lower bound
+when curve shape is concave in the region of interest.
 }
 \examples{
-# Add lower bound based on cuve shape (Concave)
+# Add lower bound based on curve shape (Concave)
 plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
   add_fpauc_lower_bound(
     data = iris,

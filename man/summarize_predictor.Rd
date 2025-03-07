@@ -4,83 +4,99 @@
 \alias{summarize_predictor}
 \title{Summarize classifier performance}
 \usage{
-summarize_predictor(data = NULL, predictor, response, ratio, threshold)
+summarize_predictor(
+  data = NULL,
+  predictor,
+  response,
+  ratio,
+  threshold,
+  .condition = NULL
+)
 }
 \arguments{
 \item{data}{A data.frame or extension (e.g. a tibble) containing values for
 predictors and response variables.}
 
-\item{predictor}{A data variable wich must be numeric, representing values of
-a classifier or predictor for each observation.}
+\item{predictor}{A data variable which must be numeric, representing values
+of a classifier or predictor for each observation.}
 
 \item{response}{A data variable which must be a factor, integer or character
-vector representing the class to predict on each observation or
-\emph{Gold Standard}. For more info on how to select class of interest see
-\emph{Methods} below.}
+vector representing the prediction outcome on each observation
+(\emph{Gold Standard}).
 
-\item{ratio}{Ratio in which to apply calculations. If \code{"tpr"} they will be
-applied over TPR ratio, if \code{"fpr"} it will be calculated over FPR ratio.}
+If the variable presents more than two possible outcomes, classes or
+categories:
+\itemize{
+\item The outcome of interest (the one to be predicted) will remain distinct.
+\item All other categories will be combined into a single category.
+}
 
-\item{threshold}{Theshold in which to make partial area calculations. When
-working in TPR it represents lower threshold up to 1, and upper threshold
-in FPR up to 0.}
+New combined category represents the "absence" of the condition to predict.
+See \code{.condition} for more information.}
+
+\item{ratio}{Ratio or axis where to apply calculations.
+\itemize{
+\item If \code{"tpr"}, only points within the specified region of TPR, y axis, will be
+considered for calculations.
+\item If \code{"fpr"}, only points within the specified region of FPR, x axis, will be
+considered for calculations.
+}}
+
+\item{threshold}{A number between 0 and 1, both inclusive, which represents
+the region bound where to calculate partial area under curve.
+
+If \code{ratio = "tpr"}, it represents lower bound of the TPR region, being its
+upper limit equal to 1.
+
+If \code{ratio = "fpr"}, it represents the upper bound of the FPR region,
+being its lower limit equal to 0.}
+
+\item{.condition}{A value from response that represents class, category or
+condition of interest which wants to be predicted.
+
+If \code{NULL}, condition of interest will be selected automatically depending on
+\code{response} type.
+
+Once the class of interest is selected, rest of them will be collapsed in a
+common category, representing the "absence" of the condition to be predicted.
+
+See \code{vignette("selecting-condition")} for further information on how
+automatic selection is performed and details on selecting the condition of
+interest.}
 }
 \value{
-A single row tibble with different predictor metrics as columns.
-}
-\description{
-Calculates a series of metrics describing global classifier performance and
-performance over a region of interest.
-}
-\details{
-Metrics calculated to evaluate are the following:
+A single row tibble with different predictor with following metrics as
+columns:
 \itemize{
-\item Area under curve (AUC) as a metric of global performances.
-\item Partial area under curve (pAUC) as a metric of local performance.
+\item Area under curve (AUC) as a metric of global performance.
+\item Partial are under curve (pAUC) as a metric of local performance.
 \item Indexes derived from pAUC, depending on the selected ratio.
 \link[=sensitivity_indexes]{Sensitivity indexes} will be used for
 TPR and \link[=specificity_indexes]{specificity indexes} for FPR.
 \item \link[=calc_curve_shape]{Curve shape} in the specified region.
 }
 }
-\section{Methods}{
-
-When performing calculations response will be transformed internally to a
-factor with levels (0,1), which represent absence or presence of the class we
-want to predict. In order to select which class is the one to predict among
-availables in response, function follows some criteria according to var type:
-\itemize{
-\item integer. When working with an integer vector, function will consider the
-smallest as the class to predict.
-\item character. When working with a character vector, function will consider the
-first value after using \code{\link[=sort]{sort()}} over all posible options.
-\item factor. When working with a factor var, function will select first class in
-\code{\link[=levels]{levels()}}.
+\description{
+Calculates a series of metrics describing global and local
+classifier performance.
 }
-
-Al other classes which are not identified as the class to predict will be
-collapsed into 0. For this reason, try to provide convenient names when
-working or alternatively provide a factor where levels are equal to 0 and 1,
-being 1 cases with the condition of interest.
-}
-
-\section{Data masking variables}{
-
-Both response and predictor support \code{data-masking} variables. For more
-information please check \emph{General usage} in
-\link[rlang:args_data_masking]{this article}.
-
-Nevertheless, function may use environment variables as well. In order to use
-this type of variables simply set \code{data = NULL} and provide response and
-predictor as normal, whithout data-masking.
-}
-
 \examples{
+# Summarize Sepal.Width as a classifier of setosa species
+# and local performance in TPR (0.9, 1)
 summarize_predictor(
  data = iris,
  predictor = Sepal.Width,
  response = Species,
  ratio = "tpr",
  threshold = 0.9
+)
+# Summarize Sepal.Width as a classifier of setosa species
+# and local performance in FPR (0, 0.1)
+summarize_predictor(
+ data = iris,
+ predictor = Sepal.Width,
+ response = Species,
+ ratio = "fpr",
+ threshold = 0.1
 )
 }

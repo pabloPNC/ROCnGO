@@ -15,7 +15,8 @@ add_tpauc_concave_lower_bound(
   response = NULL,
   predictor = NULL,
   lower_threshold,
-  upper_threshold
+  upper_threshold,
+  .condition = NULL
 )
 
 add_tpauc_partially_proper_lower_bound(
@@ -25,7 +26,8 @@ add_tpauc_partially_proper_lower_bound(
   response = NULL,
   predictor = NULL,
   lower_threshold,
-  upper_threshold
+  upper_threshold,
+  .condition = NULL
 )
 
 add_tpauc_under_chance_lower_bound(
@@ -35,7 +37,8 @@ add_tpauc_under_chance_lower_bound(
   response = NULL,
   predictor = NULL,
   lower_threshold,
-  upper_threshold
+  upper_threshold,
+  .condition = NULL
 )
 
 add_tpauc_lower_bound(
@@ -45,7 +48,8 @@ add_tpauc_lower_bound(
   response = NULL,
   predictor = NULL,
   lower_threshold,
-  upper_threshold
+  upper_threshold,
+  .condition = NULL
 )
 }
 \arguments{
@@ -53,33 +57,60 @@ add_tpauc_lower_bound(
 predictors and response variables.}
 
 \item{fpr, tpr}{Numeric vectors representing FPR and TPR for the classifier.
-These arguments will be used when no data, response and predictor are
-supplied.}
+
+These arguments may be used when neither of \code{data}, \code{response} and
+\code{predictor} are supplied.}
 
 \item{response}{A data variable which must be a factor, integer or character
-vector representing the class to predict on each observation or
-\emph{Gold Standard}. For more info on how to select class of interest see
-\emph{Methods} below.}
+vector representing the prediction outcome on each observation
+(\emph{Gold Standard}).
 
-\item{predictor}{A data variable wich must be numeric, representing values of
-a classifier or predictor for each observation.}
+If the variable presents more than two possible outcomes, classes or
+categories:
+\itemize{
+\item The outcome of interest (the one to be predicted) will remain distinct.
+\item All other categories will be combined into a single category.
+}
+
+New combined category represents the "absence" of the condition to predict.
+See \code{.condition} for more information.}
+
+\item{predictor}{A data variable which must be numeric, representing values
+of a classifier or predictor for each observation.}
 
 \item{lower_threshold, upper_threshold}{Two numbers between 0 and 1,
-representing lower and upper FPR for a region of interest.}
+inclusive. These numbers represent lower and upper values of FPR region where
+to calculate and plot lower bound.}
+
+\item{.condition}{A value from response that represents class, category or
+condition of interest which wants to be predicted.
+
+If \code{NULL}, condition of interest will be selected automatically depending on
+\code{response} type.
+
+Once the class of interest is selected, rest of them will be collapsed in a
+common category, representing the "absence" of the condition to be predicted.
+
+See \code{vignette("selecting-condition")} for further information on how
+automatic selection is performed and details on selecting the condition of
+interest.}
 }
 \description{
 Calculate and plot lower bound defined by TpAUC specificity index.
-
-\code{add_tpauc_lower_bound()} provides a upper level function which automatically
-calculates curve shape in selected region and plots a lower bound that
-ajust to it.
-
-To enforce specific bounds followeing lower level functions are provided:
 \itemize{
-\item \code{add_tpauc_concave_lower_bound}. Plot lower bound corresponding to a ROC
-curve with concave shape selected region.
+\item \code{add_tpauc_lower_bound()} provides a upper level function which
+automatically calculates curve shape and plots a lower bound that better fits
+it.
+}
+
+Additionally, several lower level functions are provided to plot
+specific lower bounds:
+\itemize{
+\item \code{add_tpauc_concave_lower_bound()}. Plot lower bound corresponding to a ROC
+curve with concave shape in selected region.
 \item \code{add_tpauc_partially_proper_lower_bound}. Plot lower bound corresponding to
-a ROC curve with partially proper (presence of some hook) in selected region.
+a ROC curve with partially proper (presence of some hook) in
+selected region.
 \item \code{add_tpauc_under_chance_lower_bound}. Plot lower bound corresponding to
 a ROC curve with a hook under chance line in selected region.
 }

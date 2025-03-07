@@ -12,7 +12,8 @@ add_spauc_lower_bound(
   response = NULL,
   predictor = NULL,
   lower_threshold,
-  upper_threshold
+  upper_threshold,
+  .condition = NULL
 )
 }
 \arguments{
@@ -20,31 +21,56 @@ add_spauc_lower_bound(
 predictors and response variables.}
 
 \item{fpr, tpr}{Numeric vectors representing FPR and TPR for the classifier.
-These arguments will be used when no data, response and predictor are
-supplied.}
+
+These arguments may be used when neither of \code{data}, \code{response} and
+\code{predictor} are supplied.}
 
 \item{response}{A data variable which must be a factor, integer or character
-vector representing the class to predict on each observation or
-\emph{Gold Standard}. For more info on how to select class of interest see
-\emph{Methods} below.}
+vector representing the prediction outcome on each observation
+(\emph{Gold Standard}).
 
-\item{predictor}{A data variable wich must be numeric, representing values of
-a classifier or predictor for each observation.}
+If the variable presents more than two possible outcomes, classes or
+categories:
+\itemize{
+\item The outcome of interest (the one to be predicted) will remain distinct.
+\item All other categories will be combined into a single category.
+}
+
+New combined category represents the "absence" of the condition to predict.
+See \code{.condition} for more information.}
+
+\item{predictor}{A data variable which must be numeric, representing values
+of a classifier or predictor for each observation.}
 
 \item{lower_threshold, upper_threshold}{Two numbers between 0 and 1,
-representing lower and upper FPR for a region of interest.}
+inclusive.
+These numbers represent lower and upper bounds of the region where to
+apply calculations.}
+
+\item{.condition}{A value from response that represents class, category or
+condition of interest which wants to be predicted.
+
+If \code{NULL}, condition of interest will be selected automatically depending on
+\code{response} type.
+
+Once the class of interest is selected, rest of them will be collapsed in a
+common category, representing the "absence" of the condition to be predicted.
+
+See \code{vignette("selecting-condition")} for further information on how
+automatic selection is performed and details on selecting the condition of
+interest.}
 }
 \description{
 Calculate and plot lower bound defined by SpAUC specificity index.
 }
 \details{
-SpAUC presents some limitations regarding its lower bound. The bound defined
-by this index cannot be applied to sections where ROC curve is defined under
-chance line.
+SpAUC presents some limitations regarding its lower bound. Lower bound
+defined by this index cannot be applied to sections where ROC curve is
+defined under chance line.
 
 \code{add_spauc_lower_bound()} doesn't make any check to ensure the index can be
-safely applied, consequently it allows to enforce representation even though
-SpAUC cound't be calculated in the region.
+safely applied. Consequently, it allows to enforce the representation even
+though SpAUC cound't be calculated in the region.
 }
 \examples{
 plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +

@@ -105,34 +105,46 @@ summarize_fpr_predictor <- function(data = NULL,
 
 #' @title Summarize classifier performance
 #' @description
-#' Calculates a series of metrics describing global classifier performance and
-#' performance over a region of interest.
-#' @inheritParams roc_points
-#' @param ratio Ratio in which to apply calculations. If `"tpr"` they will be
-#' applied over TPR ratio, if `"fpr"` it will be calculated over FPR ratio.
-#' @param threshold Theshold in which to make partial area calculations. When
-#' working in TPR it represents lower threshold up to 1, and upper threshold
-#' in FPR up to 0.
-#' @inheritSection roc_points Methods
-#' @inheritSection roc_points Data masking variables
-#' @details
-#' Metrics calculated to evaluate are the following:
+#' Calculates a series of metrics describing global and local
+#' classifier performance.
+#' @inheritParams calc_partial_roc_points
+#' @param threshold A number between 0 and 1, both inclusive, which represents
+#' the region bound where to calculate partial area under curve.
 #'
-#' * Area under curve (AUC) as a metric of global performances.
-#' * Partial area under curve (pAUC) as a metric of local performance.
+#' If `ratio = "tpr"`, it represents lower bound of the TPR region, being its
+#' upper limit equal to 1.
+#'
+#' If `ratio = "fpr"`, it represents the upper bound of the FPR region,
+#' being its lower limit equal to 0.
+#'
+#' @returns
+#' A single row tibble with different predictor with following metrics as
+#' columns:
+#'
+#' * Area under curve (AUC) as a metric of global performance.
+#' * Partial are under curve (pAUC) as a metric of local performance.
 #' * Indexes derived from pAUC, depending on the selected ratio.
 #' [Sensitivity indexes][ROCnGO::sensitivity_indexes] will be used for
 #' TPR and [specificity indexes][ROCnGO::specificity_indexes] for FPR.
 #' * [Curve shape][ROCnGO::calc_curve_shape] in the specified region.
-#' @returns
-#' A single row tibble with different predictor metrics as columns.
 #' @examples
+#' # Summarize Sepal.Width as a classifier of setosa species
+#' # and local performance in TPR (0.9, 1)
 #' summarize_predictor(
 #'  data = iris,
 #'  predictor = Sepal.Width,
 #'  response = Species,
 #'  ratio = "tpr",
 #'  threshold = 0.9
+#' )
+#' # Summarize Sepal.Width as a classifier of setosa species
+#' # and local performance in FPR (0, 0.1)
+#' summarize_predictor(
+#'  data = iris,
+#'  predictor = Sepal.Width,
+#'  response = Species,
+#'  ratio = "fpr",
+#'  threshold = 0.1
 #' )
 #' @export
 summarize_predictor <- function(data = NULL,
@@ -162,20 +174,20 @@ summarize_predictor <- function(data = NULL,
 
 #' @title Summarize classifiers performance in a dataset
 #' @description
-#' Calculate a series of metrics describing global classifier performance and
-#' performance over a region of interest for selected classifiers in a dataset.
+#' Calculate a series of metrics describing global and local
+#' performance for selected classifiers in a dataset.
 #' @inheritParams summarize_predictor
-#' @param predictors A vector of data variables. Each variable must be a factor,
-#' integer or character vector representing the class to predict on each
-#' observation or *Gold Standard*. For more info on how to select class of
-#' interest see *Methods*.
+#' @param predictors A vector of numeric data variables which represents the
+#' different classifiers or predictors in data to be summarized.
+#'
+#' If `NULL`and by default, `predictors` will match all numeric variables in
+#' `data` with the exception of `response`, given that it has a numeric type.
 #' @param .progress If `TRUE`, show progress of calculations.
-#' @inheritSection roc_points Methods
-#' @inheritSection roc_points Data masking variables
 #' @inherit roc_points details
 #' @returns
-#' List with different keys with different metrics for each of the specified
-#' classifiers in dataset.
+#' A list with different elements:
+#' * Performance metrics for each of evaluated classifiers.
+#' * Overall description of performance metrics in the dataset.
 #' @examples
 #' summarize_dataset(iris, response = Species, ratio = "tpr", threshold = 0.9)
 #' @export

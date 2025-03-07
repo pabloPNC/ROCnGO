@@ -9,7 +9,8 @@ add_roc_curve(
   fpr = NULL,
   tpr = NULL,
   response = NULL,
-  predictor = NULL
+  predictor = NULL,
+  .condition = NULL
 )
 }
 \arguments{
@@ -17,52 +18,43 @@ add_roc_curve(
 predictors and response variables.}
 
 \item{fpr, tpr}{Numeric vectors representing FPR and TPR for the classifier.
-These arguments will be used when no data, response and predictor are
-supplied.}
+
+These arguments may be used when neither of \code{data}, \code{response} and
+\code{predictor} are supplied.}
 
 \item{response}{A data variable which must be a factor, integer or character
-vector representing the class to predict on each observation or
-\emph{Gold Standard}. For more info on how to select class of interest see
-\emph{Methods} below.}
+vector representing the prediction outcome on each observation
+(\emph{Gold Standard}).
 
-\item{predictor}{A data variable wich must be numeric, representing values of
-a classifier or predictor for each observation.}
+If the variable presents more than two possible outcomes, classes or
+categories:
+\itemize{
+\item The outcome of interest (the one to be predicted) will remain distinct.
+\item All other categories will be combined into a single category.
+}
+
+New combined category represents the "absence" of the condition to predict.
+See \code{.condition} for more information.}
+
+\item{predictor}{A data variable which must be numeric, representing values
+of a classifier or predictor for each observation.}
+
+\item{.condition}{A value from response that represents class, category or
+condition of interest which wants to be predicted.
+
+If \code{NULL}, condition of interest will be selected automatically depending on
+\code{response} type.
+
+Once the class of interest is selected, rest of them will be collapsed in a
+common category, representing the "absence" of the condition to be predicted.
+
+See \code{vignette("selecting-condition")} for further information on how
+automatic selection is performed and details on selecting the condition of
+interest.}
 }
 \description{
 Add a ROC curve to an existing ROC plot.
 }
-\section{Methods}{
-
-When performing calculations response will be transformed internally to a
-factor with levels (0,1), which represent absence or presence of the class we
-want to predict. In order to select which class is the one to predict among
-availables in response, function follows some criteria according to var type:
-\itemize{
-\item integer. When working with an integer vector, function will consider the
-smallest as the class to predict.
-\item character. When working with a character vector, function will consider the
-first value after using \code{\link[=sort]{sort()}} over all posible options.
-\item factor. When working with a factor var, function will select first class in
-\code{\link[=levels]{levels()}}.
-}
-
-Al other classes which are not identified as the class to predict will be
-collapsed into 0. For this reason, try to provide convenient names when
-working or alternatively provide a factor where levels are equal to 0 and 1,
-being 1 cases with the condition of interest.
-}
-
-\section{Data masking variables}{
-
-Both response and predictor support \code{data-masking} variables. For more
-information please check \emph{General usage} in
-\link[rlang:args_data_masking]{this article}.
-
-Nevertheless, function may use environment variables as well. In order to use
-this type of variables simply set \code{data = NULL} and provide response and
-predictor as normal, whithout data-masking.
-}
-
 \examples{
 plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
  add_roc_curve(iris, response = Species, predictor = Sepal.Length)

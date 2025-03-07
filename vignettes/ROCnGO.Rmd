@@ -56,7 +56,7 @@ When working with a classifier that returns a series of numeric values, it can b
 
 These curve points can be calculated by using `roc_points()`. As most functions in the package, it takes a dataset, a data frame, as its first argument. The second and third argument refer to variables in the data frame, corresponding the variable that will be used as a classifier (`predictor`) and the response variable we want to predict (`response`).
 
-For example, we can calculate $ROC$ points for Sepal.Length as a classifier of **setosa** species.
+For example, we can calculate $ROC$ points for Sepal.Length as a classifier of *setosa* species.
 
 ```{r, warning=FALSE}
 # Calculate ROC points for Sepal.Lenght
@@ -71,7 +71,7 @@ points
 plot(points$fpr, points$tpr)
 ```
 
-As we may see, Sepal.Length doesn't perform very well predicting when a flower is from setosa species, in fact it's the other way around, the lower the Sepal.Length the more probable to be working with a **setosa** flower. This can be tested if we change the condition of interest to **virginica**.
+As we may see, Sepal.Length doesn't perform very well predicting when a flower is from setosa species, in fact it's the other way around, the lower the Sepal.Length the more probable to be working with a *setosa* flower. This can be tested if we change the condition of interest to *virginica*.
 
 ### Changing condition of interest
 
