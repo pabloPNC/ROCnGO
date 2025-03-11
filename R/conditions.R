@@ -42,9 +42,13 @@ inform_both_thresholds <- function(thresholds) {
 }
 
 capture_threshold_messages <- function(expr) {
-  threshold_messages <- list(lower = list(), upper = list())
+  threshold_messages <- list(lower = list(), upper = list(), both = list())
   result <- withCallingHandlers(
     expr,
+    inform_both_thresholds = function(cnd) {
+      threshold_messages$both <<- c(threshold_messages$both, list(cnd))
+      invokeRestart("muffleMessage")
+    },
     inform_lower_threshold = function(cnd) {
       threshold_messages$lower <<- c(threshold_messages$lower, list(cnd))
       invokeRestart("muffleMessage")
@@ -65,8 +69,10 @@ resignal_thresholds <- function(expr) {
   msgs <- results$messages
   n_lower <- length(msgs$lower)
   n_upper <- length(msgs$upper)
-
-  if ((n_lower > 0) && (n_upper > 0)) {
+  n_both <- length(msgs$both)
+  if (n_both > 0) {
+    inform_both_thresholds(msgs$both[[1]]$thresholds)
+  } else if ((n_lower > 0) && (n_upper > 0)) {
     inform_both_thresholds(
       c(msgs$lower[[1]]$threshold, msgs$upper[[1]]$threshold)
     )
