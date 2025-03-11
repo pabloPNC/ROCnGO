@@ -26,7 +26,7 @@ interp_lower_threshold <- function(ratio,
       interp_point = interp_point
     )
   } else if (ratio[lower_index] == lower_threshold) {
-    warning("[*] Lower threshold already included in points ...")
+    inform_lower_threshold(lower_threshold)
     result <- NULL
   }
   result
@@ -51,7 +51,7 @@ interp_upper_threshold <- function(ratio,
       interp_point = interp_point
     )
   } else if (ratio[upper_index] == upper_threshold) {
-    warning("[*] Upper threshold already included in points ...")
+    inform_upper_threshold(upper_threshold)
     result <- NULL
   }
   result
