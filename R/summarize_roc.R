@@ -153,23 +153,25 @@ summarize_predictor <- function(data = NULL,
                                 ratio,
                                 threshold,
                                 .condition = NULL) {
-  if (ratio == "tpr") {
-    summarize_tpr_predictor(
-      data,
-      {{ predictor }},
-      {{ response }},
-      threshold,
-      .condition
-    )
-  } else if (ratio == "fpr") {
-    summarize_fpr_predictor(
-      data,
-      {{ predictor }},
-      {{ response }},
-      threshold,
-      .condition
-    )
-  }
+  resignal_thresholds({
+    if (ratio == "tpr") {
+      summarize_tpr_predictor(
+        data,
+        {{ predictor }},
+        {{ response }},
+        threshold,
+        .condition
+      )
+    } else if (ratio == "fpr") {
+      summarize_fpr_predictor(
+        data,
+        {{ predictor }},
+        {{ response }},
+        threshold,
+        .condition
+      )
+    }
+  })
 }
 
 #' @title Summarize classifiers performance in a dataset
@@ -211,32 +213,34 @@ summarize_dataset <- function(data,
 
   response <- data %>% pull({{ response }})
 
-  for (i in 1:length(predictors_dataset)) {
-    if (ratio == "tpr") {
-      result <- summarize_tpr_predictor(
-        NULL,
-        predictors_dataset[[i]],
-        response,
-        threshold,
-        .condition
-      )
-    } else if (ratio == "fpr") {
-      result <- summarize_fpr_predictor(
-        NULL,
-        predictors_dataset[[i]],
-        response,
-        threshold,
-        .condition
-      )
-    }
+  resignal_thresholds({
+    for (i in 1:length(predictors_dataset)) {
+      if (ratio == "tpr") {
+        result <- summarize_tpr_predictor(
+          NULL,
+          predictors_dataset[[i]],
+          response,
+          threshold,
+          .condition
+        )
+      } else if (ratio == "fpr") {
+        result <- summarize_fpr_predictor(
+          NULL,
+          predictors_dataset[[i]],
+          response,
+          threshold,
+          .condition
+        )
+      }
 
-    id <- names(predictors_dataset[i])
-    results[[id]] <- result
+      id <- names(predictors_dataset[i])
+      results[[id]] <- result
 
-    if (.progress == TRUE) {
-      print(str_glue("[*] {length(results)}/{length(predictors_dataset)}"))
+      if (.progress == TRUE) {
+        print(str_glue("[*] {length(results)}/{length(predictors_dataset)}"))
+      }
     }
-  }
+  })
 
   metrics <- list(
     data = bind_rows(results, .id = "identifier")

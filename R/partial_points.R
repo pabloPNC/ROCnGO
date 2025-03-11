@@ -26,7 +26,7 @@ interp_lower_threshold <- function(ratio,
       interp_point = interp_point
     )
   } else if (ratio[lower_index] == lower_threshold) {
-    warning("[*] Lower threshold already included in points ...")
+    inform_lower_threshold(lower_threshold)
     result <- NULL
   }
   result
@@ -51,7 +51,7 @@ interp_upper_threshold <- function(ratio,
       interp_point = interp_point
     )
   } else if (ratio[upper_index] == upper_threshold) {
-    warning("[*] Upper threshold already included in points ...")
+    inform_upper_threshold(upper_threshold)
     result <- NULL
   }
   result
@@ -303,25 +303,26 @@ calc_partial_roc_points <- function(data = NULL,
                                     .condition = NULL) {
   predic_exp <- enquo(predictor)
   resp_exp <- enquo(response)
-  if (!quo_is_null(predic_exp) && !quo_is_null(resp_exp)) {
-    result <- calc_partial_roc_points_from_predictor(
-      data,
-      {{ predictor }},
-      {{ response }},
-      lower_threshold,
-      upper_threshold,
-      ratio,
-      .condition
-    )
-  } else {
-    result <- calc_partial_roc_points_from_ratios(
-      data,
-      {{ fpr }},
-      {{ tpr }},
-      lower_threshold,
-      upper_threshold,
-      ratio
-    )
-  }
-  return(result)
+  resignal_thresholds({
+    if (!quo_is_null(predic_exp) && !quo_is_null(resp_exp)) {
+      result <- calc_partial_roc_points_from_predictor(
+        data,
+        {{ predictor }},
+        {{ response }},
+        lower_threshold,
+        upper_threshold,
+        ratio,
+        .condition
+      )
+    } else {
+      result <- calc_partial_roc_points_from_ratios(
+        data,
+        {{ fpr }},
+        {{ tpr }},
+        lower_threshold,
+        upper_threshold,
+        ratio
+      )
+    }
+  })
 }
