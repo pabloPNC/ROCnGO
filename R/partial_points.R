@@ -303,25 +303,26 @@ calc_partial_roc_points <- function(data = NULL,
                                     .condition = NULL) {
   predic_exp <- enquo(predictor)
   resp_exp <- enquo(response)
-  if (!quo_is_null(predic_exp) && !quo_is_null(resp_exp)) {
-    result <- calc_partial_roc_points_from_predictor(
-      data,
-      {{ predictor }},
-      {{ response }},
-      lower_threshold,
-      upper_threshold,
-      ratio,
-      .condition
-    )
-  } else {
-    result <- calc_partial_roc_points_from_ratios(
-      data,
-      {{ fpr }},
-      {{ tpr }},
-      lower_threshold,
-      upper_threshold,
-      ratio
-    )
-  }
-  return(result)
+  resignal_thresholds({
+    if (!quo_is_null(predic_exp) && !quo_is_null(resp_exp)) {
+      result <- calc_partial_roc_points_from_predictor(
+        data,
+        {{ predictor }},
+        {{ response }},
+        lower_threshold,
+        upper_threshold,
+        ratio,
+        .condition
+      )
+    } else {
+      result <- calc_partial_roc_points_from_ratios(
+        data,
+        {{ fpr }},
+        {{ tpr }},
+        lower_threshold,
+        upper_threshold,
+        ratio
+      )
+    }
+  })
 }
