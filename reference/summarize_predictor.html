@@ -131,9 +131,8 @@ TPR and <a href="specificity_indexes.html">specificity indexes</a> for FPR.</p><
 <span class="r-in"><span> ratio <span class="op">=</span> <span class="st">"tpr"</span>,</span></span>
 <span class="r-in"><span> threshold <span class="op">=</span> <span class="fl">0.9</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[*] Upper threshold already included in points ...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[*] Upper threshold already included in points ...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[*] Upper threshold already included in points ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Upper threshold <span style="color: #0000BB;">1</span> already included in points.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Skipping upper threshold interpolation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     auc   pauc np_auc fp_auc curve_shape     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span>
@@ -147,10 +146,8 @@ TPR and <a href="specificity_indexes.html">specificity indexes</a> for FPR.</p><
 <span class="r-in"><span> ratio <span class="op">=</span> <span class="st">"fpr"</span>,</span></span>
 <span class="r-in"><span> threshold <span class="op">=</span> <span class="fl">0.1</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[*] Lower threshold already included in points ...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[*] Upper threshold already included in points ...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[*] Lower threshold already included in points ...</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[*] Upper threshold already included in points ...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Lower <span style="color: #0000BB;">0</span> and upper <span style="color: #0000BB;">0.1</span> thresholds already included in points</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Skipping lower and upper threshold interpolation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     auc   pauc sp_auc tp_auc curve_shape</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span>
