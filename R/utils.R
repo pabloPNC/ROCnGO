@@ -11,20 +11,3 @@ mask_name <- function(expr) {
     as_name(expr)
   }
 }
-
-capture_messages <- function(expr) {
-  messages <- list()
-
-  result <- withCallingHandlers(
-    expr,
-    message = function(cnd) {
-      messages <<- c(messages, list(cnd))
-      invokeRestart("muffleMessage")
-    }
-  )
-
-  list(
-    result = result,
-    messages = messages
-  )
-}
