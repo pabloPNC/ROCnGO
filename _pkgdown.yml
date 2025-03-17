@@ -56,6 +56,10 @@ reference:
       - add_chance_line
       - plot_thresholds  
       - hide_legend
+
+  - title: Other helpers
+    contents:
+      - sumexp_to_df
   
 
 
