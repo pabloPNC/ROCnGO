@@ -19,7 +19,9 @@ Imports:
     purrr,
     rlang,
     stringr,
-    tibble
+    SummarizedExperiment,
+    tibble,
+    tidyr
 Suggests: 
     knitr,
     rmarkdown,
