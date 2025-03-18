@@ -41,21 +41,29 @@ test_that("FPR diagonal_lower_bound is correct", {
   expect_equal(bound, expected_bound)
 })
 
-
-test_that("fpr diagonal_lower_bound are equal", {
-  actual_bound <- calc_fpr_diagonal_lower_bound(
-    partial_fpr = partial_tpr_fpr[["partial_fpr"]],
-    partial_tpr = partial_tpr_fpr[["partial_tpr"]]
+test_that("FPR rectangle lower bound is correct", {
+  test_iris <- create_iris_df()
+  partial_points <- suppressMessages(
+    calc_partial_roc_points(
+      data = test_iris,
+      response = Species_bin_fct,
+      predictor = Sepal.Width,
+      lower_threshold = 0,
+      upper_threshold = 0.5,
+      ratio = "fpr"
+    )
   )
-
+  bound <- calc_fpr_square_lower_bound(
+    partial_fpr = partial_points[["partial_fpr"]],
+    partial_tpr = partial_points[["partial_tpr"]]
+  )
   expected_bound <- fpr.lower.bounds(
-    data[[response]],
-    data[[predictor]],
-    lower.fp = 0.4,
-    upper.fp = 0.49
-  )
-
-  expect_equal(actual_bound, expected_bound[["diagonal.pAUC"]])
+    test_iris[["Species_bin_fct"]],
+    test_iris[["Sepal.Width"]],
+    lower.fp = 0,
+    upper.fp = 0.5
+  )[["TpAUC.min.roc"]]
+  expect_equal(bound, expected_bound)
 })
 
 test_that("fpr square_lower_bound are equal", {
