@@ -192,48 +192,28 @@ test_that("FPR both bounds are correct", {
   expect_equal(bounds[["lower_bound"]], expected_bounds[["tp_auc_min"]])
 })
 
-test_that("fpr calc_fpr_bounds are equal", {
-  actual_bounds <- calc_fpr_bounds(
-    partial_fpr = partial_tpr_fpr[["partial_fpr"]],
-    partial_tpr = partial_tpr_fpr[["partial_tpr"]]
-  )
-
-  expected_bounds <- fpr.bounds(
-    data[[response]],
-    data[[predictor]],
-    lower.fp = 0.4,
-    upper.fp = 0.49
-  )
-
-  expect_equal(
-    actual_bounds[["upper_bound"]],
-    expected_bounds[["tp_auc_max"]]
-  )
-  expect_equal(
-    actual_bounds[["lower_bound"]],
-    expected_bounds[["tp_auc_min"]]
-  )
-})
-
 test_that("curve_shape works with .condition", {
   test_iris <- create_iris_df()
-  expect_equal_nw(
+  curve_shape <- suppressMessages(
     calc_curve_shape(
-      test_iris,
-      Species,
-      Sepal.Length,
-      0,
-      0.5,
-      "tpr",
-      "virginica"
-    ),
-    calc_curve_shape(
-      test_iris,
-      Species_bin_fct_virg,
-      Sepal.Length,
-      0,
-      0.5,
-      "tpr"
+      data = test_iris,
+      response = Species,
+      predictor = Sepal.Length,
+      lower_threshold = 0,
+      upper_threshold = 0.5,
+      ratio = "tpr",
+      .condition = "virginica"
     )
   )
+  expected_curve_shape <- suppressMessages(
+    calc_curve_shape(
+      data = test_iris,
+      response = Species_bin_fct_virg,
+      predictor = Sepal.Length,
+      lower_threshold = 0,
+      upper_threshold = 0.5,
+      ratio = "tpr"
+    )
+  )
+  expect_equal(curve_shape, expected_curve_shape)
 })
