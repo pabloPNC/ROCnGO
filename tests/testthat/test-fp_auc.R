@@ -23,7 +23,7 @@ test_that("FpAUC is correct", {
 test_that("fp_auc works with .conditions", {
   test_iris <- create_iris_df()
 
-  fpauc_fct <- suppressWarnings(
+  fpauc_fct <- suppressMessages(
     fp_auc(
       test_iris,
       response = Species,
@@ -32,7 +32,7 @@ test_that("fp_auc works with .conditions", {
       .condition = "virginica"
     )
   )
-  fpauc_int <- suppressWarnings(
+  fpauc_int <- suppressMessages(
     fp_auc(
       test_iris,
       response = Species_int,
@@ -41,7 +41,7 @@ test_that("fp_auc works with .conditions", {
       .condition = 3
     )
   )
-  fpauc_chr <- suppressWarnings(
+  fpauc_chr <- suppressMessages(
     fp_auc(
       test_iris,
       response = Species_chr,
