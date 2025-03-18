@@ -166,6 +166,32 @@ test_that("FPR upper bound is correct", {
   expect_equal(bound, expected_bound)
 })
 
+test_that("FPR both bounds are correct", {
+  test_iris <- create_iris_df()
+  partial_points <- suppressMessages(
+    calc_partial_roc_points(
+      data = test_iris,
+      response = Species_bin_fct,
+      predictor = Sepal.Width,
+      lower_threshold = 0,
+      upper_threshold = 0.5,
+      ratio = "fpr"
+    )
+  )
+  bounds <- calc_fpr_bounds(
+    partial_fpr = partial_points[["partial_fpr"]],
+    partial_tpr = partial_points[["partial_tpr"]]
+  )
+  expected_bounds <- fpr.bounds(
+    test_iris[["Species_bin_fct"]],
+    test_iris[["Sepal.Width"]],
+    lower.fp = 0,
+    upper.fp = 0.5
+  )
+  expect_equal(bounds[["upper_bound"]], expected_bounds[["tp_auc_max"]])
+  expect_equal(bounds[["lower_bound"]], expected_bounds[["tp_auc_min"]])
+})
+
 test_that("fpr calc_fpr_bounds are equal", {
   actual_bounds <- calc_fpr_bounds(
     partial_fpr = partial_tpr_fpr[["partial_fpr"]],
