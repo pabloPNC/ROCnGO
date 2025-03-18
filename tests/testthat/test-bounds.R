@@ -1,11 +1,13 @@
+# reads file in fixtures
 data <- tibble::tibble(readRDS(test_path("fixtures", "roc_data.rds")))
 response <- "disease"
 predictor <- "ENSG00000000003.15"
+# creates roc points of data/response | esto no sirve
 tpr_fpr <- roc_points(
   response = data[[response]],
   predictor = data[[predictor]]
 )
-
+# cretaes roc points of data/response
 partial_tpr_fpr <- calc_partial_roc_points(
   tpr = tpr_fpr[["tpr"]],
   fpr = tpr_fpr[["fpr"]],
@@ -13,6 +15,31 @@ partial_tpr_fpr <- calc_partial_roc_points(
   upper_threshold = 0.49,
   ratio = "fpr"
 )
+
+test_that("FPR diagonal_lower_bound is correct", {
+  test_iris <- create_iris_df()
+  partial_points <- suppressMessages(
+    calc_partial_roc_points(
+      data = test_iris,
+      response = Species_bin_fct,
+      predictor = Sepal.Width,
+      lower_threshold = 0,
+      upper_threshold = 0.5,
+      ratio = "fpr"
+    )
+  )
+  bound <- calc_fpr_diagonal_lower_bound(
+    partial_fpr = partial_points[["partial_fpr"]],
+    partial_tpr = partial_points[["partial_tpr"]]
+  )
+  expected_bound <- fpr.lower.bounds(
+    test_iris[["Species_bin_fct"]],
+    test_iris[["Sepal.Width"]],
+    lower.fp = 0,
+    upper.fp = 0.5
+  )[["diagonal.pAUC"]]
+  expect_equal(bound, expected_bound)
+})
 
 
 test_that("fpr diagonal_lower_bound are equal", {
