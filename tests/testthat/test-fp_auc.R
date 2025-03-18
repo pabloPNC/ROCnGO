@@ -2,28 +2,22 @@ data <- tibble::tibble(readRDS(test_path("fixtures", "roc_data.rds")))
 response <- "disease"
 predictor <- "ENSG00000000003.15"
 
-test_that("fp_auc == FpaucHS", {
-  lower_threshold <- 1
-
-  actual_fpauc <- suppressWarnings(
+test_that("FpAUC is correct", {
+  test_iris <- create_iris_df()
+  fpauc <- suppressMessages(
     fp_auc(
-      data = NULL,
-      response = data[[response]],
-      predictor = data[[predictor]],
+      data = test_iris,
+      response = Species_bin_fct,
+      predictor = Sepal.Width,
       lower_tpr = 0.9
     )
   )
-
   expected_fpauc <- FpaucHS(
-    xsample = data[[response]],
-    ysample = data[[predictor]],
+    xsample = test_iris[["Species_bin_fct"]],
+    ysample = test_iris[["Sepal.Width"]],
     lower.sen = 0.9
   )
-
-  expect_equal(
-    actual_fpauc,
-    expected_fpauc
-  )
+  expect_equal(fpauc, expected_fpauc)
 })
 
 test_that("fp_auc works with .conditions", {
