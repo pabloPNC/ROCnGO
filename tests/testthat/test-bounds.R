@@ -1,21 +1,3 @@
-# reads file in fixtures
-data <- tibble::tibble(readRDS(test_path("fixtures", "roc_data.rds")))
-response <- "disease"
-predictor <- "ENSG00000000003.15"
-# creates roc points of data/response | esto no sirve
-tpr_fpr <- roc_points(
-  response = data[[response]],
-  predictor = data[[predictor]]
-)
-# cretaes roc points of data/response
-partial_tpr_fpr <- calc_partial_roc_points(
-  tpr = tpr_fpr[["tpr"]],
-  fpr = tpr_fpr[["fpr"]],
-  lower_threshold = 0.4,
-  upper_threshold = 0.49,
-  ratio = "fpr"
-)
-
 test_that("FPR diagonal_lower_bound is correct", {
   test_iris <- create_iris_df()
   partial_points <- suppressMessages(
