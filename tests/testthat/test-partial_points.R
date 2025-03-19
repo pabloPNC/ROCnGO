@@ -1,250 +1,256 @@
-data <- tibble::tibble(readRDS(test_path("fixtures", "roc_data.rds")))
-response <- "disease"
-predictor <- "ENSG00000000003.15"
-tpr_fpr <- roc_points(
-  response = data[[response]],
-  predictor = data[[predictor]]
-)
-
-test_that("calc_indexes == partial.points.index", {
-  sorted_fpr <- rev(tpr_fpr$fpr)
-
-  actual_indexes <- calc_indexes(
+test_that("calc_indexes is correct", {
+  test_iris <- create_iris_df()
+  ratios <- roc_points(
+    data = test_iris,
+    response = Species_bin_fct,
+    predictor = Sepal.Width
+  )
+  sorted_fpr <- rev(ratios$fpr)
+  indexes <- calc_indexes(
     sorted_fpr,
     lower_threshold = 0,
     upper_threshold = 0.1
   )
-
   expected_indexes <- partial.points.indexes(
-    data[[response]],
-    data[[predictor]],
+    test_iris[["Species_bin_fct"]],
+    test_iris[["Sepal.Width"]],
     lower.fp = 0,
     upper.fp = 0.1
   )
-
-  expect_equal(actual_indexes[["lower"]], expected_indexes[["lower"]])
-  expect_equal(actual_indexes[["upper"]], expected_indexes[["upper"]])
+  expect_equal(indexes[["lower"]], expected_indexes[["lower"]])
+  expect_equal(indexes[["upper"]], expected_indexes[["upper"]])
 })
 
-test_that("interp_lower_threshold warns when adding threshold - fpr", {
-  sorted_fpr <- rev(tpr_fpr$fpr)
-  sorted_tpr <- rev(tpr_fpr$tpr)
-
+test_that("interp_lower_threshold throws a message when not adding threshold", {
+  test_iris <- create_iris_df()
+  ratios <- roc_points(
+    data = test_iris,
+    response = Species_bin_fct,
+    predictor = Sepal.Width
+  )
+  sorted_fpr <- rev(ratios$fpr)
+  sorted_tpr <- rev(ratios$tpr)
   indexes <- calc_indexes(
-    sorted_fpr,
+    ratio = sorted_fpr,
     lower_threshold = 0,
     upper_threshold = 0.1
   )
-
-  expect_warning(
-    interp_lower_threshold(
-      ratio = sorted_fpr,
-      interp_ratio = sorted_tpr,
-      lower_threshold = 0,
-      lower_index = indexes[["lower"]]
-    )
+  expect_message(
+    expect_message(
+      interp_lower_threshold(
+        ratio = sorted_fpr,
+        interp_ratio = sorted_tpr,
+        lower_threshold = 0,
+        lower_index = indexes[["lower"]]
+      ),
+      class = "inform_lower_threshold"
+    ),
+    class = "cliMessage"
   )
 })
 
-test_that("interp_upper_threshold warns when adding threshold - fpr", {
-  sorted_fpr <- rev(tpr_fpr$fpr)
-  sorted_tpr <- rev(tpr_fpr$tpr)
-
+test_that("interp_upper_threshold throws a message when not adding threshold", {
+  test_iris <- create_iris_df()
+  ratios <- roc_points(
+    data = test_iris,
+    response = Species_bin_fct,
+    predictor = Sepal.Width
+  )
+  sorted_fpr <- rev(ratios$fpr)
+  sorted_tpr <- rev(ratios$tpr)
   indexes <- calc_indexes(
-    sorted_fpr,
+    ratio = sorted_fpr,
     lower_threshold = 0.9,
     upper_threshold = 1
   )
-
-  expect_warning(
-    interp_upper_threshold(
-      ratio = sorted_fpr,
-      interp_ratio = sorted_tpr,
-      upper_threshold = 1,
-      upper_index = indexes[["upper"]]
-    )
+  expect_message(
+    expect_message(
+      interp_upper_threshold(
+        ratio = sorted_fpr,
+        interp_ratio = sorted_tpr,
+        upper_threshold = 1,
+        upper_index = indexes[["upper"]]
+      ),
+      class = "inform_upper_threshold"
+    ),
+    class = "cliMessage"
   )
 })
 
-test_that("interp_lower_threshold == partial.points.curve[1] - fpr", {
-  sorted_fpr <- rev(tpr_fpr$fpr)
-  sorted_tpr <- rev(tpr_fpr$tpr)
-
-  indexes <- calc_indexes(
-    sorted_fpr,
-    lower_threshold = 0.1,
-    upper_threshold = 0.2
+test_that("interp_lower_threshold is correct", {
+  test_iris <- create_iris_df()
+  ratios <- roc_points(
+    data = test_iris,
+    response = Species_bin_fct,
+    predictor = Sepal.Width
   )
-
-  interp_ratios <- interp_lower_threshold(
+  sorted_fpr <- rev(ratios$fpr)
+  sorted_tpr <- rev(ratios$tpr)
+  indexes <- calc_indexes(
+    ratio = sorted_fpr,
+    lower_threshold = 0.2,
+    upper_threshold = 0.5
+  )
+  threshold_point <- interp_lower_threshold(
     ratio = sorted_fpr,
     interp_ratio = sorted_tpr,
-    lower_threshold = 0.1,
+    lower_threshold = 0.2,
     lower_index = indexes[["lower"]]
   )
-
   expected_ratios <- partial.points.curve(
-    data[[response]],
-    data[[predictor]],
-    lower.fp = 0.1,
-    upper.fp = 0.2
+    test_iris[["Species_bin_fct"]],
+    test_iris[["Sepal.Width"]],
+    lower.fp = 0.2,
+    upper.fp = 0.5
   )
-
   expect_equal(
-    interp_ratios[["interp_point"]],
+    threshold_point[["interp_point"]],
     expected_ratios[["sen.pr"]][1]
   )
-  expect_equal(
-    interp_ratios[["threshold"]],
-    expected_ratios[["fpr.pr"]][1]
-  )
+  expect_equal(threshold_point[["threshold"]], expected_ratios[["fpr.pr"]][1])
 })
 
-test_that("interp_upper_threshold == partial.points.curve[length] - fpr", {
-  sorted_fpr <- rev(tpr_fpr$fpr)
-  sorted_tpr <- rev(tpr_fpr$tpr)
-
-  indexes <- calc_indexes(
-    sorted_fpr,
-    lower_threshold = 0.8,
-    upper_threshold = 0.9
+test_that("interp_upper_threshold is correct", {
+  test_iris <- create_iris_df()
+  ratios <- roc_points(
+    data = test_iris,
+    response = Species_bin_fct,
+    predictor = Sepal.Width
   )
-
-  interp_ratios <- interp_upper_threshold(
+  sorted_fpr <- rev(ratios$fpr)
+  sorted_tpr <- rev(ratios$tpr)
+  indexes <- calc_indexes(
+    ratio = sorted_fpr,
+    lower_threshold = 0.2,
+    upper_threshold = 0.5
+  )
+  threshold_point <- interp_upper_threshold(
     ratio = sorted_fpr,
     interp_ratio = sorted_tpr,
-    upper_threshold = 0.9,
+    upper_threshold = 0.5,
     upper_index = indexes[["upper"]]
   )
-
   expected_ratios <- partial.points.curve(
-    data[[response]],
-    data[[predictor]],
-    lower.fp = 0.8,
-    upper.fp = 0.9
+    test_iris[["Species_bin_fct"]],
+    test_iris[["Sepal.Width"]],
+    lower.fp = 0.2,
+    upper.fp = 0.5
   )
-
   last_index <- length(expected_ratios[["fpr.pr"]])
-
   expect_equal(
-    interp_ratios[["interp_point"]],
+    threshold_point[["interp_point"]],
     expected_ratios[["sen.pr"]][last_index]
   )
   expect_equal(
-    interp_ratios[["threshold"]],
+    threshold_point[["threshold"]],
     expected_ratios[["fpr.pr"]][last_index]
   )
 })
 
-test_that("interp_thresholds == partial.points.curve[1] & [length]", {
-  sorted_fpr <- rev(tpr_fpr$fpr)
-  sorted_tpr <- rev(tpr_fpr$tpr)
-
-  indexes <- calc_indexes(
-    sorted_fpr,
-    lower_threshold = 0.4,
-    upper_threshold = 0.49
+test_that("interp_thresholds is correct", {
+  test_iris <- create_iris_df()
+  ratios <- roc_points(
+    data = test_iris,
+    response = Species_bin_fct,
+    predictor = Sepal.Width
   )
-
-  actual_ratios <- interp_thresholds(
+  sorted_fpr <- rev(ratios$fpr)
+  sorted_tpr <- rev(ratios$tpr)
+  indexes <- calc_indexes(
+    ratio = sorted_fpr,
+    lower_threshold = 0.2,
+    upper_threshold = 0.5
+  )
+  interp_points <- interp_thresholds(
     ratio = sorted_fpr,
     interp_ratio = sorted_tpr,
-    lower_threshold = 0.4,
-    upper_threshold = 0.49,
+    lower_threshold = 0.2,
+    upper_threshold = 0.5,
     lower_index = indexes[["lower"]],
     upper_index = indexes[["upper"]]
   )
-
   expected_ratios <- partial.points.curve(
-    data[[response]],
-    data[[predictor]],
-    lower.fp = 0.4,
-    upper.fp = 0.49
+    test_iris[["Species_bin_fct"]],
+    test_iris[["Sepal.Width"]],
+    lower.fp = 0.2,
+    upper.fp = 0.5
   )
-
   last_index <- length(expected_ratios[["fpr.pr"]])
-
   expect_equal(
-    actual_ratios[["lower"]][["interp_point"]],
+    interp_points[["lower"]][["interp_point"]],
     expected_ratios[["sen.pr"]][1]
   )
   expect_equal(
-    actual_ratios[["lower"]][["threshold"]],
+    interp_points[["lower"]][["threshold"]],
     expected_ratios[["fpr.pr"]][1]
   )
   expect_equal(
-    actual_ratios[["upper"]][["interp_point"]],
+    interp_points[["upper"]][["interp_point"]],
     expected_ratios[["sen.pr"]][last_index]
   )
   expect_equal(
-    actual_ratios[["upper"]][["threshold"]],
+    interp_points[["upper"]][["threshold"]],
     expected_ratios[["fpr.pr"]][last_index]
   )
 })
 
-test_that("calc_partial_roc_points == partial.points.curve - fpr", {
-  sorted_fpr <- rev(tpr_fpr$fpr)
-  sorted_tpr <- rev(tpr_fpr$tpr)
-
-  actual_partial_points <- calc_partial_roc_points(
-    tpr = sorted_tpr,
-    fpr = sorted_fpr,
-    lower_threshold = 0.4,
-    upper_threshold = 0.49,
+test_that("FPR calc_partial_roc_points is correct", {
+  test_iris <- create_iris_df()
+  ppoints <- calc_partial_roc_points(
+    data = test_iris,
+    response = Species_bin_fct,
+    predictor = Sepal.Width,
+    lower_threshold = 0.2,
+    upper_threshold = 0.5,
     ratio = "fpr"
   )
-
-  expected_partial_points <- partial.points.curve(
-    data[[response]],
-    data[[predictor]],
-    lower.fp = 0.4,
-    upper.fp = 0.49
-  )
-
-  expect_equal(
-    actual_partial_points[["partial_fpr"]],
-    expected_partial_points[["fpr.pr"]]
+  expected_ppoints <- partial.points.curve(
+    test_iris[["Species_bin_fct"]],
+    test_iris[["Sepal.Width"]],
+    lower.fp = 0.2,
+    upper.fp = 0.5
   )
   expect_equal(
-    actual_partial_points[["partial_tpr"]],
-    expected_partial_points[["sen.pr"]]
+    ppoints[["partial_fpr"]],
+    expected_ppoints[["fpr.pr"]]
+  )
+  expect_equal(
+    ppoints[["partial_tpr"]],
+    expected_ppoints[["sen.pr"]]
   )
 })
 
-test_that("calc_partial_roc_points == pHSpoints - tpr", {
-  sorted_fpr <- rev(tpr_fpr$fpr)
-  sorted_tpr <- rev(tpr_fpr$tpr)
-
-  actual_partial_points <- suppressWarnings(
+test_that("TPR calc_partial_roc_points is correct", {
+  test_iris <- create_iris_df()
+  ppoints <- suppressMessages(
     calc_partial_roc_points(
-      tpr = sorted_tpr,
-      fpr = sorted_fpr,
+      data = test_iris,
+      response = Species_bin_fct,
+      predictor = Sepal.Width,
       lower_threshold = 0.9,
       upper_threshold = 1,
       ratio = "tpr"
     )
   )
-
-  expected_partial_points <- pHSpoints(
-    xsample = data[[response]],
-    ysample = data[[predictor]],
+  expected_ppoints <- pHSpoints(
+    test_iris[["Species_bin_fct"]],
+    test_iris[["Sepal.Width"]],
     lower.sen = 0.9
   )
-
   expect_equal(
-    actual_partial_points[["partial_fpr"]],
-    expected_partial_points[, 1]
+    ppoints[["partial_fpr"]],
+    expected_ppoints[, 1]
   )
   expect_equal(
-    actual_partial_points[["partial_tpr"]],
-    expected_partial_points[, 2]
+    ppoints[["partial_tpr"]],
+    expected_ppoints[, 2]
   )
 })
 
 test_that("calc_partial_points works with .condition", {
   test_iris <- create_iris_df()
 
-  partial_points_fct <- suppressWarnings(
+  partial_points_fct <- suppressMessages(
     calc_partial_roc_points(
       test_iris,
       response = Species,
@@ -255,7 +261,7 @@ test_that("calc_partial_points works with .condition", {
       .condition = "virginica"
     )
   )
-  partial_points_int <- suppressWarnings(
+  partial_points_int <- suppressMessages(
     calc_partial_roc_points(
       test_iris,
       response = Species_int,
@@ -266,7 +272,7 @@ test_that("calc_partial_points works with .condition", {
       .condition = 3
     )
   )
-  partial_points_chr <- suppressWarnings(
+  partial_points_chr <- suppressMessages(
     calc_partial_roc_points(
       test_iris,
       response = Species_chr,
@@ -277,7 +283,7 @@ test_that("calc_partial_points works with .condition", {
       .condition = "virginica"
     )
   )
-  expected_partial_points <- suppressWarnings(
+  expected_partial_points <- suppressMessages(
     calc_partial_roc_points(
       test_iris,
       response = Species_bin_fct_virg,
