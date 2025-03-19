@@ -44,34 +44,44 @@ test_that("interp_lower_threshold throws a message when not adding threshold", {
     upper_threshold = 0.1
   )
   expect_message(
-    interp_lower_threshold(
-      ratio = sorted_fpr,
-      interp_ratio = sorted_tpr,
-      lower_threshold = 0,
-      lower_index = indexes[["lower"]]
+    expect_message(
+      interp_lower_threshold(
+        ratio = sorted_fpr,
+        interp_ratio = sorted_tpr,
+        lower_threshold = 0,
+        lower_index = indexes[["lower"]]
+      ),
+      class = "inform_lower_threshold"
     ),
-    class = "inform_lower_threshold"
+    class = "cliMessage"
   )
 })
 
-test_that("interp_lower_threshold warns when adding threshold - fpr", {
-  skip()
-  sorted_fpr <- rev(tpr_fpr$fpr)
-  sorted_tpr <- rev(tpr_fpr$tpr)
-
-  indexes <- calc_indexes(
-    sorted_fpr,
-    lower_threshold = 0,
-    upper_threshold = 0.1
+test_that("interp_upper_threshold throws a message when not adding threshold", {
+  test_iris <- create_iris_df()
+  ratios <- roc_points(
+    data = test_iris,
+    response = Species_bin_fct,
+    predictor = Sepal.Width
   )
-
-  expect_warning(
-    interp_lower_threshold(
-      ratio = sorted_fpr,
-      interp_ratio = sorted_tpr,
-      lower_threshold = 0,
-      lower_index = indexes[["lower"]]
-    )
+  sorted_fpr <- rev(ratios$fpr)
+  sorted_tpr <- rev(ratios$tpr)
+  indexes <- calc_indexes(
+    ratio = sorted_fpr,
+    lower_threshold = 0.9,
+    upper_threshold = 1
+  )
+  expect_message(
+    expect_message(
+      interp_upper_threshold(
+        ratio = sorted_fpr,
+        interp_ratio = sorted_tpr,
+        upper_threshold = 1,
+        upper_index = indexes[["upper"]]
+      ),
+      class = "inform_upper_threshold"
+    ),
+    class = "cliMessage"
   )
 })
 
