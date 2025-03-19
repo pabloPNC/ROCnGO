@@ -228,33 +228,30 @@ test_that("FPR calc_partial_roc_points is correct", {
   )
 })
 
-test_that("calc_partial_roc_points == pHSpoints - tpr", {
-  sorted_fpr <- rev(tpr_fpr$fpr)
-  sorted_tpr <- rev(tpr_fpr$tpr)
-
-  actual_partial_points <- suppressWarnings(
+test_that("TPR calc_partial_roc_points is correct", {
+  test_iris <- create_iris_df()
+  ppoints <- suppressMessages(
     calc_partial_roc_points(
-      tpr = sorted_tpr,
-      fpr = sorted_fpr,
+      data = test_iris,
+      response = Species_bin_fct,
+      predictor = Sepal.Width,
       lower_threshold = 0.9,
       upper_threshold = 1,
       ratio = "tpr"
     )
   )
-
-  expected_partial_points <- pHSpoints(
-    xsample = data[[response]],
-    ysample = data[[predictor]],
+  expected_ppoints <- pHSpoints(
+    test_iris[["Species_bin_fct"]],
+    test_iris[["Sepal.Width"]],
     lower.sen = 0.9
   )
-
   expect_equal(
-    actual_partial_points[["partial_fpr"]],
-    expected_partial_points[, 1]
+    ppoints[["partial_fpr"]],
+    expected_ppoints[, 1]
   )
   expect_equal(
-    actual_partial_points[["partial_tpr"]],
-    expected_partial_points[, 2]
+    ppoints[["partial_tpr"]],
+    expected_ppoints[, 2]
   )
 })
 
