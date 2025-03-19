@@ -1,7 +1,3 @@
-data <- tibble::tibble(readRDS(test_path("fixtures", "roc_data.rds")))
-response <- "disease"
-predictor <- "ENSG00000000003.15"
-
 test_that("get_thresholds is correct", {
   test_iris <- create_iris_df()
   thresholds <- get_thresholds(
