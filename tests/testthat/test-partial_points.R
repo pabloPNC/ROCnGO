@@ -29,24 +29,29 @@ test_that("calc_indexes is correct", {
   expect_equal(indexes[["upper"]], expected_indexes[["upper"]])
 })
 
-test_that("calc_indexes == partial.points.index", {
-  sorted_fpr <- rev(tpr_fpr$fpr)
-
-  actual_indexes <- calc_indexes(
-    sorted_fpr,
+test_that("interp_lower_threshold throws a message when not adding threshold", {
+  test_iris <- create_iris_df()
+  ratios <- roc_points(
+    data = test_iris,
+    response = Species_bin_fct,
+    predictor = Sepal.Width
+  )
+  sorted_fpr <- rev(ratios$fpr)
+  sorted_tpr <- rev(ratios$tpr)
+  indexes <- calc_indexes(
+    ratio = sorted_fpr,
     lower_threshold = 0,
     upper_threshold = 0.1
   )
-
-  expected_indexes <- partial.points.indexes(
-    data[[response]],
-    data[[predictor]],
-    lower.fp = 0,
-    upper.fp = 0.1
+  expect_message(
+    interp_lower_threshold(
+      ratio = sorted_fpr,
+      interp_ratio = sorted_tpr,
+      lower_threshold = 0,
+      lower_index = indexes[["lower"]]
+    ),
+    class = "inform_lower_threshold"
   )
-
-  expect_equal(actual_indexes[["lower"]], expected_indexes[["lower"]])
-  expect_equal(actual_indexes[["upper"]], expected_indexes[["upper"]])
 })
 
 test_that("interp_lower_threshold warns when adding threshold - fpr", {
