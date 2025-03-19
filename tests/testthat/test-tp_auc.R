@@ -50,7 +50,7 @@ test_that("tp_auc faster than TpAUC.function", {
 
 test_that("tp_auc works with .condition", {
   test_iris <- create_iris_df()
-  tpauc_fct <- suppressWarnings(
+  tpauc_fct <- suppressMessages(
     tp_auc(
       test_iris,
       response = Species,
@@ -60,7 +60,7 @@ test_that("tp_auc works with .condition", {
       .condition = "virginica"
     )
   )
-  tpauc_int <- suppressWarnings(
+  tpauc_int <- suppressMessages(
     tp_auc(
       test_iris,
       response = Species_int,
@@ -70,7 +70,7 @@ test_that("tp_auc works with .condition", {
       .condition = 3
     )
   )
-  tpauc_chr <- suppressWarnings(
+  tpauc_chr <- suppressMessages(
     tp_auc(
       test_iris,
       response = Species_chr,
@@ -80,7 +80,7 @@ test_that("tp_auc works with .condition", {
       .condition = "virginica"
     )
   )
-  expected_tpauc <- suppressWarnings(
+  expected_tpauc <- suppressMessages(
     tp_auc(
       test_iris,
       response = Species_bin_fct_virg,
