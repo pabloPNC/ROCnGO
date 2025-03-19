@@ -15,110 +15,39 @@ test_that("get_thresholds is correct", {
   expect_equal(thresholds, expected_thresholds)
 })
 
-test_that("calc_ratios, calc_fpr and calc_tpr == points.curve", {
-  expect_equal(
-    rev(
-      calc_tpr(
-        thresholds = get_thresholds(
-          predictor = data[[predictor]],
-        ),
-        response = data[[response]],
-        predictor = data[[predictor]]
-      )
-    ),
-    points.curve(data[[response]], data[[predictor]])[, 2]
+test_that("calc_ratios, calc_fpr and calc_tpr are correct", {
+  test_iris <- create_iris_df()
+  thresholds <- get_thresholds(test_iris, predictor = Sepal.Width)
+  tpr <- calc_tpr(
+    data = test_iris,
+    thresholds = thresholds,
+    response = Species_bin_fct,
+    predictor = Sepal.Width
   )
-  expect_equal(
-    rev(
-      calc_fpr(
-        thresholds = get_thresholds(
-          predictor = data[[predictor]],
-        ),
-        response = data[[response]],
-        predictor = data[[predictor]]
-      )
-    ),
-    points.curve(data[[response]], data[[predictor]])[, 1]
+  fpr <- calc_fpr(
+    data = test_iris,
+    thresholds = thresholds,
+    response = Species_bin_fct,
+    predictor = Sepal.Width
   )
-  expect_equal(
-    rev(
-      calc_ratios(
-        thresholds = get_thresholds(
-          predictor = data[[predictor]],
-        ),
-        response = data[[response]],
-        predictor = data[[predictor]]
-      )[["fpr"]]
-    ),
-    points.curve(data[[response]], data[[predictor]])[, 1]
+  ratios <- calc_ratios(
+    data = test_iris,
+    thresholds = thresholds,
+    response = Species_bin_fct,
+    predictor = Sepal.Width
   )
-  expect_equal(
-    rev(
-      calc_ratios(
-        thresholds = get_thresholds(
-          predictor = data[[predictor]],
-        ),
-        response = data[[response]],
-        predictor = data[[predictor]]
-      )[["tpr"]]
-    ),
-    points.curve(data[[response]], data[[predictor]])[, 2]
+  sorted_tpr <- rev(tpr)
+  sorted_fpr <- rev(fpr)
+  sorted_tpr_ratio <- rev(ratios[["tpr"]])
+  sorted_fpr_ratio <- rev(ratios[["fpr"]])
+  expected_points <- points.curve(
+    test_iris[["Species_bin_fct"]],
+    test_iris[["Sepal.Width"]]
   )
-})
-
-test_that("calc_ratios, calc_fpr and calc_tpr == points.curve - tidy", {
-  expect_equal(
-    rev(
-      calc_tpr(
-        data,
-        thresholds = get_thresholds(
-          predictor = data[[predictor]],
-        ),
-        response = disease,
-        predictor = ENSG00000000003.15
-      )
-    ),
-    points.curve(data[[response]], data[[predictor]])[, 2]
-  )
-  expect_equal(
-    rev(
-      calc_fpr(
-        data,
-        thresholds = get_thresholds(
-          predictor = data[[predictor]],
-        ),
-        response = disease,
-        predictor = ENSG00000000003.15
-      )
-    ),
-    points.curve(data[[response]], data[[predictor]])[, 1]
-  )
-  expect_equal(
-    rev(
-      calc_ratios(
-        data,
-        thresholds = get_thresholds(
-          predictor = data[[predictor]],
-        ),
-        response = disease,
-        predictor = ENSG00000000003.15
-      )[["fpr"]]
-    ),
-    points.curve(data[[response]], data[[predictor]])[, 1]
-  )
-  expect_equal(
-    rev(
-      calc_ratios(
-        data,
-        thresholds = get_thresholds(
-          predictor = data[[predictor]],
-        ),
-        response = disease,
-        predictor = ENSG00000000003.15
-      )[["tpr"]]
-    ),
-    points.curve(data[[response]], data[[predictor]])[, 2]
-  )
+  expect_equal(sorted_fpr, expected_points[, 1])
+  expect_equal(sorted_tpr, expected_points[, 2])
+  expect_equal(sorted_fpr_ratio, expected_points[, 1])
+  expect_equal(sorted_tpr_ratio, expected_points[, 2])
 })
 
 test_that("sorting when getting points not needed", {
