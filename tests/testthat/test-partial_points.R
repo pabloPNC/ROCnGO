@@ -155,48 +155,49 @@ test_that("interp_upper_threshold is correct", {
   )
 })
 
-test_that("interp_thresholds == partial.points.curve[1] & [length]", {
-  sorted_fpr <- rev(tpr_fpr$fpr)
-  sorted_tpr <- rev(tpr_fpr$tpr)
-
-  indexes <- calc_indexes(
-    sorted_fpr,
-    lower_threshold = 0.4,
-    upper_threshold = 0.49
+test_that("interp_thresholds is correct", {
+  test_iris <- create_iris_df()
+  ratios <- roc_points(
+    data = test_iris,
+    response = Species_bin_fct,
+    predictor = Sepal.Width
   )
-
-  actual_ratios <- interp_thresholds(
+  sorted_fpr <- rev(ratios$fpr)
+  sorted_tpr <- rev(ratios$tpr)
+  indexes <- calc_indexes(
+    ratio = sorted_fpr,
+    lower_threshold = 0.2,
+    upper_threshold = 0.5
+  )
+  interp_points <- interp_thresholds(
     ratio = sorted_fpr,
     interp_ratio = sorted_tpr,
-    lower_threshold = 0.4,
-    upper_threshold = 0.49,
+    lower_threshold = 0.2,
+    upper_threshold = 0.5,
     lower_index = indexes[["lower"]],
     upper_index = indexes[["upper"]]
   )
-
   expected_ratios <- partial.points.curve(
-    data[[response]],
-    data[[predictor]],
-    lower.fp = 0.4,
-    upper.fp = 0.49
+    test_iris[["Species_bin_fct"]],
+    test_iris[["Sepal.Width"]],
+    lower.fp = 0.2,
+    upper.fp = 0.5
   )
-
   last_index <- length(expected_ratios[["fpr.pr"]])
-
   expect_equal(
-    actual_ratios[["lower"]][["interp_point"]],
+    interp_points[["lower"]][["interp_point"]],
     expected_ratios[["sen.pr"]][1]
   )
   expect_equal(
-    actual_ratios[["lower"]][["threshold"]],
+    interp_points[["lower"]][["threshold"]],
     expected_ratios[["fpr.pr"]][1]
   )
   expect_equal(
-    actual_ratios[["upper"]][["interp_point"]],
+    interp_points[["upper"]][["interp_point"]],
     expected_ratios[["sen.pr"]][last_index]
   )
   expect_equal(
-    actual_ratios[["upper"]][["threshold"]],
+    interp_points[["upper"]][["threshold"]],
     expected_ratios[["fpr.pr"]][last_index]
   )
 })
