@@ -50,6 +50,33 @@ test_that("calc_ratios, calc_fpr and calc_tpr are correct", {
   expect_equal(sorted_tpr_ratio, expected_points[, 2])
 })
 
+test_that("sorting not needed in calc_*", {
+  test_iris <- create_iris_df()
+  thresholds <- get_thresholds(
+    data = test_iris,
+    predictor = Sepal.Width
+  )
+  ratios <- as_tibble(
+    calc_ratios(
+      data = test_iris,
+      thresholds = thresholds,
+      predictor = Sepal.Width,
+      response = Species_bin_fct
+    )
+  )
+  expected_ratios <- as_tibble(
+    fpr = points.curve(
+      test_iris[["Species_bin_fct"]],
+      test_iris[["Sepal.Width"]]
+    )[, 1],
+    tpr = points.curve(
+      test_iris[["Species_bin_fct"]],
+      test_iris[["Sepal.Width"]]
+    )[, 2]
+  )
+  expect_true(dplyr::setequal(ratios, expected_ratios))
+})
+
 test_that("sorting when getting points not needed", {
   points_calc_ratios <- as.data.frame(
     calc_ratios(
