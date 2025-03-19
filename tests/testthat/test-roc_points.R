@@ -73,22 +73,6 @@ test_that("sorting not needed in calc_*", {
   expect_true(dplyr::setequal(ratios, expected_ratios))
 })
 
-test_that("get_thresholds is faster/equal than points.thresholds", {
-  skip()
-  expect_faster(
-    get_thresholds(predictor = data[[predictor]]),
-    points.thresholds(data[[response]], data[[predictor]])
-  )
-})
-
-test_that("roc_points is faster/equal than points.curve", {
-  skip()
-  expect_faster(
-    roc_points(NULL, data[["disease"]], data[[predictor]]),
-    points.curve(data[["disease"]], data[[predictor]])
-  )
-})
-
 test_that("roc_points works selecting a .condition", {
   test_iris <- create_iris_df()
   virg_fct_roc_points <- roc_points(
