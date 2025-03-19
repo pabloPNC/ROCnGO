@@ -2,18 +2,17 @@ data <- tibble::tibble(readRDS(test_path("fixtures", "roc_data.rds")))
 response <- "disease"
 predictor <- "ENSG00000000003.15"
 
-test_that("get_thresholds == points.thresholds", {
-  expect_equal(
-    get_thresholds(predictor = data[[predictor]]),
-    points.thresholds(data[[response]], data[[predictor]])
+test_that("get_thresholds is correct", {
+  test_iris <- create_iris_df()
+  thresholds <- get_thresholds(
+    data = test_iris,
+    predictor = Sepal.Width
   )
-})
-
-test_that("get_thresholds == points.thresholds - tidy", {
-  expect_equal(
-    get_thresholds(data, ENSG00000000003.15),
-    points.thresholds(data[[response]], data[[predictor]])
+  expected_thresholds <- points.thresholds(
+    test_iris[["Species_bin_fct"]],
+    test_iris[["Sepal.Width"]]
   )
+  expect_equal(thresholds, expected_thresholds)
 })
 
 test_that("calc_ratios, calc_fpr and calc_tpr == points.curve", {
