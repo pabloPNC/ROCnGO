@@ -202,32 +202,29 @@ test_that("interp_thresholds is correct", {
   )
 })
 
-test_that("calc_partial_roc_points == partial.points.curve - fpr", {
-  sorted_fpr <- rev(tpr_fpr$fpr)
-  sorted_tpr <- rev(tpr_fpr$tpr)
-
-  actual_partial_points <- calc_partial_roc_points(
-    tpr = sorted_tpr,
-    fpr = sorted_fpr,
-    lower_threshold = 0.4,
-    upper_threshold = 0.49,
+test_that("FPR calc_partial_roc_points is correct", {
+  test_iris <- create_iris_df()
+  ppoints <- calc_partial_roc_points(
+    data = test_iris,
+    response = Species_bin_fct,
+    predictor = Sepal.Width,
+    lower_threshold = 0.2,
+    upper_threshold = 0.5,
     ratio = "fpr"
   )
-
-  expected_partial_points <- partial.points.curve(
-    data[[response]],
-    data[[predictor]],
-    lower.fp = 0.4,
-    upper.fp = 0.49
-  )
-
-  expect_equal(
-    actual_partial_points[["partial_fpr"]],
-    expected_partial_points[["fpr.pr"]]
+  expected_ppoints <- partial.points.curve(
+    test_iris[["Species_bin_fct"]],
+    test_iris[["Sepal.Width"]],
+    lower.fp = 0.2,
+    upper.fp = 0.5
   )
   expect_equal(
-    actual_partial_points[["partial_tpr"]],
-    expected_partial_points[["sen.pr"]]
+    ppoints[["partial_fpr"]],
+    expected_ppoints[["fpr.pr"]]
+  )
+  expect_equal(
+    ppoints[["partial_tpr"]],
+    expected_ppoints[["sen.pr"]]
   )
 })
 
