@@ -258,7 +258,7 @@ test_that("TPR calc_partial_roc_points is correct", {
 test_that("calc_partial_points works with .condition", {
   test_iris <- create_iris_df()
 
-  partial_points_fct <- suppressWarnings(
+  partial_points_fct <- suppressMessages(
     calc_partial_roc_points(
       test_iris,
       response = Species,
@@ -269,7 +269,7 @@ test_that("calc_partial_points works with .condition", {
       .condition = "virginica"
     )
   )
-  partial_points_int <- suppressWarnings(
+  partial_points_int <- suppressMessages(
     calc_partial_roc_points(
       test_iris,
       response = Species_int,
@@ -280,7 +280,7 @@ test_that("calc_partial_points works with .condition", {
       .condition = 3
     )
   )
-  partial_points_chr <- suppressWarnings(
+  partial_points_chr <- suppressMessages(
     calc_partial_roc_points(
       test_iris,
       response = Species_chr,
@@ -291,7 +291,7 @@ test_that("calc_partial_points works with .condition", {
       .condition = "virginica"
     )
   )
-  expected_partial_points <- suppressWarnings(
+  expected_partial_points <- suppressMessages(
     calc_partial_roc_points(
       test_iris,
       response = Species_bin_fct_virg,
