@@ -1,3 +1,4 @@
+#' @export
 pauc_fpr <- function(partial_fpr, partial_tpr) {
   pauc <- sum(
     diff(partial_fpr) *
@@ -13,6 +14,7 @@ pauc_fpr <- function(partial_fpr, partial_tpr) {
   pauc
 }
 
+#' @export
 pauc_tpr <- function(partial_fpr, partial_tpr) {
   pauc <- sum(
     diff(partial_tpr) *

@@ -1,3 +1,4 @@
+#' @export
 cp_auc <- function(data = NULL,
                    response,
                    predictor,
@@ -19,6 +20,7 @@ cp_auc <- function(data = NULL,
   c_pauc
 }
 
+#' @export
 ncp_auc <- function(data = NULL,
                     response,
                     predictor,
