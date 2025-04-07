@@ -1,9 +1,9 @@
-concordant_partial_auc <- function(data = NULL,
-                                   response,
-                                   predictor,
-                                   lower_fpr,
-                                   upper_fpr,
-                                   .condition = NULL) {
+cp_auc <- function(data = NULL,
+                   response,
+                   predictor,
+                   lower_fpr,
+                   upper_fpr,
+                   .condition = NULL) {
   ppoints <- calc_partial_roc_points(
     data = data,
     response = {{ response }},
@@ -19,13 +19,13 @@ concordant_partial_auc <- function(data = NULL,
   c_pauc
 }
 
-normalized_cpauc <- function(data = NULL,
-                             response,
-                             predictor,
-                             lower_fpr,
-                             upper_fpr,
-                             .condition = NULL) {
-  c_pauc <- concordant_partial_auc(
+ncp_auc <- function(data = NULL,
+                    response,
+                    predictor,
+                    lower_fpr,
+                    upper_fpr,
+                    .condition = NULL) {
+  c_pauc <- cp_auc(
     data = data,
     response = {{ response }},
     predictor = {{ predictor }},
