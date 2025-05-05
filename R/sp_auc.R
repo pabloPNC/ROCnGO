@@ -1,3 +1,7 @@
+#' @param .invalid If `FALSE`, the default, `sp_auc()` will return `NA` when
+#' ROC curve does not fit theoretical bounds and index cannot be applied.
+#' If `TRUE`, function will force the calculation and return a value despite
+#' probably being incorrect.
 #' @rdname specificity_indexes
 #' @export
 #' @references

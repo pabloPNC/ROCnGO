@@ -62,6 +62,11 @@ common category, representing the "absence" of the condition to be predicted.
 See \code{vignette("selecting-condition")} for further information on how
 automatic selection is performed and details on selecting the condition of
 interest.}
+
+\item{.invalid}{If \code{FALSE}, the default, \code{sp_auc()} will return \code{NA} when
+ROC curve does not fit theoretical bounds and index cannot be applied.
+If \code{TRUE}, function will force the calculation and return a value despite
+probably being incorrect.}
 }
 \value{
 A numeric value representing the index score for the partial area under
@@ -81,6 +86,7 @@ which calculates area under curve over the whole specified region.
 }
 \examples{
 # Calculate sp_auc of Sepal.Width as a classifier of setosa species
+# in FPR = (0.9, 1)
 sp_auc(
  iris,
  response = Species,
@@ -89,6 +95,7 @@ sp_auc(
  upper_fpr = 0.1
 )
 # Calculate tp_auc of Sepal.Width as a classifier of setosa species
+ # in FPR = (0.9, 1)
 tp_auc(
  iris,
  response = Species,
