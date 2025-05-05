@@ -16,7 +16,7 @@
 #' @name specificity_indexes
 #' @examples
 #' # Calculate sp_auc of Sepal.Width as a classifier of setosa species
-#  # in FPR = (0.9, 1)
+#' # in FPR = (0.9, 1)
 #' sp_auc(
 #'  iris,
 #'  response = Species,
@@ -25,7 +25,7 @@
 #'  upper_fpr = 0.1
 #' )
 #' # Calculate tp_auc of Sepal.Width as a classifier of setosa species
-#  # in FPR = (0.9, 1)
+#'  # in FPR = (0.9, 1)
 #' tp_auc(
 #'  iris,
 #'  response = Species,

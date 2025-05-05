@@ -1,3 +1,7 @@
+#' @param .invalid If `FALSE`, the default, `sp_auc()` will return `NA` when
+#' ROC curve does not fit theoretical bounds and index cannot be applied.
+#' If `TRUE`, function will force the calculation and return a value despite
+#' probably being incorrect.
 #' @rdname specificity_indexes
 #' @export
 #' @references
@@ -9,19 +13,36 @@ sp_auc <- function(
     predictor,
     lower_fpr,
     upper_fpr,
-    .condition = NULL) {
+    .condition = NULL,
+    .invalid = FALSE) {
   if (!is.null(data)) {
-    response <- pull(data, {{ response }})
-    predictor <- pull(data, {{ predictor }})
+    tpr_fpr <- data %>% roc_points({{ response }}, {{ predictor }}, .condition)
+    tpr <- tpr_fpr %>% pull(tpr)
+    fpr <- tpr_fpr %>% pull(fpr)
+  } else {
+    tpr_fpr <- NULL %>% roc_points(response, predictor, .condition)
+    tpr <- tpr_fpr[["tpr"]]
+    fpr <- tpr_fpr[["fpr"]]
   }
-  response <- as_response(response, .condition)
-  auc(
-    response = response,
-    predictor = predictor,
-    direction = "<",
-    quiet = TRUE,
-    partial.auc = c(1 - upper_fpr, 1 - lower_fpr),
-    partial.auc.focus = "spec",
-    partial.auc.correct = TRUE
+  partial_tpr_fpr <- calc_partial_roc_points(
+    tpr = tpr,
+    fpr = fpr,
+    lower_threshold = lower_fpr,
+    upper_threshold = upper_fpr,
+    ratio = "fpr"
   )
+  partial_tpr <- partial_tpr_fpr[["partial_tpr"]]
+  partial_fpr <- partial_tpr_fpr[["partial_fpr"]]
+  pauc <- pauc_fpr(partial_fpr, partial_tpr)
+  lower_bound <- calc_fpr_diagonal_lower_bound(partial_fpr, partial_tpr)
+  upper_bound <- upper_fpr - lower_fpr
+
+  if (pauc < lower_bound && !.invalid) {
+    # TODO: improve warning when pauc < under diagonal
+    warning("Curve under chance line")
+    spauc <- NA
+  } else {
+    spauc <- (1 + ((pauc - lower_bound) / (upper_bound - lower_bound))) / 2
+  }
+  spauc
 }
