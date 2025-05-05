@@ -19,23 +19,13 @@ summarize_tpr_predictor <- function(data = NULL,
     ratio = "tpr"
   )
   tibble(
-    auc = as.double(
-      auc(
-        response = response,
-        predictor = predictor,
-        direction = "<",
-        quiet = TRUE
-      )
+    auc = auc(
+      response = response,
+      predictor = predictor
     ),
-    pauc = as.double(
-      auc(
-        response = response,
-        predictor = predictor,
-        direction = "<",
-        quiet = TRUE,
-        partial.auc = c(threshold, 1),
-        partial.auc.focus = "sens"
-      )
+    pauc = pauc_tpr(
+      partial_tpr = ptpr_pfpr$partial_tpr,
+      partial_fpr = ptpr_pfpr$partial_fpr
     ),
     np_auc = np_auc(NULL, response, predictor, threshold),
     fp_auc = fp_auc(NULL, response, predictor, threshold),
@@ -65,35 +55,19 @@ summarize_fpr_predictor <- function(data = NULL,
     ratio = "fpr"
   )
   tibble(
-    auc = as.double(
-      auc(
-        response = response,
-        predictor = predictor,
-        direction = "<",
-        quiet = TRUE
-      )
+    auc = auc(
+      response = response,
+      predictor = predictor,
     ),
-    pauc = as.double(
-      auc(
-        response = response,
-        predictor = predictor,
-        direction = "<",
-        quiet = TRUE,
-        partial.auc = c(1 - threshold, 1),
-        partial.auc.focus = "spec"
-      )
+    pauc = pauc_fpr(
+      partial_tpr = ptpr_pfpr$partial_tpr,
+      partial_fpr = ptpr_pfpr$partial_fpr
     ),
-    sp_auc = as.double(
-      auc(
-        response = response,
-        predictor = predictor,
-        direction = "<",
-        quiet = TRUE,
-        partial.auc = c(1 - threshold, 1),
-        partial.auc.focus = "spec",
-        partial.auc.correct = TRUE,
-        allow.invalid.partial.auc.correct = FALSE
-      )
+    sp_auc = sp_auc(
+      response = response,
+      predictor = predictor,
+      lower_fpr = 0,
+      upper_fpr = threshold
     ),
     tp_auc = tp_auc(NULL, response, predictor, 0, threshold),
     curve_shape = calc_fpr_curve_shape(

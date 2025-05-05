@@ -12,7 +12,8 @@ sp_auc(
   predictor,
   lower_fpr,
   upper_fpr,
-  .condition = NULL
+  .condition = NULL,
+  .invalid = FALSE
 )
 
 tp_auc(
