@@ -7,12 +7,14 @@ reference:
     desc: >
       Functions that operate on the entire ROC curve.
     contents:
+      - auc
       - roc_points
   
   - title: Partial ROC curve
     desc: >
       Functions that operate on an specific ROC curve region.
     contents:
+      - pauc
       - calc_partial_roc_points
       - calc_curve_shape
 
@@ -22,6 +24,7 @@ reference:
     contents:
       - sensitivity_indexes
       - specificity_indexes
+      - concordance_indexes
 
   - title: Summarize
     desc: >
