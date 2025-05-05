@@ -72,7 +72,8 @@ which calculates area under curve over the whole specified region.</p></li>
 <span>  <span class="va">predictor</span>,</span>
 <span>  <span class="va">lower_fpr</span>,</span>
 <span>  <span class="va">upper_fpr</span>,</span>
-<span>  .condition <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  .condition <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  .invalid <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">tp_auc</span><span class="op">(</span></span>
@@ -127,6 +128,13 @@ common category, representing the "absence" of the condition to be predicted.</p
 automatic selection is performed and details on selecting the condition of
 interest.</p></dd>
 
+
+<dt id="arg--invalid">.invalid<a class="anchor" aria-label="anchor" href="#arg--invalid"></a></dt>
+<dd><p>If <code>FALSE</code>, the default, <code>sp_auc()</code> will return <code>NA</code> when
+ROC curve does not fit theoretical bounds and index cannot be applied.
+If <code>TRUE</code>, function will force the calculation and return a value despite
+probably being incorrect.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -145,6 +153,7 @@ evaluating the classification performance at a high specificity range.
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Calculate sp_auc of Sepal.Width as a classifier of setosa species</span></span></span>
+<span class="r-in"><span><span class="co"># in FPR = (0.9, 1)</span></span></span>
 <span class="r-in"><span><span class="fu">sp_auc</span><span class="op">(</span></span></span>
 <span class="r-in"><span> <span class="va">iris</span>,</span></span>
 <span class="r-in"><span> response <span class="op">=</span> <span class="va">Species</span>,</span></span>
@@ -152,8 +161,11 @@ evaluating the classification performance at a high specificity range.
 <span class="r-in"><span> lower_fpr <span class="op">=</span> <span class="fl">0</span>,</span></span>
 <span class="r-in"><span> upper_fpr <span class="op">=</span> <span class="fl">0.1</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Corrected partial area under the curve (specificity 1-0.9): 0.7242</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Lower <span style="color: #0000BB;">0</span> and upper <span style="color: #0000BB;">0.1</span> thresholds already included in points</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> • Skipping lower and upper threshold interpolation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.7242105</span>
 <span class="r-in"><span><span class="co"># Calculate tp_auc of Sepal.Width as a classifier of setosa species</span></span></span>
+<span class="r-in"><span> <span class="co"># in FPR = (0.9, 1)</span></span></span>
 <span class="r-in"><span><span class="fu">tp_auc</span><span class="op">(</span></span></span>
 <span class="r-in"><span> <span class="va">iris</span>,</span></span>
 <span class="r-in"><span> response <span class="op">=</span> <span class="va">Species</span>,</span></span>
@@ -175,7 +187,7 @@ evaluating the classification performance at a high specificity range.
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
     </footer></div>
