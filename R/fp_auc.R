@@ -21,10 +21,10 @@
 #' @name sensitivity_indexes
 #' @examples
 #' # Calculate fp_auc of Sepal.Width as a classifier of setosa species
-#  # in TPR = (0.9, 1)
+#' # in TPR = (0.9, 1)
 #' fp_auc(iris, response = Species, predictor = Sepal.Width, lower_tpr = 0.9)
 #' # Calculate np_auc of Sepal.Width as a classifier of setosa species
-#  # in TPR = (0.9, 1)
+#' # in TPR = (0.9, 1)
 #' np_auc(iris, response = Species, predictor = Sepal.Width, lower_tpr = 0.9)
 NULL
 
