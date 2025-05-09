@@ -25,8 +25,6 @@ sp_auc.ratio_df <- function(data,
                             upper_fpr,
                             .condition = NULL,
                             .invalid = FALSE) {
-  # fpr, tpr usage
-  cli::cli_alert("In {.cls ratio_df}")
   pauc <- pauc_fpr(data$fpr, data$tpr)
   lower_bound <- calc_fpr_diagonal_lower_bound(
     data$fpr,
@@ -52,8 +50,6 @@ sp_auc.NULL <- function(data,
                         upper_fpr,
                         .condition = NULL,
                         .invalid = FALSE) {
-  # vector usage
-  cli::cli_alert("In {.cls NULL}")
   ratios <- roc_points(NULL, response, predictor, .condition)
   pratios <- calc_partial_roc_points(
     tpr = ratios$tpr,
@@ -73,8 +69,6 @@ sp_auc.data.frame <- function(data,
                               upper_fpr,
                               .condition = NULL,
                               .invalid = FALSE) {
-  # df  usage
-  cli::cli_alert("In {.cls data.frame}")
   response <- pull(data, {{ response }})
   predictor <- pull(data, {{ predictor }})
   sp_auc.NULL(
