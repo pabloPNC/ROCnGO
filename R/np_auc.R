@@ -4,44 +4,56 @@
 #' partial area index for highly sensitive diagnostic tests. *Radiology*
 #' 201, 745-750 (1996).
 #' @export
-np_auc <- function(data = NULL,
+np_auc <- function(data,
                    response,
                    predictor,
                    lower_tpr,
                    .condition = NULL) {
-  if (!is.null(data)) {
-    tpr_fpr <- data %>% roc_points({{ response }}, {{ predictor }}, .condition)
-    tpr <- tpr_fpr %>% pull(tpr)
-    fpr <- tpr_fpr %>% pull(fpr)
-  } else {
-    tpr_fpr <- NULL %>% roc_points(response, predictor, .condition)
-    tpr <- tpr_fpr[["tpr"]]
-    fpr <- tpr_fpr[["fpr"]]
-  }
+  UseMethod("np_auc", data)
+}
 
-  partial_tpr_fpr <- calc_partial_roc_points(
-    tpr = tpr,
-    fpr = fpr,
+#' @export
+np_auc.ratio_df <- function(data,
+                            response,
+                            predictor,
+                            lower_tpr,
+                            .condition = NULL) {
+  pauc <- pauc_tpr(data$fpr, data$tpr)
+  npauc <- pauc / (1 - min(data$tpr))
+  npauc
+}
+
+#' @export
+np_auc.NULL <- function(data,
+                        response,
+                        predictor,
+                        lower_tpr,
+                        .condition = NULL) {
+  ratios <- roc_points(NULL, response, predictor, .condition)
+  pratios <- calc_partial_roc_points(
+    tpr = ratios$tpr,
+    fpr = ratios$fpr,
     lower_threshold = lower_tpr,
     upper_threshold = 1,
     ratio = "tpr"
   )
+  np_auc.ratio_df(pratios, .condition = .condition)
+}
 
-  partial_tpr <- partial_tpr_fpr[["partial_tpr"]]
-  partial_fpr <- partial_tpr_fpr[["partial_fpr"]]
 
-  pauc <- sum(
-    diff(partial_tpr) *
-      apply(
-        cbind(
-          1 - partial_fpr[-1],
-          1 - partial_fpr[-length(partial_tpr)]
-        ),
-        1,
-        mean
-      )
+#' @export
+np_auc.data.frame <- function(data,
+                              response,
+                              predictor,
+                              lower_tpr,
+                              .condition = NULL) {
+  response <- pull(data, {{ response }})
+  predictor <- pull(data, {{ predictor }})
+  np_auc.NULL(
+    NULL,
+    response,
+    predictor,
+    lower_tpr,
+    .condition
   )
-
-  npauc <- pauc / (1 - lower_tpr)
-  return(npauc)
 }

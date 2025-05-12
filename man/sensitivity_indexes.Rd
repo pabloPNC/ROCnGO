@@ -8,7 +8,7 @@
 \usage{
 fp_auc(data = NULL, response, predictor, lower_tpr, .condition = NULL)
 
-np_auc(data = NULL, response, predictor, lower_tpr, .condition = NULL)
+np_auc(data, response, predictor, lower_tpr, .condition = NULL)
 }
 \arguments{
 \item{data}{A data.frame or extension (e.g. a tibble) containing values for
