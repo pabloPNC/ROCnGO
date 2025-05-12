@@ -47,42 +47,57 @@ tp_auc <- function(data = NULL,
                    lower_fpr,
                    upper_fpr,
                    .condition = NULL) {
-  if (!is.null(data)) {
-    tpr_fpr <- data %>% roc_points({{ response }}, {{ predictor }}, .condition)
-    tpr <- tpr_fpr %>% pull(tpr)
-    fpr <- tpr_fpr %>% pull(fpr)
-  } else {
-    tpr_fpr <- NULL %>% roc_points(response, predictor, .condition)
-    tpr <- tpr_fpr[["tpr"]]
-    fpr <- tpr_fpr[["fpr"]]
-  }
+  UseMethod("tp_auc", data)
+}
 
-  partial_tpr_fpr <- calc_partial_roc_points(
-    tpr = tpr,
-    fpr = fpr,
+#' @export
+tp_auc.ratio_df <- function(data = NULL,
+                            response,
+                            predictor,
+                            lower_fpr,
+                            upper_fpr,
+                            .condition = NULL) {
+  pauc <- pauc_fpr(data$fpr, data$tpr)
+  bounds <- calc_fpr_bounds(data$fpr, data$tpr)
+  lower_bound <- bounds$lower_bound
+  upper_bound <- bounds$upper_bound
+  tpauc <- (1 + ((pauc - lower_bound) / (upper_bound - lower_bound))) / 2
+  tpauc
+}
+
+#' @export
+tp_auc.NULL <- function(data = NULL,
+                        response,
+                        predictor,
+                        lower_fpr,
+                        upper_fpr,
+                        .condition = NULL) {
+  ratios <- roc_points(NULL, response, predictor, .condition)
+  pratios <- calc_partial_roc_points(
+    tpr = ratios$tpr,
+    fpr = ratios$fpr,
     lower_threshold = lower_fpr,
     upper_threshold = upper_fpr,
     ratio = "fpr"
   )
+  tp_auc.ratio_df(pratios, .condition = .condition)
+}
 
-  partial_tpr <- partial_tpr_fpr[["partial_tpr"]]
-  partial_fpr <- partial_tpr_fpr[["partial_fpr"]]
-
-  pauc <- sum(
-    diff(partial_fpr) *
-      apply(
-        cbind(
-          partial_tpr[-1],
-          partial_tpr[-length(partial_tpr)]
-        ),
-        1,
-        mean
-      )
+#' @export
+tp_auc.data.frame <- function(data = NULL,
+                              response,
+                              predictor,
+                              lower_fpr,
+                              upper_fpr,
+                              .condition = NULL) {
+  response <- pull(data, {{ response }})
+  predictor <- pull(data, {{ predictor }})
+  tp_auc.NULL(
+    NULL,
+    response,
+    predictor,
+    lower_fpr,
+    upper_fpr,
+    .condition
   )
-  bounds <- calc_fpr_bounds(partial_fpr, partial_tpr)
-  lower_bound <- bounds[["lower_bound"]]
-  upper_bound <- bounds[["upper_bound"]]
-
-  tpauc <- (1 + ((pauc - lower_bound) / (upper_bound - lower_bound))) / 2
-  return(tpauc)
 }

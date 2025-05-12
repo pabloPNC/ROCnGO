@@ -7,7 +7,7 @@
 \title{Specificity indexes}
 \usage{
 sp_auc(
-  data = NULL,
+  data,
   response,
   predictor,
   lower_fpr,
