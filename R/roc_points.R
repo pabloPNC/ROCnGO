@@ -124,7 +124,7 @@ roc_points <- function(data = NULL,
       fpr = fpr
     )
   } else {
-    thresholds <- get_thresholds(predictor = predictor)
+    thresholds <- get_thresholds(data, predictor = predictor)
     ratios <- calc_ratios(
       thresholds = thresholds,
       response = response,

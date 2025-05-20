@@ -24,14 +24,14 @@ summarize_tpr_predictor <- function(data = NULL,
       predictor = predictor
     ),
     pauc = pauc_tpr(
-      partial_tpr = ptpr_pfpr$partial_tpr,
-      partial_fpr = ptpr_pfpr$partial_fpr
+      partial_tpr = ptpr_pfpr$tpr,
+      partial_fpr = ptpr_pfpr$fpr
     ),
     np_auc = np_auc(NULL, response, predictor, threshold),
     fp_auc = fp_auc(NULL, response, predictor, threshold),
     curve_shape = calc_tpr_curve_shape(
-      ptpr_pfpr$partial_fpr,
-      ptpr_pfpr$partial_tpr
+      ptpr_pfpr$fpr,
+      ptpr_pfpr$tpr
     )
   )
 }
@@ -60,10 +60,11 @@ summarize_fpr_predictor <- function(data = NULL,
       predictor = predictor,
     ),
     pauc = pauc_fpr(
-      partial_tpr = ptpr_pfpr$partial_tpr,
-      partial_fpr = ptpr_pfpr$partial_fpr
+      partial_tpr = ptpr_pfpr$tpr,
+      partial_fpr = ptpr_pfpr$fpr
     ),
     sp_auc = sp_auc(
+      NULL,
       response = response,
       predictor = predictor,
       lower_fpr = 0,
@@ -71,8 +72,8 @@ summarize_fpr_predictor <- function(data = NULL,
     ),
     tp_auc = tp_auc(NULL, response, predictor, 0, threshold),
     curve_shape = calc_fpr_curve_shape(
-      ptpr_pfpr$partial_fpr,
-      ptpr_pfpr$partial_tpr
+      ptpr_pfpr$fpr,
+      ptpr_pfpr$tpr
     )
   )
 }

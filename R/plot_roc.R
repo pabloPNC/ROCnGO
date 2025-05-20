@@ -665,7 +665,7 @@ add_fpauc_concave_lower_bound <- function(data = NULL,
       "tpr",
       .condition
     )
-  threshold_fpr <- partial_points[["partial_fpr"]][1]
+  threshold_fpr <- partial_points[["fpr"]][1]
 
   if (!quo_is_null(predictor_expr) && !quo_is_null(response_expr)) {
     geom_polygon(
@@ -800,13 +800,13 @@ add_tpauc_concave_lower_bound <- function(data = NULL,
       .condition
     )
   lower_threshold_tpr <- partial_points %>%
-    filter(.data$partial_fpr == lower_threshold) %>%
-    slice_min(.data$partial_tpr, n = 1, with_ties = FALSE) %>%
-    pull(.data$partial_tpr)
+    filter(.data$fpr == lower_threshold) %>%
+    slice_min(.data$tpr, n = 1, with_ties = FALSE) %>%
+    pull(.data$tpr)
   upper_threshold_tpr <- partial_points %>%
-    filter(.data$partial_fpr == upper_threshold) %>%
-    slice_max(.data$partial_tpr, n = 1, with_ties = FALSE) %>%
-    pull(.data$partial_tpr)
+    filter(.data$fpr == upper_threshold) %>%
+    slice_max(.data$tpr, n = 1, with_ties = FALSE) %>%
+    pull(.data$tpr)
 
   predictor_expr <- enquo(predictor)
   response_expr <- enquo(response)
@@ -880,17 +880,17 @@ add_tpauc_partially_proper_lower_bound <- function(data = NULL,
     .condition
   )
   lower_threshold_tpr <- partial_points %>%
-    filter(.data$partial_fpr == lower_threshold) %>%
-    slice_min(.data$partial_tpr, n = 1, with_ties = FALSE) %>%
-    pull(.data$partial_tpr)
+    filter(.data$fpr == lower_threshold) %>%
+    slice_min(.data$tpr, n = 1, with_ties = FALSE) %>%
+    pull(.data$tpr)
 
   diagonal_area <- calc_fpr_diagonal_lower_bound(
-    partial_points[["partial_fpr"]],
-    partial_points[["partial_tpr"]]
+    partial_points[["fpr"]],
+    partial_points[["tpr"]]
   )
   square_area <- calc_fpr_square_lower_bound(
-    partial_points[["partial_fpr"]],
-    partial_points[["partial_tpr"]]
+    partial_points[["fpr"]],
+    partial_points[["tpr"]]
   )
 
   if (!quo_is_null(predictor_expr) && !quo_is_null(response_expr)) {
@@ -1012,9 +1012,9 @@ add_tpauc_under_chance_lower_bound <- function(data = NULL,
     .condition
   )
   lower_threshold_tpr <- partial_points %>%
-    filter(.data$partial_fpr == lower_threshold) %>%
-    slice_min(.data$partial_tpr, n = 1, with_ties = FALSE) %>%
-    pull(.data$partial_tpr)
+    filter(.data$fpr == lower_threshold) %>%
+    slice_min(.data$tpr, n = 1, with_ties = FALSE) %>%
+    pull(.data$tpr)
 
   if (!quo_is_null(response_expr) && !quo_is_null(predictor_expr)) {
     geom_polygon(

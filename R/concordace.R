@@ -56,8 +56,8 @@ cp_auc <- function(data = NULL,
     upper_threshold = upper_threshold,
     ratio = ratio
   )
-  pauc_fpr <- pauc_fpr(ppoints$partial_fpr, ppoints$partial_tpr)
-  pauc_tpr <- pauc_tpr(ppoints$partial_fpr, ppoints$partial_tpr)
+  pauc_fpr <- pauc_fpr(ppoints$fpr, ppoints$tpr)
+  pauc_tpr <- pauc_tpr(ppoints$fpr, ppoints$tpr)
   c_pauc <- (0.5 * pauc_fpr) + (0.5 * pauc_tpr)
   c_pauc
 }
@@ -89,8 +89,8 @@ ncp_auc <- function(data = NULL,
     upper_threshold = upper_threshold,
     ratio = ratio
   )
-  fpr_range <- ppoints$partial_fpr[nrow(ppoints)] - ppoints$partial_fpr[1]
-  tpr_range <- ppoints$partial_tpr[nrow(ppoints)] - ppoints$partial_tpr[1]
+  fpr_range <- ppoints$fpr[nrow(ppoints)] - ppoints$fpr[1]
+  tpr_range <- ppoints$tpr[nrow(ppoints)] - ppoints$tpr[1]
   nc_pauc <- c_pauc / (0.5 * (tpr_range + fpr_range))
   nc_pauc
 }

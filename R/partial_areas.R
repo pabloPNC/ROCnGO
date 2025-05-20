@@ -47,8 +47,8 @@ pauc <- function(data = NULL,
     upper_threshold = upper_threshold,
     ratio = ratio
   )
-  ptpr <- partial_ratios[["partial_tpr"]]
-  pfpr <- partial_ratios[["partial_fpr"]]
+  ptpr <- partial_ratios[["tpr"]]
+  pfpr <- partial_ratios[["fpr"]]
 
   if (ratio == "tpr") {
     pauc <- pauc_tpr(partial_tpr = ptpr, partial_fpr = pfpr)

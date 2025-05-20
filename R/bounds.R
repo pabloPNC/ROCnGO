@@ -212,13 +212,13 @@ calc_curve_shape <- function(
   )
   if (ratio == "tpr") {
     curve_shape <- calc_tpr_curve_shape(
-      ptpr_pfpr$partial_fpr,
-      ptpr_pfpr$partial_tpr
+      ptpr_pfpr$fpr,
+      ptpr_pfpr$tpr
     )
   } else if (ratio == "fpr") {
     curve_shape <- calc_fpr_curve_shape(
-      ptpr_pfpr$partial_fpr,
-      ptpr_pfpr$partial_tpr
+      ptpr_pfpr$fpr,
+      ptpr_pfpr$tpr
     )
   }
   curve_shape

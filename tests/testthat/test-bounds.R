@@ -11,8 +11,8 @@ test_that("FPR diagonal_lower_bound is correct", {
     )
   )
   bound <- calc_fpr_diagonal_lower_bound(
-    partial_fpr = partial_points[["partial_fpr"]],
-    partial_tpr = partial_points[["partial_tpr"]]
+    partial_fpr = partial_points[["fpr"]],
+    partial_tpr = partial_points[["tpr"]]
   )
   expected_bound <- fpr.lower.bounds(
     test_iris[["Species_bin_fct"]],
@@ -36,8 +36,8 @@ test_that("FPR rectangle lower bound is correct", {
     )
   )
   bound <- calc_fpr_square_lower_bound(
-    partial_fpr = partial_points[["partial_fpr"]],
-    partial_tpr = partial_points[["partial_tpr"]]
+    partial_fpr = partial_points[["fpr"]],
+    partial_tpr = partial_points[["tpr"]]
   )
   expected_bound <- fpr.lower.bounds(
     test_iris[["Species_bin_fct"]],
@@ -61,8 +61,8 @@ test_that("FPR proper lower bound is correct", {
     )
   )
   bound <- calc_fpr_proper_lower_bound(
-    partial_fpr = partial_points[["partial_fpr"]],
-    partial_tpr = partial_points[["partial_tpr"]]
+    partial_fpr = partial_points[["fpr"]],
+    partial_tpr = partial_points[["tpr"]]
   )
   expected_bound <- fpr.lower.bounds(
     test_iris[["Species_bin_fct"]],
@@ -86,8 +86,8 @@ test_that("FPR PLR/Concave lower bound is correct", {
     )
   )
   bound <- calc_fpr_plr_lower_bound(
-    partial_fpr = partial_points[["partial_fpr"]],
-    partial_tpr = partial_points[["partial_tpr"]]
+    partial_fpr = partial_points[["fpr"]],
+    partial_tpr = partial_points[["tpr"]]
   )
   expected_bound <- fpr.lower.bounds(
     test_iris[["Species_bin_fct"]],
@@ -111,8 +111,8 @@ test_that("FPR lower bound is correctly selected", {
     )
   )
   bound <- calc_fpr_lower_bound(
-    partial_fpr = partial_points[["partial_fpr"]],
-    partial_tpr = partial_points[["partial_tpr"]]
+    partial_fpr = partial_points[["fpr"]],
+    partial_tpr = partial_points[["tpr"]]
   )
   expected_bound <- fpr.bounds(
     test_iris[["Species_bin_fct"]],
@@ -136,8 +136,8 @@ test_that("FPR upper bound is correct", {
     )
   )
   bound <- calc_fpr_upper_bound(
-    partial_fpr = partial_points[["partial_fpr"]],
-    partial_tpr = partial_points[["partial_tpr"]]
+    partial_fpr = partial_points[["fpr"]],
+    partial_tpr = partial_points[["tpr"]]
   )
   expected_bound <- fpr.bounds(
     test_iris[["Species_bin_fct"]],
@@ -161,8 +161,8 @@ test_that("FPR both bounds are correct", {
     )
   )
   bounds <- calc_fpr_bounds(
-    partial_fpr = partial_points[["partial_fpr"]],
-    partial_tpr = partial_points[["partial_tpr"]]
+    partial_fpr = partial_points[["fpr"]],
+    partial_tpr = partial_points[["tpr"]]
   )
   expected_bounds <- fpr.bounds(
     test_iris[["Species_bin_fct"]],
