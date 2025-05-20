@@ -7,7 +7,7 @@
 #' @references
 #' McClish D. K. Analyzing a Portion of the ROC Curve. *Medical Decision Making*
 #' 9, 190-195 (1989).
-sp_auc <- function(data,
+sp_auc <- function(data = NULL,
                    response,
                    predictor,
                    lower_fpr,
@@ -18,7 +18,7 @@ sp_auc <- function(data,
 }
 
 #' @export
-sp_auc.ratio_df <- function(data,
+sp_auc.ratio_df <- function(data = NULL,
                             response,
                             predictor,
                             lower_fpr,
@@ -43,7 +43,7 @@ sp_auc.ratio_df <- function(data,
 }
 
 #' @export
-sp_auc.NULL <- function(data,
+sp_auc.NULL <- function(data = NULL,
                         response,
                         predictor,
                         lower_fpr,
@@ -62,7 +62,7 @@ sp_auc.NULL <- function(data,
 }
 
 #' @export
-sp_auc.data.frame <- function(data,
+sp_auc.data.frame <- function(data = NULL,
                               response,
                               predictor,
                               lower_fpr,
