@@ -10,7 +10,8 @@ summarize_tpr_predictor <- function(data = NULL,
 
   response <- as_response(response, .condition)
 
-  tpr_fpr <- roc_points(NULL, response, predictor)
+  tpr_fpr <- roc_points(NULL, response, predictor) %>%
+    arrange(.data[["fpr"]], .data[["tpr"]])
   ptpr_pfpr <- calc_partial_roc_points(
     tpr = tpr_fpr$tpr,
     fpr = tpr_fpr$fpr,
@@ -19,16 +20,13 @@ summarize_tpr_predictor <- function(data = NULL,
     ratio = "tpr"
   )
   tibble(
-    auc = auc(
-      response = response,
-      predictor = predictor
-    ),
+    auc = auc(tpr_fpr),
     pauc = pauc_tpr(
       partial_tpr = ptpr_pfpr$tpr,
       partial_fpr = ptpr_pfpr$fpr
     ),
-    np_auc = np_auc(NULL, response, predictor, threshold),
-    fp_auc = fp_auc(NULL, response, predictor, threshold),
+    np_auc = np_auc(ptpr_pfpr),
+    fp_auc = fp_auc(ptpr_pfpr),
     curve_shape = calc_tpr_curve_shape(
       ptpr_pfpr$fpr,
       ptpr_pfpr$tpr
@@ -46,7 +44,8 @@ summarize_fpr_predictor <- function(data = NULL,
     response <- data %>% pull({{ response }})
   }
   response <- as_response(response, .condition)
-  tpr_fpr <- roc_points(NULL, response, predictor)
+  tpr_fpr <- roc_points(NULL, response, predictor) %>%
+    arrange(.data[["fpr"]], .data[["tpr"]])
   ptpr_pfpr <- calc_partial_roc_points(
     tpr = tpr_fpr$tpr,
     fpr = tpr_fpr$fpr,
@@ -55,22 +54,13 @@ summarize_fpr_predictor <- function(data = NULL,
     ratio = "fpr"
   )
   tibble(
-    auc = auc(
-      response = response,
-      predictor = predictor,
-    ),
+    auc = auc(tpr_fpr),
     pauc = pauc_fpr(
       partial_tpr = ptpr_pfpr$tpr,
       partial_fpr = ptpr_pfpr$fpr
     ),
-    sp_auc = sp_auc(
-      NULL,
-      response = response,
-      predictor = predictor,
-      lower_fpr = 0,
-      upper_fpr = threshold
-    ),
-    tp_auc = tp_auc(NULL, response, predictor, 0, threshold),
+    sp_auc = sp_auc(ptpr_pfpr),
+    tp_auc = tp_auc(ptpr_pfpr),
     curve_shape = calc_fpr_curve_shape(
       ptpr_pfpr$fpr,
       ptpr_pfpr$tpr
