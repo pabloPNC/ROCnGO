@@ -150,9 +150,9 @@ calc_partial_roc_points_from_ratios <- function(data = NULL,
       interp[["lower"]],
       interp[["upper"]]
     )
-    tibble(
-      partial_tpr = partial_ratios[["ratio"]],
-      partial_fpr = partial_ratios[["interp_ratio"]]
+    new_ratio_df(
+      tpr = partial_ratios[["ratio"]],
+      fpr = partial_ratios[["interp_ratio"]]
     )
   } else if (ratio == "fpr") {
     indexes <- calc_indexes(
@@ -174,9 +174,9 @@ calc_partial_roc_points_from_ratios <- function(data = NULL,
       interp[["lower"]],
       interp[["upper"]]
     )
-    tibble(
-      partial_fpr = partial_ratios[["ratio"]],
-      partial_tpr = partial_ratios[["interp_ratio"]]
+    new_ratio_df(
+      fpr = partial_ratios[["ratio"]],
+      tpr = partial_ratios[["interp_ratio"]]
     )
   }
 }
@@ -212,9 +212,9 @@ calc_partial_roc_points_from_predictor <- function(data = NULL,
       interp[["lower"]],
       interp[["upper"]]
     )
-    tibble(
-      partial_tpr = partial_ratios[["ratio"]],
-      partial_fpr = partial_ratios[["interp_ratio"]]
+    new_ratio_df(
+      tpr = partial_ratios[["ratio"]],
+      fpr = partial_ratios[["interp_ratio"]]
     )
   } else if (ratio == "fpr") {
     indexes <- calc_indexes(
@@ -236,9 +236,9 @@ calc_partial_roc_points_from_predictor <- function(data = NULL,
       interp[["lower"]],
       interp[["upper"]]
     )
-    tibble(
-      partial_fpr = partial_ratios[["ratio"]],
-      partial_tpr = partial_ratios[["interp_ratio"]]
+    new_ratio_df(
+      fpr = partial_ratios[["ratio"]],
+      tpr = partial_ratios[["interp_ratio"]]
     )
   }
 }
