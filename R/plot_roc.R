@@ -656,14 +656,14 @@ add_fpauc_concave_lower_bound <- function(data = NULL,
 
   partial_points <- data %>%
     calc_partial_roc_points(
-      {{ fpr }},
-      {{ tpr }},
-      {{ response }},
-      {{ predictor }},
-      threshold,
-      1,
-      "tpr",
-      .condition
+      fpr = {{ fpr }},
+      tpr = {{ tpr }},
+      response = {{ response }},
+      predictor = {{ predictor }},
+      lower_threshold = threshold,
+      upper_threshold = 1,
+      ratio = "tpr",
+      .condition = .condition
     )
   threshold_fpr <- partial_points[["fpr"]][1]
 
