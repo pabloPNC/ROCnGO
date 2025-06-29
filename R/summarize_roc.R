@@ -13,8 +13,7 @@ summarize_tpr_predictor <- function(data = NULL,
   tpr_fpr <- roc_points(NULL, response, predictor) %>%
     arrange(.data[["fpr"]], .data[["tpr"]])
   ptpr_pfpr <- calc_partial_roc_points(
-    tpr = tpr_fpr$tpr,
-    fpr = tpr_fpr$fpr,
+    data = tpr_fpr,
     lower_threshold = threshold,
     upper_threshold = 1,
     ratio = "tpr"
@@ -47,8 +46,7 @@ summarize_fpr_predictor <- function(data = NULL,
   tpr_fpr <- roc_points(NULL, response, predictor) %>%
     arrange(.data[["fpr"]], .data[["tpr"]])
   ptpr_pfpr <- calc_partial_roc_points(
-    tpr = tpr_fpr$tpr,
-    fpr = tpr_fpr$fpr,
+    data = tpr_fpr,
     lower_threshold = 0,
     upper_threshold = threshold,
     ratio = "fpr"
