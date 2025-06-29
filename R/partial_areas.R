@@ -3,7 +3,8 @@
 #' Calculates area under curve curve in an specific TPR or FPR region.
 #' @inheritParams calc_partial_roc_points
 #' @returns
-#' A numeric value representing the area under ROC curve in the specified region.
+#' A numeric value representing the area under ROC curve in the specified
+#' region.
 #' @examples
 #' # Calculate pauc of Sepal.Width as a classifier of setosa species in
 #' # in TPR = (0.9, 1)
