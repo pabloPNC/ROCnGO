@@ -202,10 +202,10 @@ calc_curve_shape <- function(
     response <- data %>% pull({{ response }})
     predictor <- data %>% pull({{ predictor }})
   }
-  tpr_fpr <- NULL %>% roc_points(response, predictor, .condition)
+  tpr_fpr <- roc_points(NULL, response, predictor, .condition) %>%
+    arrange(.data[["fpr"]], .data[["tpr"]])
   ptpr_pfpr <- calc_partial_roc_points(
-    tpr = tpr_fpr$tpr,
-    fpr = tpr_fpr$fpr,
+    data = tpr_fpr,
     lower_threshold = lower_threshold,
     upper_threshold = upper_threshold,
     ratio = ratio

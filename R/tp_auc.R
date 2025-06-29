@@ -72,10 +72,10 @@ tp_auc.NULL <- function(data = NULL,
                         lower_fpr,
                         upper_fpr,
                         .condition = NULL) {
-  ratios <- roc_points(NULL, response, predictor, .condition)
+  ratios <- roc_points(NULL, response, predictor, .condition) %>%
+    arrange(.data[["fpr"]], .data[["tpr"]])
   pratios <- calc_partial_roc_points(
-    tpr = ratios$tpr,
-    fpr = ratios$fpr,
+    data = ratios,
     lower_threshold = lower_fpr,
     upper_threshold = upper_fpr,
     ratio = "fpr"
