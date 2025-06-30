@@ -6,8 +6,10 @@ inform_upper_threshold <- function(threshold) {
     class = "inform_upper_threshold",
     threshold = threshold
   )
-  cli_ul(
-    "Skipping upper threshold interpolation",
+  cli_inform(
+    message = c(
+      "*" = "Skipping upper threshold interpolation"
+    ),
     class = "skip_upper_inter_msg"
   )
 }
@@ -20,8 +22,10 @@ inform_lower_threshold <- function(threshold) {
     class = "inform_lower_threshold",
     threshold = threshold
   )
-  cli_ul(
-    "Skipping lower threshold interpolation",
+  cli_inform(
+    message = c(
+      "*" = "Skipping lower threshold interpolation"
+    ),
     class = "skip_lower_inter_msg"
   )
 }
@@ -35,8 +39,10 @@ inform_both_thresholds <- function(thresholds) {
     class = "inform_both_thresholds",
     thresholds = thresholds
   )
-  cli_ul(
-    "Skipping lower and upper threshold interpolation",
+  cli_inform(
+    message = c(
+      "*" = "Skipping lower and upper threshold interpolation"
+    ),
     class = "skip_both_inter_msg"
   )
 }
@@ -57,14 +63,20 @@ capture_threshold_messages <- function(expr) {
       threshold_messages$upper <<- c(threshold_messages$upper, list(cnd))
       invokeRestart("muffleMessage")
     },
-    cliMessage = function(cnd) {
+    skip_both_inter_msg = function(cnd) {
+      invokeRestart("muffleMessage")
+    },
+    skip_lower_inter_msg = function(cnd) {
+      invokeRestart("muffleMessage")
+    },
+    skip_upper_inter_msg = function(cnd) {
       invokeRestart("muffleMessage")
     }
   )
   list(value = result, messages = threshold_messages)
 }
 
-resignal_thresholds <- function(expr) {
+resignal_thresholds <- function(expr, .print = FALSE) {
   results <- capture_threshold_messages(expr)
   msgs <- results$messages
   n_lower <- length(msgs$lower)
@@ -80,6 +92,10 @@ resignal_thresholds <- function(expr) {
     inform_lower_threshold(msgs$lower[[1]]$threshold)
   } else if (n_upper > 0) {
     inform_upper_threshold(msgs$upper[[1]]$threshold)
+  }
+
+  if (.print == TRUE) {
+    print(results)
   }
   results$value
 }

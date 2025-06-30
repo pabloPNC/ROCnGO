@@ -176,6 +176,14 @@ summarize_dataset <- function(data,
 
   response <- data %>% pull({{ response }})
 
+  if (.progress == TRUE) {
+    cli_progress_bar(
+      name = "Calculating...",
+      total = ncol(predictors_dataset),
+      type = "iterator"
+    )
+  }
+
   resignal_thresholds({
     for (i in 1:length(predictors_dataset)) {
       if (ratio == "tpr") {
@@ -198,12 +206,15 @@ summarize_dataset <- function(data,
 
       id <- names(predictors_dataset[i])
       results[[id]] <- result
-
       if (.progress == TRUE) {
-        print(str_glue("[*] {length(results)}/{length(predictors_dataset)}"))
+        cli_progress_update()
       }
     }
   })
+
+  if (.progress == TRUE) {
+    cli_progress_done()
+  }
 
   metrics <- list(
     data = bind_rows(results, .id = "identifier")
