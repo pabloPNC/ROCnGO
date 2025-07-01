@@ -45,7 +45,7 @@ test_that("interp_lower_threshold throws a message when not adding threshold", {
       ),
       class = "inform_lower_threshold"
     ),
-    class = "cliMessage"
+    class = "skip_lower_inter_msg"
   )
 })
 
@@ -73,7 +73,7 @@ test_that("interp_upper_threshold throws a message when not adding threshold", {
       ),
       class = "inform_upper_threshold"
     ),
-    class = "cliMessage"
+    class = "skip_upper_inter_msg"
   )
 })
 
