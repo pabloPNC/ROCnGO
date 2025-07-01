@@ -42,15 +42,16 @@ summarize_fpr_predictor <- function(data = NULL,
     predictor <- data %>% pull({{ predictor }})
     response <- data %>% pull({{ response }})
   }
-  response <- as_response(response, .condition)
-  tpr_fpr <- roc_points(NULL, response, predictor) %>%
+  tpr_fpr <- roc_points(NULL, response, predictor, .condition) %>%
     arrange(.data[["fpr"]], .data[["tpr"]])
+
   ptpr_pfpr <- calc_partial_roc_points(
     data = tpr_fpr,
     lower_threshold = 0,
     upper_threshold = threshold,
     ratio = "fpr"
   )
+
   tibble(
     auc = auc(tpr_fpr),
     pauc = pauc_fpr(

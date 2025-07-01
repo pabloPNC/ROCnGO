@@ -62,7 +62,12 @@ reorder_response_factor <- function(response_fct, condition, absent) {
 }
 
 as_response <- function(x, .condition = NULL) {
-  if (is.character(x) || is.integer(x) || is.factor(x)) {
+  fct_cond <- is.factor(x) &&
+    ((length(levels(x)) > 2) ||
+       (levels(x)[1] != 0 && levels(x)[2] != 1) ||
+       (levels(x)[1] == 0 && levels(x)[2] == 1 && !is.null(.condition) &&
+          .condition == 0))
+  if (is.character(x) || is.integer(x) || fct_cond) {
     x <- transform_response(x, .condition)
   }
   x
