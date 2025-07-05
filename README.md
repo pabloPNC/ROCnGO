@@ -7,8 +7,6 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/ROCnGO)](https://CRAN.R-project.org/package=ROCnGO)
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
 ## Overview
@@ -28,7 +26,11 @@ of analysis such as:
 
 ## Installation
 
-Last version of ROCnGO can be installed from its
+``` r
+install.packages("ROCnGO")
+```
+
+Alternatively, development version of ROCnGO can be installed from its
 [GitHub](https://github.com/pabloPNC/ROCnGO) repository with:
 
 ``` r
@@ -55,10 +57,15 @@ summarize_predictor(
   threshold = 0.9,
   ratio = "tpr"
 )
+#> ℹ Upper threshold 1 already included in points.
+#> • Skipping upper threshold interpolation
 #> # A tibble: 1 × 5
 #>     auc   pauc np_auc fp_auc curve_shape
 #>   <dbl>  <dbl>  <dbl>  <dbl> <chr>      
 #> 1 0.985 0.0847  0.847  0.852 Concave
+```
+
+``` r
 
 # Summarize several predictors simultaneously
 summarize_dataset(
@@ -68,6 +75,8 @@ summarize_dataset(
   threshold = 0.9,
   ratio = "tpr"
 )
+#> ℹ Lower 0.9 and upper 1 thresholds already included in points
+#> • Skipping lower and upper threshold interpolation
 #> $data
 #> # A tibble: 4 × 6
 #>   identifier     auc   pauc np_auc fp_auc curve_shape      
@@ -91,6 +100,9 @@ summarize_dataset(
 #>   <lgl>       <lgl>       <int>
 #> 1 FALSE       FALSE           1
 #> 2 TRUE        TRUE            3
+```
+
+``` r
 
 # Plot ROC curve of classifiers
 plot_roc_curve(iris_subset, predictor = Sepal.Length, response = Species) +

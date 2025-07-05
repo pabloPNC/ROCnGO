@@ -17,7 +17,6 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/ROCnGO)](https://CRAN.R-project.org/package=ROCnGO)
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
 ## Overview
@@ -33,7 +32,11 @@ ROCnGO provides a set of tools to study a classifier performance by using ROC cu
 
 ## Installation
 
-Last version of ROCnGO can be installed from its [GitHub](https://github.com/pabloPNC/ROCnGO) repository with:
+``` r
+install.packages("ROCnGO")
+```
+
+Alternatively, development version of ROCnGO can be installed from its [GitHub](https://github.com/pabloPNC/ROCnGO) repository with:
 
 ``` r
 # install.packages("devtools")
