@@ -127,10 +127,7 @@ add_thresholds <- function(ratio,
 #' considered for calculations.
 #' * If `"fpr"`, only points within the specified region of FPR, x axis, will be
 #' considered for calculations.
-#' @param fpr,tpr Numeric vectors representing FPR and TPR for the classifier.
 #'
-#' These arguments may be used when neither of `data`, `response` and
-#' `predictor` are supplied.
 #' @returns
 #' A tibble with two columns:
 #'
@@ -162,25 +159,23 @@ add_thresholds <- function(ratio,
 #' )
 #' @export
 calc_partial_roc_points <- function(data = NULL,
-                                         response = NULL,
-                                         predictor = NULL,
-                                         fpr = NULL,
-                                         tpr = NULL,
-                                         lower_threshold,
-                                         upper_threshold,
-                                         ratio,
-                                         .condition = NULL) {
+                                    response = NULL,
+                                    predictor = NULL,
+                                    lower_threshold,
+                                    upper_threshold,
+                                    ratio,
+                                    .condition = NULL) {
   UseMethod("calc_partial_roc_points", data)
 }
 
 #' @export
 calc_partial_roc_points.ratio_df <- function(data = NULL,
-                                                  response = NULL,
-                                                  predictor = NULL,
-                                                  lower_threshold,
-                                                  upper_threshold,
-                                                  ratio,
-                                                  .condition = NULL) {
+                                             response = NULL,
+                                             predictor = NULL,
+                                             lower_threshold,
+                                             upper_threshold,
+                                             ratio,
+                                             .condition = NULL) {
   ratios <- c("tpr", "fpr")
   int_ratio <- ratios[ratio != ratios]
   indexes <- calc_indexes(
@@ -217,12 +212,12 @@ calc_partial_roc_points.ratio_df <- function(data = NULL,
 
 #' @export
 calc_partial_roc_points.NULL <- function(data = NULL,
-                                              response = NULL,
-                                              predictor = NULL,
-                                              lower_threshold,
-                                              upper_threshold,
-                                              ratio,
-                                              .condition = NULL) {
+                                         response = NULL,
+                                         predictor = NULL,
+                                         lower_threshold,
+                                         upper_threshold,
+                                         ratio,
+                                         .condition = NULL) {
   ratios <- roc_points(
     data = data,
     response = response,
@@ -240,12 +235,12 @@ calc_partial_roc_points.NULL <- function(data = NULL,
 
 #' @export
 calc_partial_roc_points.data.frame <- function(data = NULL,
-                                                    response = NULL,
-                                                    predictor = NULL,
-                                                    lower_threshold,
-                                                    upper_threshold,
-                                                    ratio,
-                                                    .condition = NULL) {
+                                               response = NULL,
+                                               predictor = NULL,
+                                               lower_threshold,
+                                               upper_threshold,
+                                               ratio,
+                                               .condition = NULL) {
   response <- pull(data, {{ response }})
   predictor <- pull(data, {{ predictor }})
   calc_partial_roc_points.NULL(

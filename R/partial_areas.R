@@ -35,15 +35,14 @@ pauc <- function(data = NULL,
                  upper_threshold,
                  .condition = NULL) {
   if (!is.null(data)) {
-    ratios <- roc_points(data, {{ response }}, {{ predictor }}, .condition)
+    ratios <- roc_points(data, {{ response }}, {{ predictor }}, .condition) %>%
+      arrange(.data[["fpr"]], .data[["tpr"]])
   } else {
-    ratios <- roc_points(NULL, response, predictor, .condition)
+    ratios <- roc_points(NULL, response, predictor, .condition) %>%
+      arrange(.data[["fpr"]], .data[["tpr"]])
   }
-  tpr <- ratios$tpr
-  fpr <- ratios$fpr
   partial_ratios <- calc_partial_roc_points(
-    tpr = tpr,
-    fpr = fpr,
+    data = ratios,
     lower_threshold = lower_threshold,
     upper_threshold = upper_threshold,
     ratio = ratio
@@ -56,7 +55,6 @@ pauc <- function(data = NULL,
   } else if (ratio == "fpr") {
     pauc <- pauc_fpr(partial_tpr = ptpr, partial_fpr = pfpr)
   } else {
-    # TODO: improve error message
     stop("`ratio` arg should take `'tpr'` or `'fpr'` value")
   }
   pauc
