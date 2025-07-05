@@ -112,137 +112,6 @@ add_thresholds <- function(ratio,
   result
 }
 
-calc_partial_roc_points_from_ratios <- function(data = NULL,
-                                                fpr,
-                                                tpr,
-                                                lower_threshold,
-                                                upper_threshold,
-                                                ratio) {
-  if (is.null(data)) {
-    roc_points <- tibble(tpr = tpr, fpr = fpr)
-  } else {
-    roc_points <- data %>%
-      rename(
-        tpr = {{ tpr }},
-        fpr = {{ fpr }}
-      )
-  }
-
-  roc_points <- roc_points %>% arrange(.data[["tpr"]], .data[["fpr"]])
-
-  if (ratio == "tpr") {
-    indexes <- calc_indexes(
-      roc_points[["tpr"]],
-      lower_threshold,
-      upper_threshold
-    )
-    interp <- interp_thresholds(
-      roc_points[["tpr"]],
-      roc_points[["fpr"]],
-      lower_threshold,
-      upper_threshold,
-      indexes[["lower"]],
-      indexes[["upper"]]
-    )
-    partial_ratios <- add_thresholds(
-      roc_points[["tpr"]][indexes[["lower"]]:indexes[["upper"]]],
-      roc_points[["fpr"]][indexes[["lower"]]:indexes[["upper"]]],
-      interp[["lower"]],
-      interp[["upper"]]
-    )
-    tibble(
-      partial_tpr = partial_ratios[["ratio"]],
-      partial_fpr = partial_ratios[["interp_ratio"]]
-    )
-  } else if (ratio == "fpr") {
-    indexes <- calc_indexes(
-      roc_points[["fpr"]],
-      lower_threshold,
-      upper_threshold
-    )
-    interp <- interp_thresholds(
-      roc_points[["fpr"]],
-      roc_points[["tpr"]],
-      lower_threshold,
-      upper_threshold,
-      indexes[["lower"]],
-      indexes[["upper"]]
-    )
-    partial_ratios <- add_thresholds(
-      roc_points[["fpr"]][indexes[["lower"]]:indexes[["upper"]]],
-      roc_points[["tpr"]][indexes[["lower"]]:indexes[["upper"]]],
-      interp[["lower"]],
-      interp[["upper"]]
-    )
-    tibble(
-      partial_fpr = partial_ratios[["ratio"]],
-      partial_tpr = partial_ratios[["interp_ratio"]]
-    )
-  }
-}
-
-calc_partial_roc_points_from_predictor <- function(data = NULL,
-                                                   predictor,
-                                                   response,
-                                                   lower_threshold,
-                                                   upper_threshold,
-                                                   ratio,
-                                                   .condition = NULL) {
-  roc_points <- data %>%
-    roc_points({{ response }}, {{ predictor }}, .condition) %>%
-    arrange(.data[["tpr"]], .data[["fpr"]])
-
-  if (ratio == "tpr") {
-    indexes <- calc_indexes(
-      roc_points[["tpr"]],
-      lower_threshold,
-      upper_threshold
-    )
-    interp <- interp_thresholds(
-      roc_points[["tpr"]],
-      roc_points[["fpr"]],
-      lower_threshold,
-      upper_threshold,
-      indexes[["lower"]],
-      indexes[["upper"]]
-    )
-    partial_ratios <- add_thresholds(
-      roc_points[["tpr"]][indexes[["lower"]]:indexes[["upper"]]],
-      roc_points[["fpr"]][indexes[["lower"]]:indexes[["upper"]]],
-      interp[["lower"]],
-      interp[["upper"]]
-    )
-    tibble(
-      partial_tpr = partial_ratios[["ratio"]],
-      partial_fpr = partial_ratios[["interp_ratio"]]
-    )
-  } else if (ratio == "fpr") {
-    indexes <- calc_indexes(
-      roc_points[["fpr"]],
-      lower_threshold,
-      upper_threshold
-    )
-    interp <- interp_thresholds(
-      roc_points[["fpr"]],
-      roc_points[["tpr"]],
-      lower_threshold,
-      upper_threshold,
-      indexes[["lower"]],
-      indexes[["upper"]]
-    )
-    partial_ratios <- add_thresholds(
-      roc_points[["fpr"]][indexes[["lower"]]:indexes[["upper"]]],
-      roc_points[["tpr"]][indexes[["lower"]]:indexes[["upper"]]],
-      interp[["lower"]],
-      interp[["upper"]]
-    )
-    tibble(
-      partial_fpr = partial_ratios[["ratio"]],
-      partial_tpr = partial_ratios[["interp_ratio"]]
-    )
-  }
-}
-
 #' @title Calculate ROC curve partial points
 #' @description
 #' Calculates a series pairs of (FPR, TPR) which correspond to ROC curve points
@@ -258,10 +127,7 @@ calc_partial_roc_points_from_predictor <- function(data = NULL,
 #' considered for calculations.
 #' * If `"fpr"`, only points within the specified region of FPR, x axis, will be
 #' considered for calculations.
-#' @param fpr,tpr Numeric vectors representing FPR and TPR for the classifier.
 #'
-#' These arguments may be used when neither of `data`, `response` and
-#' `predictor` are supplied.
 #' @returns
 #' A tibble with two columns:
 #'
@@ -295,34 +161,95 @@ calc_partial_roc_points_from_predictor <- function(data = NULL,
 calc_partial_roc_points <- function(data = NULL,
                                     response = NULL,
                                     predictor = NULL,
-                                    fpr = NULL,
-                                    tpr = NULL,
                                     lower_threshold,
                                     upper_threshold,
                                     ratio,
                                     .condition = NULL) {
-  predic_exp <- enquo(predictor)
-  resp_exp <- enquo(response)
+  UseMethod("calc_partial_roc_points", data)
+}
+
+#' @export
+calc_partial_roc_points.ratio_df <- function(data = NULL,
+                                             response = NULL,
+                                             predictor = NULL,
+                                             lower_threshold,
+                                             upper_threshold,
+                                             ratio,
+                                             .condition = NULL) {
+  ratios <- c("tpr", "fpr")
+  int_ratio <- ratios[ratio != ratios]
+  indexes <- calc_indexes(
+    data[[ratio]], lower_threshold, upper_threshold
+  )
   resignal_thresholds({
-    if (!quo_is_null(predic_exp) && !quo_is_null(resp_exp)) {
-      result <- calc_partial_roc_points_from_predictor(
-        data,
-        {{ predictor }},
-        {{ response }},
-        lower_threshold,
-        upper_threshold,
-        ratio,
-        .condition
-      )
-    } else {
-      result <- calc_partial_roc_points_from_ratios(
-        data,
-        {{ fpr }},
-        {{ tpr }},
-        lower_threshold,
-        upper_threshold,
-        ratio
-      )
-    }
+    interp <- interp_thresholds(
+      ratio = data[[ratio]],
+      interp_ratio = data[[int_ratio]],
+      lower_threshold = lower_threshold,
+      upper_threshold = upper_threshold,
+      lower_index = indexes[["lower"]],
+      upper_index = indexes[["upper"]]
+    )
   })
+  pratios <- add_thresholds(
+    ratio = data[[ratio]][indexes[["lower"]]:indexes[["upper"]]],
+    interp_ratio = data[[int_ratio]][indexes[["lower"]]:indexes[["upper"]]],
+    lower_interp = interp[["lower"]],
+    upper_interp = interp[["upper"]]
+  )
+  if (ratio == "fpr") {
+    new_ratio_df(
+      fpr = pratios[["ratio"]],
+      tpr = pratios[["interp_ratio"]]
+    )
+  } else if (ratio == "tpr") {
+    new_ratio_df(
+      tpr = pratios[["ratio"]],
+      fpr = pratios[["interp_ratio"]]
+    )
+  }
+}
+
+#' @export
+calc_partial_roc_points.NULL <- function(data = NULL,
+                                         response = NULL,
+                                         predictor = NULL,
+                                         lower_threshold,
+                                         upper_threshold,
+                                         ratio,
+                                         .condition = NULL) {
+  ratios <- roc_points(
+    data = data,
+    response = response,
+    predictor = predictor,
+    .condition = .condition
+  ) %>%
+    arrange(.data[["tpr"]], .data[["fpr"]])
+  calc_partial_roc_points.ratio_df(
+    data = ratios,
+    lower_threshold = lower_threshold,
+    upper_threshold = upper_threshold,
+    ratio = ratio
+  )
+}
+
+#' @export
+calc_partial_roc_points.data.frame <- function(data = NULL,
+                                               response = NULL,
+                                               predictor = NULL,
+                                               lower_threshold,
+                                               upper_threshold,
+                                               ratio,
+                                               .condition = NULL) {
+  response <- pull(data, {{ response }})
+  predictor <- pull(data, {{ predictor }})
+  calc_partial_roc_points.NULL(
+    data = NULL,
+    response = response,
+    predictor = predictor,
+    lower_threshold = lower_threshold,
+    upper_threshold = upper_threshold,
+    ratio = ratio,
+    .condition = .condition
+  )
 }

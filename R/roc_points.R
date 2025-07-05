@@ -54,12 +54,14 @@ calc_ratios <- function(data = NULL,
   response <- as_response(response, .condition)
   result <- map(
     thresholds,
-    \(t) list(
-      tpr = sum(((predictor > t) == 1) * (response == 1)) /
-        sum(response == 1),
-      fpr = sum(((predictor > t) == 1) * (response == 0)) /
-        sum(response == 0)
-    )
+    \(t) {
+      list(
+        tpr = sum(((predictor > t) == 1) * (response == 1)) /
+          sum(response == 1),
+        fpr = sum(((predictor > t) == 1) * (response == 0)) /
+          sum(response == 0)
+      )
+    }
   )
   purrr::list_transpose(result)
 }
@@ -119,22 +121,16 @@ roc_points <- function(data = NULL,
       calc_tpr(thresholds, {{ response }}, {{ predictor }}, .condition)
     fpr <- data %>%
       calc_fpr(thresholds, {{ response }}, {{ predictor }}, .condition)
-    result <- tibble::tibble(
-      tpr = tpr,
-      fpr = fpr
-    )
   } else {
-    thresholds <- get_thresholds(predictor = predictor)
+    thresholds <- get_thresholds(data, predictor = predictor)
     ratios <- calc_ratios(
       thresholds = thresholds,
       response = response,
       predictor = predictor,
       .condition = .condition
     )
-    result <- tibble::tibble(
-      tpr = ratios[["tpr"]],
-      fpr = ratios[["fpr"]]
-    )
+    tpr <- ratios[["tpr"]]
+    fpr <- ratios[["fpr"]]
   }
-  return(result)
+  new_ratio_df(tpr = tpr, fpr = fpr)
 }

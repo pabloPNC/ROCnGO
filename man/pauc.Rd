@@ -62,7 +62,8 @@ automatic selection is performed and details on selecting the condition of
 interest.}
 }
 \value{
-A numeric value representing the area under ROC curve in the specified region.
+A numeric value representing the area under ROC curve in the specified
+region.
 }
 \description{
 Calculates area under curve curve in an specific TPR or FPR region.

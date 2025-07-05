@@ -45,7 +45,7 @@ test_that("interp_lower_threshold throws a message when not adding threshold", {
       ),
       class = "inform_lower_threshold"
     ),
-    class = "cliMessage"
+    class = "skip_lower_inter_msg"
   )
 })
 
@@ -73,7 +73,7 @@ test_that("interp_upper_threshold throws a message when not adding threshold", {
       ),
       class = "inform_upper_threshold"
     ),
-    class = "cliMessage"
+    class = "skip_upper_inter_msg"
   )
 })
 
@@ -211,11 +211,11 @@ test_that("FPR calc_partial_roc_points is correct", {
     upper.fp = 0.5
   )
   expect_equal(
-    ppoints[["partial_fpr"]],
+    ppoints[["fpr"]],
     expected_ppoints[["fpr.pr"]]
   )
   expect_equal(
-    ppoints[["partial_tpr"]],
+    ppoints[["tpr"]],
     expected_ppoints[["sen.pr"]]
   )
 })
@@ -238,11 +238,11 @@ test_that("TPR calc_partial_roc_points is correct", {
     lower.sen = 0.9
   )
   expect_equal(
-    ppoints[["partial_fpr"]],
+    ppoints[["fpr"]],
     expected_ppoints[, 1]
   )
   expect_equal(
-    ppoints[["partial_tpr"]],
+    ppoints[["tpr"]],
     expected_ppoints[, 2]
   )
 })

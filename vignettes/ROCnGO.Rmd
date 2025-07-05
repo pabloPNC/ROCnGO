@@ -115,7 +115,7 @@ p_points <- calc_partial_roc_points(
 p_points
 
 # Plot partial ROC curve
-plot(p_points$partial_fpr, p_points$partial_tpr)
+plot(p_points$fpr, p_points$tpr)
 ```
 
 ## Automating analysis

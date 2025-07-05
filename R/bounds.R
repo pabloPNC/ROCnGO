@@ -63,7 +63,7 @@ calc_fpr_lower_bound <- function(partial_fpr, partial_tpr) {
 
 calc_fpr_upper_bound <- function(partial_fpr, partial_tpr) {
   if (min(partial_tpr) == max(partial_tpr)) {
-    warning("Constant ROC curve over the prefixed FPR range")
+    warn_constant_roc()
     upper_bound <- sum(diff(partial_tpr))
   } else {
     upper_bound <- sum(diff(partial_fpr)) * max(partial_tpr)
@@ -202,23 +202,23 @@ calc_curve_shape <- function(
     response <- data %>% pull({{ response }})
     predictor <- data %>% pull({{ predictor }})
   }
-  tpr_fpr <- NULL %>% roc_points(response, predictor, .condition)
+  tpr_fpr <- roc_points(NULL, response, predictor, .condition) %>%
+    arrange(.data[["fpr"]], .data[["tpr"]])
   ptpr_pfpr <- calc_partial_roc_points(
-    tpr = tpr_fpr$tpr,
-    fpr = tpr_fpr$fpr,
+    data = tpr_fpr,
     lower_threshold = lower_threshold,
     upper_threshold = upper_threshold,
     ratio = ratio
   )
   if (ratio == "tpr") {
     curve_shape <- calc_tpr_curve_shape(
-      ptpr_pfpr$partial_fpr,
-      ptpr_pfpr$partial_tpr
+      ptpr_pfpr$fpr,
+      ptpr_pfpr$tpr
     )
   } else if (ratio == "fpr") {
     curve_shape <- calc_fpr_curve_shape(
-      ptpr_pfpr$partial_fpr,
-      ptpr_pfpr$partial_tpr
+      ptpr_pfpr$fpr,
+      ptpr_pfpr$tpr
     )
   }
   curve_shape

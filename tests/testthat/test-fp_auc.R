@@ -1,15 +1,13 @@
-data <- tibble::tibble(readRDS(test_path("fixtures", "roc_data.rds")))
-response <- "disease"
-predictor <- "ENSG00000000003.15"
-
 test_that("FpAUC is correct", {
   test_iris <- create_iris_df()
   fpauc <- suppressMessages(
-    fp_auc(
-      data = test_iris,
-      response = Species_bin_fct,
-      predictor = Sepal.Width,
-      lower_tpr = 0.9
+    suppressWarnings(
+      fp_auc(
+        data = test_iris,
+        response = Species_bin_fct,
+        predictor = Sepal.Width,
+        lower_tpr = 0.9
+      )
     )
   )
   expected_fpauc <- FpaucHS(
@@ -24,30 +22,36 @@ test_that("fp_auc works with .conditions", {
   test_iris <- create_iris_df()
 
   fpauc_fct <- suppressMessages(
-    fp_auc(
-      test_iris,
-      response = Species,
-      predictor = Sepal.Length,
-      lower_tpr = 0.9,
-      .condition = "virginica"
+    suppressWarnings(
+      fp_auc(
+        test_iris,
+        response = Species,
+        predictor = Sepal.Length,
+        lower_tpr = 0.9,
+        .condition = "virginica"
+      )
     )
   )
   fpauc_int <- suppressMessages(
-    fp_auc(
-      test_iris,
-      response = Species_int,
-      predictor = Sepal.Length,
-      lower_tpr = 0.9,
-      .condition = 3
+    suppressWarnings(
+      fp_auc(
+        test_iris,
+        response = Species_int,
+        predictor = Sepal.Length,
+        lower_tpr = 0.9,
+        .condition = 3
+      )
     )
   )
   fpauc_chr <- suppressMessages(
-    fp_auc(
-      test_iris,
-      response = Species_chr,
-      predictor = Sepal.Length,
-      lower_tpr = 0.9,
-      .condition = "virginica"
+    suppressWarnings(
+      fp_auc(
+        test_iris,
+        response = Species_chr,
+        predictor = Sepal.Length,
+        lower_tpr = 0.9,
+        .condition = "virginica"
+      )
     )
   )
   expected_fpauc <- FpaucHS(

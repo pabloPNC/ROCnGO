@@ -10,6 +10,7 @@
 #' @importFrom ggplot2 ggplot labs aes geom_point geom_path geom_abline
 #' geom_vline geom_hline geom_polygon theme
 #' @importFrom forcats fct fct_collapse fct_relevel
-#' @importFrom cli cli_inform cli_ul cli_rule
+#' @importFrom cli cli_inform cli_progress_bar cli_progress_update
+#' cli_progress_done cli_warn
 #' @importFrom SummarizedExperiment assay assays rowData colData
 NULL

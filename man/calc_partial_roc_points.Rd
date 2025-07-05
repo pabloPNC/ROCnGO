@@ -8,8 +8,6 @@ calc_partial_roc_points(
   data = NULL,
   response = NULL,
   predictor = NULL,
-  fpr = NULL,
-  tpr = NULL,
   lower_threshold,
   upper_threshold,
   ratio,
@@ -36,11 +34,6 @@ See \code{.condition} for more information.}
 
 \item{predictor}{A data variable which must be numeric, representing values
 of a classifier or predictor for each observation.}
-
-\item{fpr, tpr}{Numeric vectors representing FPR and TPR for the classifier.
-
-These arguments may be used when neither of \code{data}, \code{response} and
-\code{predictor} are supplied.}
 
 \item{lower_threshold, upper_threshold}{Two numbers between 0 and 1,
 inclusive.

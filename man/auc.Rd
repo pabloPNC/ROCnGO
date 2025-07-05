@@ -4,10 +4,10 @@
 \alias{auc}
 \title{Calculate area under ROC curve}
 \usage{
-auc(.data = NULL, response, predictor, .condition = NULL)
+auc(data = NULL, response, predictor, .condition = NULL)
 }
 \arguments{
-\item{.data}{A data.frame or extension (e.g. a tibble) containing values for
+\item{data}{A data.frame or extension (e.g. a tibble) containing values for
 predictors and response variables.}
 
 \item{response}{A data variable which must be a factor, integer or character

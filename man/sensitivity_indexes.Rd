@@ -8,7 +8,7 @@
 \usage{
 fp_auc(data = NULL, response, predictor, lower_tpr, .condition = NULL)
 
-np_auc(data = NULL, response, predictor, lower_tpr, .condition = NULL)
+np_auc(data, response, predictor, lower_tpr, .condition = NULL)
 }
 \arguments{
 \item{data}{A data.frame or extension (e.g. a tibble) containing values for
@@ -69,8 +69,10 @@ which calculates area under curve over the whole specified region.
 }
 \examples{
 # Calculate fp_auc of Sepal.Width as a classifier of setosa species
+# in TPR = (0.9, 1)
 fp_auc(iris, response = Species, predictor = Sepal.Width, lower_tpr = 0.9)
 # Calculate np_auc of Sepal.Width as a classifier of setosa species
+# in TPR = (0.9, 1)
 np_auc(iris, response = Species, predictor = Sepal.Width, lower_tpr = 0.9)
 }
 \references{

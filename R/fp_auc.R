@@ -21,10 +21,10 @@
 #' @name sensitivity_indexes
 #' @examples
 #' # Calculate fp_auc of Sepal.Width as a classifier of setosa species
-#  # in TPR = (0.9, 1)
+#' # in TPR = (0.9, 1)
 #' fp_auc(iris, response = Species, predictor = Sepal.Width, lower_tpr = 0.9)
 #' # Calculate np_auc of Sepal.Width as a classifier of setosa species
-#  # in TPR = (0.9, 1)
+#' # in TPR = (0.9, 1)
 #' np_auc(iris, response = Species, predictor = Sepal.Width, lower_tpr = 0.9)
 NULL
 
@@ -38,43 +38,53 @@ fp_auc <- function(data = NULL,
                    predictor,
                    lower_tpr,
                    .condition = NULL) {
-  if (!is.null(data)) {
-    tpr_fpr <- data %>% roc_points({{ response }}, {{ predictor }}, .condition)
-    tpr <- tpr_fpr %>% pull(tpr)
-    fpr <- tpr_fpr %>% pull(fpr)
-  } else {
-    tpr_fpr <- NULL %>% roc_points(response, predictor, .condition)
-    tpr <- tpr_fpr[["tpr"]]
-    fpr <- tpr_fpr[["fpr"]]
-  }
+  UseMethod("fp_auc", data)
+}
 
-  partial_tpr_fpr <- calc_partial_roc_points(
-    tpr = tpr,
-    fpr = fpr,
+#' @export
+fp_auc.ratio_df <- function(data = NULL,
+                            response,
+                            predictor,
+                            lower_tpr,
+                            .condition = NULL) {
+  pauc <- pauc_tpr(data$fpr, data$tpr)
+  bounds <- calc_tpr_bounds(data$fpr, data$tpr)
+  lower_bound <- bounds$lower_bound
+  upper_bound <- bounds$upper_bound
+  fpauc <- (1 + ((pauc - lower_bound) / (upper_bound - lower_bound))) / 2
+  fpauc
+}
+
+#' @export
+fp_auc.NULL <- function(data = NULL,
+                        response,
+                        predictor,
+                        lower_tpr,
+                        .condition = NULL) {
+  ratios <- roc_points(NULL, response, predictor, .condition) %>%
+    arrange(.data[["fpr"]], .data[["tpr"]])
+  pratios <- calc_partial_roc_points(
+    data = ratios,
     lower_threshold = lower_tpr,
     upper_threshold = 1,
     ratio = "tpr"
   )
+  fp_auc.ratio_df(pratios, .condition = .condition)
+}
 
-  partial_tpr <- partial_tpr_fpr[["partial_tpr"]]
-  partial_fpr <- partial_tpr_fpr[["partial_fpr"]]
-
-  pauc <- sum(
-    diff(partial_tpr) *
-      apply(
-        cbind(
-          1 - partial_fpr[-1],
-          1 - partial_fpr[-length(partial_tpr)]
-        ),
-        1,
-        mean
-      )
+#' @export
+fp_auc.data.frame <- function(data = NULL,
+                              response,
+                              predictor,
+                              lower_tpr,
+                              .condition = NULL) {
+  predictor <- pull(data, {{ predictor }})
+  response <- pull(data, {{ response }})
+  fp_auc.NULL(
+    NULL,
+    response,
+    predictor,
+    lower_tpr,
+    .condition
   )
-
-  bounds <- calc_tpr_bounds(partial_fpr, partial_tpr)
-  lower_bound <- bounds[["lower_bound"]]
-  upper_bound <- bounds[["upper_bound"]]
-
-  fpauc <- (1 + ((pauc - lower_bound) / (upper_bound - lower_bound))) / 2
-  return(fpauc)
 }

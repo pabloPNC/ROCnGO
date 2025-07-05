@@ -14,7 +14,7 @@ validate_ratio <- function(ratio) {
   ratio
 }
 
-new_ratio_tibble <- function(tpr, fpr) {
+new_ratio_df <- function(tpr, fpr) {
   data <- tibble(tpr = tpr, fpr = fpr)
-  structure(data, class = c("ratio_tibble", class(data)))
+  structure(data, class = c("ratio_df", class(data)))
 }

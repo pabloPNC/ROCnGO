@@ -3,7 +3,8 @@
 #' Calculates area under curve curve in an specific TPR or FPR region.
 #' @inheritParams calc_partial_roc_points
 #' @returns
-#' A numeric value representing the area under ROC curve in the specified region.
+#' A numeric value representing the area under ROC curve in the specified
+#' region.
 #' @examples
 #' # Calculate pauc of Sepal.Width as a classifier of setosa species in
 #' # in TPR = (0.9, 1)
@@ -34,28 +35,26 @@ pauc <- function(data = NULL,
                  upper_threshold,
                  .condition = NULL) {
   if (!is.null(data)) {
-    ratios <- roc_points(data, {{ response }}, {{ predictor }}, .condition)
+    ratios <- roc_points(data, {{ response }}, {{ predictor }}, .condition) %>%
+      arrange(.data[["fpr"]], .data[["tpr"]])
   } else {
-    ratios <- roc_points(NULL, response, predictor, .condition)
+    ratios <- roc_points(NULL, response, predictor, .condition) %>%
+      arrange(.data[["fpr"]], .data[["tpr"]])
   }
-  tpr <- ratios$tpr
-  fpr <- ratios$fpr
   partial_ratios <- calc_partial_roc_points(
-    tpr = tpr,
-    fpr = fpr,
+    data = ratios,
     lower_threshold = lower_threshold,
     upper_threshold = upper_threshold,
     ratio = ratio
   )
-  ptpr <- partial_ratios[["partial_tpr"]]
-  pfpr <- partial_ratios[["partial_fpr"]]
+  ptpr <- partial_ratios[["tpr"]]
+  pfpr <- partial_ratios[["fpr"]]
 
   if (ratio == "tpr") {
     pauc <- pauc_tpr(partial_tpr = ptpr, partial_fpr = pfpr)
   } else if (ratio == "fpr") {
     pauc <- pauc_fpr(partial_tpr = ptpr, partial_fpr = pfpr)
   } else {
-    # TODO: improve error message
     stop("`ratio` arg should take `'tpr'` or `'fpr'` value")
   }
   pauc

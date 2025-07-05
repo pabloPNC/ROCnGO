@@ -10,28 +10,25 @@ summarize_tpr_predictor <- function(data = NULL,
 
   response <- as_response(response, .condition)
 
-  tpr_fpr <- roc_points(NULL, response, predictor)
+  tpr_fpr <- roc_points(NULL, response, predictor) %>%
+    arrange(.data[["fpr"]], .data[["tpr"]])
   ptpr_pfpr <- calc_partial_roc_points(
-    tpr = tpr_fpr$tpr,
-    fpr = tpr_fpr$fpr,
+    data = tpr_fpr,
     lower_threshold = threshold,
     upper_threshold = 1,
     ratio = "tpr"
   )
   tibble(
-    auc = auc(
-      response = response,
-      predictor = predictor
-    ),
+    auc = auc(tpr_fpr),
     pauc = pauc_tpr(
-      partial_tpr = ptpr_pfpr$partial_tpr,
-      partial_fpr = ptpr_pfpr$partial_fpr
+      partial_tpr = ptpr_pfpr$tpr,
+      partial_fpr = ptpr_pfpr$fpr
     ),
-    np_auc = np_auc(NULL, response, predictor, threshold),
-    fp_auc = fp_auc(NULL, response, predictor, threshold),
+    np_auc = np_auc(ptpr_pfpr),
+    fp_auc = fp_auc(ptpr_pfpr),
     curve_shape = calc_tpr_curve_shape(
-      ptpr_pfpr$partial_fpr,
-      ptpr_pfpr$partial_tpr
+      ptpr_pfpr$fpr,
+      ptpr_pfpr$tpr
     )
   )
 }
@@ -45,34 +42,27 @@ summarize_fpr_predictor <- function(data = NULL,
     predictor <- data %>% pull({{ predictor }})
     response <- data %>% pull({{ response }})
   }
-  response <- as_response(response, .condition)
-  tpr_fpr <- roc_points(NULL, response, predictor)
+  tpr_fpr <- roc_points(NULL, response, predictor, .condition) %>%
+    arrange(.data[["fpr"]], .data[["tpr"]])
+
   ptpr_pfpr <- calc_partial_roc_points(
-    tpr = tpr_fpr$tpr,
-    fpr = tpr_fpr$fpr,
+    data = tpr_fpr,
     lower_threshold = 0,
     upper_threshold = threshold,
     ratio = "fpr"
   )
+
   tibble(
-    auc = auc(
-      response = response,
-      predictor = predictor,
-    ),
+    auc = auc(tpr_fpr),
     pauc = pauc_fpr(
-      partial_tpr = ptpr_pfpr$partial_tpr,
-      partial_fpr = ptpr_pfpr$partial_fpr
+      partial_tpr = ptpr_pfpr$tpr,
+      partial_fpr = ptpr_pfpr$fpr
     ),
-    sp_auc = sp_auc(
-      response = response,
-      predictor = predictor,
-      lower_fpr = 0,
-      upper_fpr = threshold
-    ),
-    tp_auc = tp_auc(NULL, response, predictor, 0, threshold),
+    sp_auc = sp_auc(ptpr_pfpr),
+    tp_auc = tp_auc(ptpr_pfpr),
     curve_shape = calc_fpr_curve_shape(
-      ptpr_pfpr$partial_fpr,
-      ptpr_pfpr$partial_tpr
+      ptpr_pfpr$fpr,
+      ptpr_pfpr$tpr
     )
   )
 }
@@ -187,6 +177,14 @@ summarize_dataset <- function(data,
 
   response <- data %>% pull({{ response }})
 
+  if (.progress == TRUE) {
+    cli_progress_bar(
+      name = "Calculating...",
+      total = ncol(predictors_dataset),
+      type = "iterator"
+    )
+  }
+
   resignal_thresholds({
     for (i in 1:length(predictors_dataset)) {
       if (ratio == "tpr") {
@@ -209,12 +207,15 @@ summarize_dataset <- function(data,
 
       id <- names(predictors_dataset[i])
       results[[id]] <- result
-
       if (.progress == TRUE) {
-        print(str_glue("[*] {length(results)}/{length(predictors_dataset)}"))
+        cli_progress_update()
       }
     }
   })
+
+  if (.progress == TRUE) {
+    cli_progress_done()
+  }
 
   metrics <- list(
     data = bind_rows(results, .id = "identifier")

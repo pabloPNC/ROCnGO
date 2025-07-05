@@ -51,3 +51,13 @@ test_that("tranform_response works with chr and .condition is selected", {
   transformed_species <- transform_response(test_iris$Species_chr, "virginica")
   expect_equal(transformed_species, expected_species)
 })
+
+test_that("as_response works with fct(0,1) and .condition is selected", {
+  test_iris <- create_iris_df()
+  expected_species <- test_iris$Species_bin_fct_inv
+  transformed_species <- as_response(
+    x = test_iris$Species_bin_fct,
+    .condition = "0"
+  )
+  expect_equal(transformed_species, expected_species)
+})

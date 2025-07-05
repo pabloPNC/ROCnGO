@@ -1,8 +1,10 @@
 Package: ROCnGO
 Title: Fast analysis of ROC curves
 Version: 0.0.0.9000
-Authors@R: 
-    person("Pablo", "Navarro", , "pablo.navarrocarpio@gmail.com", role = c("aut", "cre"))
+Authors@R: c(
+    person("Pablo", "Navarro", email = "pablo.navarrocarpio@gmail.com", role = c("aut", "cre", "cph")),
+    person("Juana-María", "Vivo", role = c("aut")),
+    person("Manuel", "Franco", role = c("aut")))
 Description: Tools for working with receiver operating characteristic (ROC) 
     curves and evaluate global or local performance of classifiers. 
 License: GPL (>= 3)
