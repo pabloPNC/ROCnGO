@@ -29,7 +29,8 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 VignetteBuilder: knitr
-URL: https://pablopnc.github.io/ROCnGO/
+URL: https://pablopnc.github.io/ROCnGO/, https://github.com/pabloPNC/ROCnGO
 Depends: 
     R (>= 2.10)
 LazyData: true
+BugReports: https://github.com/pabloPNC/ROCnGO/issues
