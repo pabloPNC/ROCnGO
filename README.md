@@ -70,7 +70,7 @@ summarize_predictor(
 # Summarize several predictors simultaneously
 summarize_dataset(
   iris_subset,
-  predictor = c(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width),
+  predictors = c(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width),
   response = Species,
   threshold = 0.9,
   ratio = "tpr"
