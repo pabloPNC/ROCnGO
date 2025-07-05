@@ -1,10 +1,10 @@
 pandoc: 3.1.11
-pkgdown: 2.1.2
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   ROCnGO: ROCnGO.html
   selecting-condition: selecting-condition.html
-last_built: 2025-05-05T05:14Z
+last_built: 2025-07-05T17:51Z
 urls:
   reference: https://pablopnc.github.io/ROCnGO/reference
   article: https://pablopnc.github.io/ROCnGO/articles
