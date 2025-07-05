@@ -33,8 +33,7 @@ sp_auc.ratio_df <- function(data = NULL,
   upper_bound <- max(data$fpr) - min(data$fpr)
 
   if (pauc < lower_bound && !.invalid) {
-    # TODO: improve warning when pauc < under diagonal
-    warning("Curve under chance line")
+    warn_under_chance()
     spauc <- NA
   } else {
     spauc <- (1 + ((pauc - lower_bound) / (upper_bound - lower_bound))) / 2

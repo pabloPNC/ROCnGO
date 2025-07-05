@@ -63,7 +63,7 @@ calc_fpr_lower_bound <- function(partial_fpr, partial_tpr) {
 
 calc_fpr_upper_bound <- function(partial_fpr, partial_tpr) {
   if (min(partial_tpr) == max(partial_tpr)) {
-    warning("Constant ROC curve over the prefixed FPR range")
+    warn_constant_roc()
     upper_bound <- sum(diff(partial_tpr))
   } else {
     upper_bound <- sum(diff(partial_fpr)) * max(partial_tpr)
