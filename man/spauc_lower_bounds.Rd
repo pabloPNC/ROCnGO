@@ -6,24 +6,18 @@
 \title{Add SpAUC lower bound to a ROC plot}
 \usage{
 add_spauc_lower_bound(
-  data = NULL,
-  fpr = NULL,
-  tpr = NULL,
+  data,
   response = NULL,
   predictor = NULL,
   lower_threshold,
   upper_threshold,
-  .condition = NULL
+  .condition = NULL,
+  .label = NULL
 )
 }
 \arguments{
 \item{data}{A data.frame or extension (e.g. a tibble) containing values for
 predictors and response variables.}
-
-\item{fpr, tpr}{Numeric vectors representing FPR and TPR for the classifier.
-
-These arguments may be used when neither of \code{data}, \code{response} and
-\code{predictor} are supplied.}
 
 \item{response}{A data variable which must be a factor, integer or character
 vector representing the prediction outcome on each observation
@@ -59,6 +53,10 @@ common category, representing the "absence" of the condition to be predicted.
 See \code{vignette("selecting-condition")} for further information on how
 automatic selection is performed and details on selecting the condition of
 interest.}
+
+\item{.label}{A string representing the name used in labels.
+
+If \code{NULL}, variable name from \code{predictor} will be used as label.}
 }
 \description{
 Calculate and plot lower bound defined by SpAUC specificity index.
