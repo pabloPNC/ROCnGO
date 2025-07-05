@@ -8,3 +8,4 @@
 ^codecov\.yml$
 ^\.github$
 ^\.vscode$
+^cran-comments\.md$
