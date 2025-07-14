@@ -5,13 +5,22 @@ Authors@R: c(
     person("Pablo", "Navarro", email = "pablo.navarrocarpio@gmail.com", role = c("aut", "cre", "cph")),
     person("Juana-María", "Vivo", role = c("aut")),
     person("Manuel", "Franco", role = c("aut")))
-Description: Tools for working with receiver operating characteristic (ROC) 
-    curves and evaluate global or local performance of classifiers. 
+Description: A toolkit for analyzing classifier performance by using receiver
+    operating characteristic (ROC) curves. Performance may be assessed on
+    a single classifier or multiple ones simultaneously, making it suitable for
+    comparisons. In addition, different metrics allow the evaluation of local
+    performance when working within restricted ranges of sensitivity and
+    specificity. For details on the different implementations, see
+    McClish D. K. (1989) <doi:10.1177/0272989X8900900307>,
+    Vivo J.-M., Franco M. and Vicari D. (2018) <doi:10.1007/S11634-017-0295-9>,
+    Jiang Y., et al (1996) <doi:10.1148/radiology.201.3.8939225>,
+    Franco M. and Vivo J.-M. (2021) <doi:10.3390/math9212826> and
+    Carrington, André M., et al (2020) <doi: 10.1186/s12911-019-1014-6>.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
-Imports: 
+Imports:
     cli,
     dplyr,
     forcats,
@@ -23,14 +32,14 @@ Imports:
     SummarizedExperiment,
     tibble,
     tidyr
-Suggests: 
+Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 URL: https://pablopnc.github.io/ROCnGO/, https://github.com/pabloPNC/ROCnGO
-Depends: 
+Depends:
     R (>= 4.1.0)
 LazyData: true
 BugReports: https://github.com/pabloPNC/ROCnGO/issues
