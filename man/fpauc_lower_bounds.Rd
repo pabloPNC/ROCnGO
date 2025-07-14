@@ -79,6 +79,9 @@ interest.}
 
 If \code{NULL}, variable name from \code{predictor} will be used as label.}
 }
+\value{
+A ggplot layer instance object.
+}
 \description{
 Calculate and plot lower bound defined by FpAUC sensitivity index.
 \itemize{

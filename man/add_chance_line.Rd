@@ -6,6 +6,9 @@
 \usage{
 add_chance_line()
 }
+\value{
+A ggplot layer instance object.
+}
 \description{
 Plot chance line in a ROC plot.
 }

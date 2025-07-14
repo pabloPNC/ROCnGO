@@ -69,6 +69,9 @@ interest.}
 
 If \code{NULL}, variable name from \code{predictor} will be used as label.}
 }
+\value{
+A ggplot object.
+}
 \description{
 Create an scatter plot using points in an specific region of ROC curve.
 }
