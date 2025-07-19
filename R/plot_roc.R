@@ -29,6 +29,8 @@ plot_roc_geom <- function(data, geom, .label) {
 #' If `NULL`, variable name from `predictor` will be used as label.
 #' @examples
 #' plot_roc_points(iris, response = Species, predictor = Sepal.Width)
+#' @returns
+#' A ggplot object.
 #' @export
 plot_roc_points <- function(data,
                             response = NULL,
@@ -83,6 +85,8 @@ plot_roc_points.ratio_df <- function(data,
 #' @inheritParams plot_roc_points
 #' @examples
 #' plot_roc_curve(iris, response = Species, predictor = Sepal.Width)
+#' @returns
+#' A ggplot object.
 #' @export
 plot_roc_curve <- function(data,
                            response = NULL,
@@ -135,6 +139,8 @@ plot_roc_curve.ratio_df <- function(data,
 #' @examples
 #' plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
 #'  add_chance_line()
+#' @returns
+#' A ggplot layer instance object.
 #' @export
 add_chance_line <- function() {
   geom_abline(slope = 1, linetype = "dashed", alpha = 1 / 5)
@@ -148,6 +154,8 @@ add_chance_line <- function() {
 #' @examples
 #' plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
 #'  add_roc_curve(iris, response = Species, predictor = Sepal.Length)
+#' @returns
+#' A ggplot layer instance object.
 #' @export
 add_roc_curve <- function(data,
                           response = NULL,
@@ -201,6 +209,8 @@ add_roc_curve.ratio_df <- function(data,
 #' @examples
 #' plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
 #'  add_roc_points(iris, response = Species, predictor = Sepal.Length)
+#' @returns
+#' A ggplot layer instance object.
 #' @export
 add_roc_points <- function(data,
                            response = NULL,
@@ -278,6 +288,8 @@ add_tpr_threshold_line <- function(threshold) {
 #' # Add threshold line in FPR = 0.1
 #' plot_roc_curve(iris, response = Species, predictor = Sepal.Width) +
 #'  add_fpr_threshold_line(threshold = 0.1)
+#' @returns
+#' A ggplot layer instance object.
 #' @export
 add_threshold_line <- function(threshold,
                                ratio = NULL) {
@@ -302,6 +314,8 @@ add_threshold_line <- function(threshold,
 #'     ratio = "tpr",
 #'     threshold = 0.9
 #'   )
+#' @returns
+#' A ggplot layer instance object.
 #' @export
 add_partial_roc_curve <- function(data,
                                   response = NULL,
@@ -391,6 +405,8 @@ add_partial_roc_curve.ratio_df <- function(data,
 #'     ratio = "tpr",
 #'     threshold = 0.9
 #'   )
+#' @returns
+#' A ggplot layer instance object.
 #' @export
 add_partial_roc_points <- function(data,
                                    response = NULL,
@@ -481,6 +497,8 @@ add_partial_roc_points.ratio_df <- function(data,
 #'  ratio = "tpr",
 #'  threshold = 0.9
 #' )
+#' @returns
+#' A ggplot object.
 #' @export
 plot_partial_roc_curve <- function(data,
                                    response = NULL,
@@ -516,6 +534,8 @@ plot_partial_roc_curve <- function(data,
 #'  ratio = "tpr",
 #'  threshold = 0.9
 #' )
+#' @returns
+#' A ggplot object.
 #' @export
 plot_partial_roc_points <- function(data,
                                     response = NULL,
@@ -755,6 +775,8 @@ add_fpauc_concave_lower_bound.ratio_df <- function(data,
 #'     predictor = Sepal.Width,
 #'     threshold = 0.9
 #'   )
+#' @returns
+#' A ggplot layer instance object.
 #' @export
 add_fpauc_lower_bound <- function(data,
                                   response = NULL,
@@ -1182,6 +1204,8 @@ add_tpauc_under_chance_lower_bound.ratio_df <- function(data,
 #'     upper_threshold =  0.1,
 #'     lower_threshold = 0
 #'   )
+#' @returns
+#' A ggplot layer instance object.
 #' @export
 add_tpauc_lower_bound <- function(data,
                                   response = NULL,
@@ -1259,6 +1283,8 @@ add_tpauc_lower_bound <- function(data,
 #'     predictor = Sepal.Width,
 #'     threshold = 0.9
 #'   )
+#' @returns
+#' A ggplot layer instance object.
 #' @export
 add_npauc_lower_bound <- function(data,
                                   response = NULL,
@@ -1462,6 +1488,8 @@ add_npauc_normalized_lower_bound.ratio_df <- function(data,
 #'     lower_threshold = 0,
 #'     upper_threshold = 0.1
 #'   )
+#' @returns
+#' A ggplot layer instance object.
 #' @export
 add_spauc_lower_bound <- function(data,
                                   response = NULL,
@@ -1569,6 +1597,8 @@ add_spauc_lower_bound.ratio_df <- function(data,
 #' @title Hide legend in a ROC plot
 #' @description Hide legend showing name of ploted classifiers and bounds in a
 #' ROC curve plot.
+#' @returns
+#' A ggplot theme object.
 #' @export
 hide_legend <- function() {
   theme(legend.position = "none")

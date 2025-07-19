@@ -64,9 +64,9 @@ interest.}
 \value{
 A tibble with two columns:
 \itemize{
-\item "partial_tpr". Containing "true positive ratio", or y, values of points
+\item "tpr". Containing "true positive ratio", or y, values of points
 within the specified region.
-\item "partial_fpr". Containing "false positive ratio", or x, values of points
+\item "fpr". Containing "false positive ratio", or x, values of points
 within the specified region.
 }
 }

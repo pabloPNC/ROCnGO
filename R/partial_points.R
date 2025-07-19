@@ -131,9 +131,9 @@ add_thresholds <- function(ratio,
 #' @returns
 #' A tibble with two columns:
 #'
-#' * "partial_tpr". Containing "true positive ratio", or y, values of points
+#' * "tpr". Containing "true positive ratio", or y, values of points
 #' within the specified region.
-#' * "partial_fpr". Containing "false positive ratio", or x, values of points
+#' * "fpr". Containing "false positive ratio", or x, values of points
 #' within the specified region.
 #' @examples
 #' # Calc ROC points of Sepal.Width as a classifier of setosa species

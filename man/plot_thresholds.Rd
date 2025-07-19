@@ -29,6 +29,9 @@ being its lower limit equal to 0.}
 \item If \code{"fpr"} it will be displayed in FPR, x axis.
 }}
 }
+\value{
+A ggplot layer instance object.
+}
 \description{
 Include a threshold line on an specified axis.
 }

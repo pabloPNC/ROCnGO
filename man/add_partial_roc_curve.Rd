@@ -69,6 +69,9 @@ interest.}
 
 If \code{NULL}, variable name from \code{predictor} will be used as label.}
 }
+\value{
+A ggplot layer instance object.
+}
 \description{
 Add an specific region of a ROC curve to an existing ROC plot.
 }

@@ -6,6 +6,9 @@
 \usage{
 hide_legend()
 }
+\value{
+A ggplot theme object.
+}
 \description{
 Hide legend showing name of ploted classifiers and bounds in a
 ROC curve plot.
