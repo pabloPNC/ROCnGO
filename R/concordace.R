@@ -47,19 +47,60 @@ cp_auc <- function(data = NULL,
                    upper_threshold,
                    ratio,
                    .condition = NULL) {
-  ppoints <- calc_partial_roc_points(
-    data = data,
-    response = {{ response }},
-    predictor = {{ predictor }},
-    .condition = {{ .condition }},
+  UseMethod("cp_auc", data)
+}
+
+cp_auc.ratio_df <- function(data = NULL,
+                            response,
+                            predictor,
+                            lower_threshold,
+                            upper_threshold,
+                            ratio,
+                            .condition = NULL) {
+  pauc_fpr <- pauc_fpr(data$fpr, data$tpr)
+  pauc_tpr <- pauc_tpr(data$fpr, data$tpr)
+  c_pauc <- (0.5 * pauc_fpr) + (0.5 * pauc_tpr)
+  c_pauc
+}
+
+cp_auc.NULL <- function(data = NULL,
+                        response,
+                        predictor,
+                        lower_threshold,
+                        upper_threshold,
+                        ratio,
+                        .condition = NULL) {
+  ratios <- roc_points(NULL, response, predictor, .condition) %>%
+    arrange(.data[["fpr"]], .data[["tpr"]])
+
+  pratios <- calc_partial_roc_points(
+    data = ratios,
     lower_threshold = lower_threshold,
     upper_threshold = upper_threshold,
     ratio = ratio
   )
-  pauc_fpr <- pauc_fpr(ppoints$fpr, ppoints$tpr)
-  pauc_tpr <- pauc_tpr(ppoints$fpr, ppoints$tpr)
-  c_pauc <- (0.5 * pauc_fpr) + (0.5 * pauc_tpr)
-  c_pauc
+
+  cp_auc.ratio_df(pratios, .condition = .condition)
+}
+
+cp_auc.data.frame <- function(data = NULL,
+                              response,
+                              predictor,
+                              lower_threshold,
+                              upper_threshold,
+                              ratio,
+                              .condition = NULL) {
+  predictor <- pull(data, {{ predictor }})
+  response <- pull(data, {{ response }})
+  cp_auc.NULL(
+    NULL,
+    response,
+    predictor,
+    lower_threshold,
+    upper_threshold,
+    ratio,
+    .condition
+  )
 }
 
 #' @rdname concordance_indexes
