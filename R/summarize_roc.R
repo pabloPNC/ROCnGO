@@ -26,6 +26,7 @@ summarize_tpr_predictor <- function(data = NULL,
     ),
     np_auc = np_auc(ptpr_pfpr),
     fp_auc = fp_auc(ptpr_pfpr),
+    ncp_auc = ncp_auc(ptpr_pfpr),
     curve_shape = calc_tpr_curve_shape(
       ptpr_pfpr$fpr,
       ptpr_pfpr$tpr
@@ -60,6 +61,7 @@ summarize_fpr_predictor <- function(data = NULL,
     ),
     sp_auc = sp_auc(ptpr_pfpr),
     tp_auc = tp_auc(ptpr_pfpr),
+    ncp_auc = ncp_auc(ptpr_pfpr),
     curve_shape = calc_fpr_curve_shape(
       ptpr_pfpr$fpr,
       ptpr_pfpr$tpr
