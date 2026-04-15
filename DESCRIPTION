@@ -1,6 +1,6 @@
 Package: ROCnGO
 Title: Fast Analysis of ROC Curves
-Version: 0.1.0
+Version: 0.1.0.9000
 Authors@R: c(
     person("Pablo", "Navarro", email = "pablo.navarrocarpio@gmail.com", role = c("aut", "cre", "cph")),
     person("Juana-María", "Vivo", role = c("aut")),
