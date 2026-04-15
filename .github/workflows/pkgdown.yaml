@@ -3,8 +3,8 @@
 on:
   push:
     branches: [main, master]
-  pull_request:
-    branches: [main, master]  # modification to only work on these branches
+  # pull_request:
+  #   branches: [main, master]  # modification to only work on these branches
   release:
     types: [published]
   workflow_dispatch:
