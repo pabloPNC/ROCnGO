@@ -50,6 +50,7 @@ cp_auc <- function(data = NULL,
   UseMethod("cp_auc", data)
 }
 
+#' @export
 cp_auc.ratio_df <- function(data = NULL,
                             response,
                             predictor,
@@ -63,6 +64,7 @@ cp_auc.ratio_df <- function(data = NULL,
   c_pauc
 }
 
+#' @export
 cp_auc.NULL <- function(data = NULL,
                         response,
                         predictor,
@@ -83,6 +85,7 @@ cp_auc.NULL <- function(data = NULL,
   cp_auc.ratio_df(pratios, .condition = .condition)
 }
 
+#' @export
 cp_auc.data.frame <- function(data = NULL,
                               response,
                               predictor,
@@ -112,15 +115,32 @@ ncp_auc <- function(data = NULL,
                     upper_threshold,
                     ratio,
                     .condition = NULL) {
-  c_pauc <- cp_auc(
-    data = data,
-    response = {{ response }},
-    predictor = {{ predictor }},
-    .condition = {{ .condition }},
-    lower_threshold = lower_threshold,
-    upper_threshold = upper_threshold,
-    ratio = ratio
-  )
+  UseMethod("ncp_auc", data)
+}
+
+#' @export
+ncp_auc.ratio_df <- function(data = NULL,
+                             response,
+                             predictor,
+                             lower_threshold,
+                             upper_threshold,
+                             ratio,
+                             .condition = NULL) {
+  c_pauc <- cp_auc(data)
+  fpr_range <- data$fpr[nrow(data)] - data$fpr[1]
+  tpr_range <- data$tpr[nrow(data)] - data$tpr[1]
+  nc_pauc <- c_pauc / (0.5 * (tpr_range + fpr_range))
+  nc_pauc
+}
+
+#' @export
+ncp_auc.NULL <- function(data = NULL,
+                         response,
+                         predictor,
+                         lower_threshold,
+                         upper_threshold,
+                         ratio,
+                         .condition = NULL) {
   ppoints <- calc_partial_roc_points(
     data = data,
     response = {{ response }},
@@ -130,8 +150,26 @@ ncp_auc <- function(data = NULL,
     upper_threshold = upper_threshold,
     ratio = ratio
   )
-  fpr_range <- ppoints$fpr[nrow(ppoints)] - ppoints$fpr[1]
-  tpr_range <- ppoints$tpr[nrow(ppoints)] - ppoints$tpr[1]
-  nc_pauc <- c_pauc / (0.5 * (tpr_range + fpr_range))
-  nc_pauc
+  ncp_auc.ratio_df(ppoints, .condition = .condition)
+}
+
+#' @export
+ncp_auc.data.frame <- function(data = NULL,
+                               response,
+                               predictor,
+                               lower_threshold,
+                               upper_threshold,
+                               ratio,
+                               .condition = NULL) {
+  predictor <- pull(data, {{ predictor }})
+  response <- pull(data, {{ response }})
+  ncp_auc.NULL(
+    NULL,
+    response,
+    predictor,
+    lower_threshold,
+    upper_threshold,
+    ratio,
+    .condition = NULL
+  )
 }
