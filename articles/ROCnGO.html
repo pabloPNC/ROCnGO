@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ROCnGO</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,7 +60,7 @@
       <h1>Introduction to ROCnGO</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/pabloPNC/ROCnGO/blob/v0.1.0/vignettes/ROCnGO.Rmd" class="external-link"><code>vignettes/ROCnGO.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/pabloPNC/ROCnGO/blob/master/vignettes/ROCnGO.Rmd" class="external-link"><code>vignettes/ROCnGO.Rmd</code></a></small>
       <div class="d-none name"><code>ROCnGO.Rmd</code></div>
     </div>
 
@@ -200,7 +200,7 @@ points for Sepal.Length as a classifier of <em>setosa</em> species.</p>
 <span></span>
 <span><span class="co"># Plot points</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">points</span><span class="op">$</span><span class="va">fpr</span>, <span class="va">points</span><span class="op">$</span><span class="va">tpr</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ROCnGO_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+<p><img src="ROCnGO_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="700"></p>
 <p>As we may see, Sepal.Length doesn’t perform very well predicting when
 a flower is from setosa species, in fact it’s the other way around, the
 lower the Sepal.Length the more probable to be working with a
@@ -230,7 +230,7 @@ changing the order of levels in data.</p>
 <span>  response <span class="op">=</span> <span class="va">Species</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">points</span><span class="op">$</span><span class="va">fpr</span>, <span class="va">points</span><span class="op">$</span><span class="va">tpr</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ROCnGO_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
+<p><img src="ROCnGO_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 </div>
 <div class="section level2">
@@ -281,7 +281,7 @@ of
 <span></span>
 <span><span class="co"># Plot partial ROC curve</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">p_points</span><span class="op">$</span><span class="va">fpr</span>, <span class="va">p_points</span><span class="op">$</span><span class="va">tpr</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ROCnGO_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
+<p><img src="ROCnGO_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level2">
 <h2 id="automating-analysis">Automating analysis<a class="anchor" aria-label="anchor" href="#automating-analysis"></a>
@@ -315,10 +315,10 @@ and high specificity region,
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Upper threshold <span style="color: #0000BB;">1</span> already included in points.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Skipping upper threshold interpolation</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 5</span></span></span>
-<span><span class="co">#&gt;     auc   pauc np_auc fp_auc curve_shape</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 0.985 0.084<span style="text-decoration: underline;">7</span>  0.847  0.852 Concave</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 6</span></span></span>
+<span><span class="co">#&gt;     auc   pauc np_auc fp_auc ncp_auc curve_shape</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 0.985 0.084<span style="text-decoration: underline;">7</span>  0.847  0.852   0.973 Concave</span></span>
 <span></span>
 <span><span class="co"># Summarize predictor in high spec region</span></span>
 <span><span class="fu"><a href="../reference/summarize_predictor.html">summarize_predictor</a></span><span class="op">(</span></span>
@@ -330,10 +330,10 @@ and high specificity region,
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Lower <span style="color: #0000BB;">0</span> and upper <span style="color: #0000BB;">0.1</span> thresholds already included in points</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Skipping lower and upper threshold interpolation</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 5</span></span></span>
-<span><span class="co">#&gt;     auc   pauc sp_auc tp_auc curve_shape</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 0.985 0.095<span style="text-decoration: underline;">4</span>  0.976  0.973 Concave</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 6</span></span></span>
+<span><span class="co">#&gt;     auc   pauc sp_auc tp_auc ncp_auc curve_shape</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 0.985 0.095<span style="text-decoration: underline;">4</span>  0.976  0.973   0.993 Concave</span></span></code></pre></div>
 <p>Besides
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mi>U</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">AUC</annotation></semantics></math>
 and
@@ -356,13 +356,13 @@ classifiers.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Lower <span style="color: #0000BB;">0.9</span> and upper <span style="color: #0000BB;">1</span> thresholds already included in points</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Skipping lower and upper threshold interpolation</span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 6</span></span></span>
-<span><span class="co">#&gt;   identifier     auc   pauc np_auc fp_auc curve_shape      </span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Sepal.Length 0.985 0.084<span style="text-decoration: underline;">7</span> 0.847   0.852 Concave          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Sepal.Width  0.166 0.001<span style="text-decoration: underline;">6</span> 0.016<span style="text-decoration: underline;">0</span>  0.9   Hook under chance</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Petal.Length 1     0.1    1       1     Concave          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Petal.Width  1     0.1    1       1     Concave          </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 7</span></span></span>
+<span><span class="co">#&gt;   identifier     auc   pauc np_auc fp_auc ncp_auc curve_shape      </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Sepal.Length 0.985 0.084<span style="text-decoration: underline;">7</span> 0.847   0.852   0.973 Concave          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Sepal.Width  0.166 0.001<span style="text-decoration: underline;">6</span> 0.016<span style="text-decoration: underline;">0</span>  0.9     0.177 Hook under chance</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Petal.Length 1     0.1    1       1       1     Concave          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Petal.Width  1     0.1    1       1       1     Concave          </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $curve_shape</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 2</span></span></span>
@@ -398,8 +398,10 @@ points of Sepal.Length in this way.</p>
 <span>  predictor <span class="op">=</span> <span class="va">Sepal.Length</span>,</span>
 <span>  response <span class="op">=</span> <span class="va">Species</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">sepal_length_plot</span></span></code></pre></div>
-<p><img src="ROCnGO_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+<span><span class="va">sepal_length_plot</span></span>
+<span><span class="co">#&gt; Ignoring unknown labels:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #00BB00;">fill</span> : <span style="color: #0000BB;">"Bound"</span></span></span></code></pre></div>
+<p><img src="ROCnGO_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="" width="700"></p>
 <p>Now by using <code>+</code> operator we can add further options to
 the plot. For example, including chance line, adding further
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>O</mi><mi>C</mi></mrow><annotation encoding="application/x-tex">ROC</annotation></semantics></math>
@@ -427,8 +429,10 @@ points of other classifiers, etc.</p>
 <span>    threshold <span class="op">=</span> <span class="fl">0.7</span>,</span>
 <span>    ratio <span class="op">=</span> <span class="st">"tpr"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/add_chance_line.html">add_chance_line</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ROCnGO_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
+<span>  <span class="fu"><a href="../reference/add_chance_line.html">add_chance_line</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Ignoring unknown labels:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #00BB00;">fill</span> : <span style="color: #0000BB;">"Bound"</span></span></span></code></pre></div>
+<p><img src="ROCnGO_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -442,7 +446,7 @@ points of other classifiers, etc.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

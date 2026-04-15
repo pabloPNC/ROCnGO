@@ -9,7 +9,7 @@ classifier performance."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ROCnGO</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,7 +36,7 @@ classifier performance."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Summarize classifier performance</h1>
-      <small class="dont-index">Source: <a href="https://github.com/pabloPNC/ROCnGO/blob/v0.1.0/R/summarize_roc.R" class="external-link"><code>R/summarize_roc.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/pabloPNC/ROCnGO/blob/master/R/summarize_roc.R" class="external-link"><code>R/summarize_roc.R</code></a></small>
       <div class="d-none name"><code>summarize_predictor.Rd</code></div>
     </div>
 
@@ -135,10 +135,10 @@ TPR and <a href="specificity_indexes.html">specificity indexes</a> for FPR.</p><
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Upper threshold <span style="color: #0000BB;">1</span> already included in points.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Skipping upper threshold interpolation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     auc   pauc np_auc fp_auc curve_shape     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 0.880 0.047<span style="text-decoration: underline;">2</span>  0.472  0.852 Partially proper</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     auc   pauc np_auc fp_auc ncp_auc curve_shape     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 0.880 0.047<span style="text-decoration: underline;">2</span>  0.472  0.852   0.906 Partially proper</span>
 <span class="r-in"><span><span class="co"># Summarize Sepal.Width as a classifier of setosa species</span></span></span>
 <span class="r-in"><span><span class="co"># and local performance in FPR (0, 0.1)</span></span></span>
 <span class="r-in"><span><span class="fu">summarize_predictor</span><span class="op">(</span></span></span>
@@ -150,10 +150,10 @@ TPR and <a href="specificity_indexes.html">specificity indexes</a> for FPR.</p><
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Lower <span style="color: #0000BB;">0</span> and upper <span style="color: #0000BB;">0.1</span> thresholds already included in points</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Skipping lower and upper threshold interpolation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     auc   pauc sp_auc tp_auc curve_shape</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 0.880 0.047<span style="text-decoration: underline;">6</span>  0.724  0.721 Concave    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     auc   pauc sp_auc tp_auc ncp_auc curve_shape</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 0.880 0.047<span style="text-decoration: underline;">6</span>  0.724  0.721   0.907 Concave    </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -165,7 +165,7 @@ TPR and <a href="specificity_indexes.html">specificity indexes</a> for FPR.</p><
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

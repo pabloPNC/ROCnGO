@@ -1,0 +1,223 @@
+# ROCnGO
+
+## Overview
+
+ROCnGO provides a set of tools to study a classifier performance by
+using ROC curve based analysis. Package may address tasks in these type
+of analysis such as:
+
+- Evaluating global classifier performance.
+- Evaluating local classifier performance when a high specificity or
+  sensitivity is required, by using different indexes that provide:
+  - Better interpretation of local performance.
+  - Better power of discrimination between classifiers with similar
+    performance.
+- Evaluating performance on several classifier simultaneously.
+- Plot whole, or specific regions, of ROC curves.
+
+## Installation
+
+``` r
+install.packages("ROCnGO")
+```
+
+Alternatively, development version of ROCnGO can be installed from its
+[GitHub](https://github.com/pabloPNC/ROCnGO) repository with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("pabloPNC/ROCnGO")
+```
+
+## Usage
+
+``` r
+library(ROCnGO)
+
+# Iris subset
+iris_subset <- iris[iris$Species != "versicolor", ]
+
+# Select Species = "virginica" as the condition of interest
+iris_subset$Species <- relevel(iris_subset$Species, "virginica")
+
+# Summarize a predictor over high sensitivity region
+summarize_predictor(
+  iris_subset,
+  predictor = Sepal.Length,
+  response = Species,
+  threshold = 0.9,
+  ratio = "tpr"
+)
+#> ℹ Upper threshold 1 already included in points.
+#> • Skipping upper threshold interpolation
+#> # A tibble: 1 × 5
+#>     auc   pauc np_auc fp_auc curve_shape
+#>   <dbl>  <dbl>  <dbl>  <dbl> <chr>      
+#> 1 0.985 0.0847  0.847  0.852 Concave
+```
+
+``` r
+
+# Summarize several predictors simultaneously
+summarize_dataset(
+  iris_subset,
+  predictors = c(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width),
+  response = Species,
+  threshold = 0.9,
+  ratio = "tpr"
+)
+#> ℹ Lower 0.9 and upper 1 thresholds already included in points
+#> • Skipping lower and upper threshold interpolation
+#> $data
+#> # A tibble: 4 × 6
+#>   identifier     auc   pauc np_auc fp_auc curve_shape      
+#>   <chr>        <dbl>  <dbl>  <dbl>  <dbl> <chr>            
+#> 1 Sepal.Length 0.985 0.0847 0.847   0.852 Concave          
+#> 2 Sepal.Width  0.166 0.0016 0.0160  0.9   Hook under chance
+#> 3 Petal.Length 1     0.1    1       1     Concave          
+#> 4 Petal.Width  1     0.1    1       1     Concave          
+#> 
+#> $curve_shape
+#> # A tibble: 2 × 2
+#>   curve_shape       count
+#>   <chr>             <int>
+#> 1 Concave               3
+#> 2 Hook under chance     1
+#> 
+#> $auc
+#> # A tibble: 2 × 3
+#> # Groups:   auc > 0.5 [2]
+#>   `auc > 0.5` `auc > 0.8` count
+#>   <lgl>       <lgl>       <int>
+#> 1 FALSE       FALSE           1
+#> 2 TRUE        TRUE            3
+```
+
+``` r
+
+# Plot ROC curve of classifiers
+plot_roc_curve(iris_subset, predictor = Sepal.Length, response = Species) +
+  add_roc_curve(iris_subset, predictor = Petal.Length, response = Species) +
+  add_roc_points(iris_subset, predictor = Sepal.Width, response = Species) +
+  add_chance_line()
+```
+
+![](reference/figures/README-unnamed-chunk-2-1.png)
+
+# Package index
+
+## ROC curve
+
+Functions that operate on the entire ROC curve.
+
+- [`auc()`](https://pablopnc.github.io/ROCnGO/reference/auc.md) :
+  Calculate area under ROC curve
+- [`roc_points()`](https://pablopnc.github.io/ROCnGO/reference/roc_points.md)
+  : Calculate ROC curve points
+
+## Partial ROC curve
+
+Functions that operate on an specific ROC curve region.
+
+- [`pauc()`](https://pablopnc.github.io/ROCnGO/reference/pauc.md) :
+  Calculate partial area under curve
+- [`calc_partial_roc_points()`](https://pablopnc.github.io/ROCnGO/reference/calc_partial_roc_points.md)
+  : Calculate ROC curve partial points
+- [`calc_curve_shape()`](https://pablopnc.github.io/ROCnGO/reference/calc_curve_shape.md)
+  : Calculate curve shape over an specific region
+
+### Indexes
+
+Local performance metrics.
+
+- [`fp_auc()`](https://pablopnc.github.io/ROCnGO/reference/sensitivity_indexes.md)
+  [`np_auc()`](https://pablopnc.github.io/ROCnGO/reference/sensitivity_indexes.md)
+  : Sensitivity indexes
+- [`sp_auc()`](https://pablopnc.github.io/ROCnGO/reference/specificity_indexes.md)
+  [`tp_auc()`](https://pablopnc.github.io/ROCnGO/reference/specificity_indexes.md)
+  : Specificity indexes
+- [`cp_auc()`](https://pablopnc.github.io/ROCnGO/reference/concordance_indexes.md)
+  [`ncp_auc()`](https://pablopnc.github.io/ROCnGO/reference/concordance_indexes.md)
+  : Concordance indexes
+
+## Summarize
+
+Functions to quickly summarize a classifier.
+
+- [`summarize_predictor()`](https://pablopnc.github.io/ROCnGO/reference/summarize_predictor.md)
+  : Summarize classifier performance
+- [`summarize_dataset()`](https://pablopnc.github.io/ROCnGO/reference/summarize_dataset.md)
+  : Summarize classifiers performance in a dataset
+
+## Plot
+
+Functions to plot ROC curves of classifiers and derived metrics.
+
+### Initialize plot
+
+- [`plot_roc_points()`](https://pablopnc.github.io/ROCnGO/reference/plot_roc_points.md)
+  : Plot classifier points of a ROC curve
+- [`plot_roc_curve()`](https://pablopnc.github.io/ROCnGO/reference/plot_roc_curve.md)
+  : Plot a classifier ROC curve
+- [`plot_partial_roc_points()`](https://pablopnc.github.io/ROCnGO/reference/plot_partial_roc_points.md)
+  : Plot points in a region of a ROC curve
+- [`plot_partial_roc_curve()`](https://pablopnc.github.io/ROCnGO/reference/plot_partial_roc_curve.md)
+  : Plot a section of a classifier ROC curve
+
+### Add points to plot
+
+- [`add_roc_points()`](https://pablopnc.github.io/ROCnGO/reference/add_roc_points.md)
+  : Add ROC points plot to an existing one
+- [`add_roc_curve()`](https://pablopnc.github.io/ROCnGO/reference/add_roc_curve.md)
+  : Add a ROC curve plot to an existing one
+- [`add_partial_roc_points()`](https://pablopnc.github.io/ROCnGO/reference/add_partial_roc_points.md)
+  : Add points in a section of a ROC curve to an existing plot
+- [`add_partial_roc_curve()`](https://pablopnc.github.io/ROCnGO/reference/add_partial_roc_curve.md)
+  : Add a section of a ROC curve to an existing one
+
+### Add index bounds
+
+- [`add_fpauc_partially_proper_lower_bound()`](https://pablopnc.github.io/ROCnGO/reference/fpauc_lower_bounds.md)
+  [`add_fpauc_concave_lower_bound()`](https://pablopnc.github.io/ROCnGO/reference/fpauc_lower_bounds.md)
+  [`add_fpauc_lower_bound()`](https://pablopnc.github.io/ROCnGO/reference/fpauc_lower_bounds.md)
+  : Add FpAUC lower bound to a ROC plot
+- [`add_npauc_lower_bound()`](https://pablopnc.github.io/ROCnGO/reference/npauc_lower_bounds.md)
+  [`add_npauc_normalized_lower_bound()`](https://pablopnc.github.io/ROCnGO/reference/npauc_lower_bounds.md)
+  : Add NpAUC lower bound to a ROC plot
+- [`add_tpauc_concave_lower_bound()`](https://pablopnc.github.io/ROCnGO/reference/tpauc_lower_bounds.md)
+  [`add_tpauc_partially_proper_lower_bound()`](https://pablopnc.github.io/ROCnGO/reference/tpauc_lower_bounds.md)
+  [`add_tpauc_under_chance_lower_bound()`](https://pablopnc.github.io/ROCnGO/reference/tpauc_lower_bounds.md)
+  [`add_tpauc_lower_bound()`](https://pablopnc.github.io/ROCnGO/reference/tpauc_lower_bounds.md)
+  : Add TpAUC lower bound to a ROC plot
+- [`add_spauc_lower_bound()`](https://pablopnc.github.io/ROCnGO/reference/spauc_lower_bounds.md)
+  : Add SpAUC lower bound to a ROC plot
+
+### Customize plot
+
+- [`add_chance_line()`](https://pablopnc.github.io/ROCnGO/reference/add_chance_line.md)
+  : Show chance line in a ROC plot
+- [`add_fpr_threshold_line()`](https://pablopnc.github.io/ROCnGO/reference/plot_thresholds.md)
+  [`add_tpr_threshold_line()`](https://pablopnc.github.io/ROCnGO/reference/plot_thresholds.md)
+  [`add_threshold_line()`](https://pablopnc.github.io/ROCnGO/reference/plot_thresholds.md)
+  : Add a threshold line to a ROC plot
+- [`hide_legend()`](https://pablopnc.github.io/ROCnGO/reference/hide_legend.md)
+  : Hide legend in a ROC plot
+
+## Built in datasets
+
+- [`prost`](https://pablopnc.github.io/ROCnGO/reference/prost.md) :
+  Prostate cancer gene expression data
+
+## Other helpers
+
+- [`sumexp_to_df()`](https://pablopnc.github.io/ROCnGO/reference/sumexp_to_df.md)
+  : Transform data in a SummarizedExperiment to a data.frame
+
+# Articles
+
+### All vignettes
+
+- [Introduction to
+  ROCnGO](https://pablopnc.github.io/ROCnGO/articles/ROCnGO.md):
+- [Selecting condition of
+  interest](https://pablopnc.github.io/ROCnGO/articles/selecting-condition.md):
