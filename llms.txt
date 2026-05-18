@@ -18,6 +18,7 @@ of analysis such as:
 ## Installation
 
 ``` r
+
 install.packages("ROCnGO")
 ```
 
@@ -25,6 +26,7 @@ Alternatively, development version of ROCnGO can be installed from its
 [GitHub](https://github.com/pabloPNC/ROCnGO) repository with:
 
 ``` r
+
 # install.packages("devtools")
 devtools::install_github("pabloPNC/ROCnGO")
 ```
@@ -32,6 +34,7 @@ devtools::install_github("pabloPNC/ROCnGO")
 ## Usage
 
 ``` r
+
 library(ROCnGO)
 
 # Iris subset
@@ -57,6 +60,7 @@ summarize_predictor(
 ```
 
 ``` r
+
 
 # Summarize several predictors simultaneously
 summarize_dataset(
@@ -94,6 +98,7 @@ summarize_dataset(
 ```
 
 ``` r
+
 
 # Plot ROC curve of classifiers
 plot_roc_curve(iris_subset, predictor = Sepal.Length, response = Species) +

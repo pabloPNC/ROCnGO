@@ -20,6 +20,7 @@ We’ll start by loading ROCnGO and some other libraries which will help
 in the analysis.
 
 ``` r
+
 library(ROCnGO)
 library(dplyr)
 ```
@@ -27,7 +28,7 @@ library(dplyr)
 ## Selection of the condition of interest
 
 As mentioned before, the outcomes of these analyses can be dichotomized
-in being a condition of interest $(D = 1)$ or not $(D = 0)$. In this
+in being a condition of interest $`(D=1)`$ or not $`(D=0)`$. In this
 way, ROCnGO internally transform the variable with each case outcome
 (`response`) to a factor of values 1 and 0, representing presence or
 absence of the condition.
@@ -74,6 +75,7 @@ place we will create an small dataset by using a small subset of `iris`
 dataset.
 
 ``` r
+
 # Create a small subset of iris with 5 random flowers of each species
 iris_subset <- as_tibble(iris) %>%
   group_by(Species) %>%
@@ -107,6 +109,7 @@ use
 function.
 
 ``` r
+
 # Check levels in Species
 levels(iris_subset$Species)
 #> [1] "setosa"     "versicolor" "virginica"
@@ -141,6 +144,7 @@ Now, if we want to repeat the analysis but considering *virginica* as
 the species of interest, we can consider `.condition` argument.
 
 ``` r
+
 # Summarize dataset classifiers with virginica species as D=1
 virginica_results <- summarize_dataset(
   iris_subset,
@@ -190,6 +194,7 @@ scenario, we will be supposing that we cannot make directly calculations
 over Species and we will need to define new variables to do it.
 
 ``` r
+
 # Create new variables to evaluate "virginica" species classifiers
 iris_subset <- iris_subset %>%
   mutate(
@@ -224,6 +229,7 @@ iris_subset[, c("Species", "Species_int", "Species_fct")]
 Now we can evaluate the classifier performance.
 
 ``` r
+
 # Select predictors
 predictors <- c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")
 
