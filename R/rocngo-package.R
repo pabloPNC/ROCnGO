@@ -1,16 +1,16 @@
 #' @importFrom tibble tibble as_tibble
 #' @importFrom dplyr select rename arrange pull filter slice_max slice_min
-#' bind_rows bind_cols group_by summarize n where all_of mutate
+#'  bind_rows bind_cols group_by summarize n where all_of mutate across
 #' @importFrom tidyr pivot_longer pivot_wider
 #' @importFrom rlang enquo as_name quo_is_null quo_is_symbol quo_is_call
-#' call_args .data
+#'  call_args .data
 #' @importFrom magrittr %>%
 #' @importFrom purrr map reduce
 #' @importFrom stringr str_c str_glue
 #' @importFrom ggplot2 ggplot labs aes geom_point geom_path geom_abline
-#' geom_vline geom_hline geom_polygon theme
+#'  geom_vline geom_hline geom_polygon theme
 #' @importFrom forcats fct fct_collapse fct_relevel
 #' @importFrom cli cli_inform cli_progress_bar cli_progress_update
-#' cli_progress_done cli_warn
+#'  cli_progress_done cli_warn
 #' @importFrom SummarizedExperiment assay assays rowData colData
 NULL
