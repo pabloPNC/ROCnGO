@@ -233,5 +233,24 @@ summarize_dataset <- function(data,
     ) %>%
     summarize(count = n())
 
+  metrics[["summary"]] <- metrics$data %>%
+    summarize(
+      across(
+        where(is.numeric),
+        list(
+          mean = ~ mean(.x, na.rm = TRUE),
+          median = ~ median(.x, na.rm = TRUE),
+          max = ~ max(.x, na.rm = TRUE),
+          min = ~ min(.x, na.rm = TRUE),
+          n_na = ~ sum(is.na(.x))
+        )
+      )
+    ) %>%
+    pivot_longer(
+      cols = everything(),
+      names_to = c("index", ".value"),
+      names_pattern = "^(.*)_(mean|median|max|min|n_na)$"
+    )
+
   return(metrics)
 }
