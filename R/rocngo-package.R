@@ -1,6 +1,7 @@
 #' @importFrom tibble tibble as_tibble
 #' @importFrom dplyr select rename arrange pull filter slice_max slice_min
 #'  bind_rows bind_cols group_by summarize n where all_of mutate across
+#'  everything
 #' @importFrom tidyr pivot_longer pivot_wider
 #' @importFrom rlang enquo as_name quo_is_null quo_is_symbol quo_is_call
 #'  call_args .data
