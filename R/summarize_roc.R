@@ -234,14 +234,16 @@ summarize_dataset <- function(data,
     summarize(count = n())
 
   metrics[["summary"]] <- metrics$data %>%
+    select(-identifier, -curve_shape) %>%
+    mutate(across(everything(), as.numeric)) %>%
     summarize(
       across(
-        where(is.numeric),
+        everything(),
         list(
-          mean = ~ mean(.x, na.rm = TRUE),
-          median = ~ median(.x, na.rm = TRUE),
-          max = ~ max(.x, na.rm = TRUE),
-          min = ~ min(.x, na.rm = TRUE),
+          mean = ~ if (all(is.na(.x))) NA_real_ else mean(.x, na.rm = TRUE),
+          median = ~ if (all(is.na(.x))) NA_real_ else median(.x, na.rm = TRUE),
+          max = ~ if (all(is.na(.x))) NA_real_ else max(.x, na.rm = TRUE),
+          min = ~ if (all(is.na(.x))) NA_real_ else min(.x, na.rm = TRUE),
           n_na = ~ sum(is.na(.x))
         )
       )
