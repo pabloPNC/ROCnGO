@@ -68,7 +68,7 @@ StatRoc <- ggproto("StatRoc", Stat,
 
 stat_roc <- function(mapping = NULL,
                      data = NULL,
-                     geom = "path",
+                     geom = "point",
                      position = "identity",
                      ...,
                      .condition = NULL,
@@ -87,6 +87,44 @@ stat_roc <- function(mapping = NULL,
     inherit.aes = inherit.aes,
     params = list(
       .condition = .condition,
+      na.rm = na.rm,
+      ...
+    )
+  )
+}
+
+GeomRoc <- ggproto("GeomRoc", GeomPath,
+
+  required_aes = c("x", "y"),
+
+  default_aes = aes(
+    colour = "black",
+    linewidth = 0.5,
+    linetype = 1,
+    alpha = NA
+  ),
+
+  draw_key = draw_key_path
+)
+
+geom_roc <- function(mapping = NULL,
+                     data = NULL,
+                     stat = "roc",
+                     position = "identity",
+                     ...,
+                     na.rm = FALSE,
+                     show.legend = NA,
+                     inherit.aes = TRUE) {
+
+  layer(
+    geom = GeomRoc,
+    stat = stat,
+    data = data,
+    mapping = mapping,
+    position = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
+    params = list(
       na.rm = na.rm,
       ...
     )
