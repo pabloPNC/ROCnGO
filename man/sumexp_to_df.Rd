@@ -10,7 +10,7 @@ sumexp_to_df(se, .n = NULL)
 \item{se}{A SummarizedExperiment object.}
 
 \item{.n}{An integer or string, representing the index or name of the assay
-to use. Same as \code{i} in \code{\link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment::assay()}} function.
+to use. Same as \code{i} in \code{\link[SummarizedExperiment:assay]{SummarizedExperiment::assay()}} function.
 
 By default, function combines every assay in \code{se} argument.}
 }
