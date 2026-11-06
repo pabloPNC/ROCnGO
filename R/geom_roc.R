@@ -76,7 +76,6 @@ stat_roc <- function(mapping = NULL,
                      show.legend = NA,
                      inherit.aes = TRUE) {
 
-  # mapping <- aes(group = 1) + mapping
   layer(
     stat = StatRoc,
     data = data,
@@ -104,7 +103,54 @@ GeomRoc <- ggproto("GeomRoc", GeomPath,
     alpha = NA
   ),
 
-  draw_key = draw_key_path
+  draw_panel = function(data, panel_params, coord,
+                        reference = FALSE,
+                        reference_colour = "grey70",
+                        reference_linetype = 2,
+                        reference_linewidth = 0.5,
+                        arrow = NULL,
+                        lineend = "butt",
+                        linejoin = "round",
+                        linemitre = 10,
+                        na.rm = FALSE) {
+
+    roc_grob <- GeomPath$draw_panel(
+      data,
+      panel_params,
+      coord,
+      arrow = arrow,
+      lineend = lineend,
+      linejoin = linejoin,
+      linemitre = linemitre,
+      na.rm = na.rm
+    )
+
+    if (!reference) {
+      return(roc_grob)
+    }
+
+    reference_data <- data.frame(
+      x = c(0, 1),
+      y = c(0, 1),
+      group = 1,
+      colour = reference_colour,
+      linewidth = reference_linewidth,
+      linetype = reference_linetype,
+      alpha = 1
+    )
+
+    reference_grob <- GeomPath$draw_panel(
+      reference_data,
+      panel_params,
+      coord,
+      na.rm = na.rm
+    )
+
+    grid::grobTree(
+      reference_grob,
+      roc_grob
+    )
+  }
 )
 
 geom_roc <- function(mapping = NULL,
@@ -112,6 +158,10 @@ geom_roc <- function(mapping = NULL,
                      stat = "roc",
                      position = "identity",
                      ...,
+                     reference = FALSE,
+                     reference_colour = "grey70",
+                     reference_linetype = 2,
+                     reference_linewidth = 0.5,
                      na.rm = FALSE,
                      show.legend = NA,
                      inherit.aes = TRUE) {
@@ -125,8 +175,14 @@ geom_roc <- function(mapping = NULL,
     show.legend = show.legend,
     inherit.aes = inherit.aes,
     params = list(
+      reference = reference,
+      reference_colour = reference_colour,
+      reference_linetype = reference_linetype,
+      reference_linewidth = reference_linewidth,
       na.rm = na.rm,
       ...
     )
   )
 }
+
+
