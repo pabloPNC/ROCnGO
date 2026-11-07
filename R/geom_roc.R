@@ -52,7 +52,7 @@ StatRoc <- ggproto("StatRoc", Stat,
     )) {
       data$group <- as.integer(desired_group)
     }
-
+    print(as_tibble(data))
     data
   },
   compute_group = function(data, scales, .condition = NULL) {
@@ -98,11 +98,11 @@ GeomRoc <- ggproto("GeomRoc", GeomPath,
 
   default_aes = aes(
     colour = "black",
+    fill = NA,
     linewidth = 0.5,
     linetype = 1,
     alpha = NA
   ),
-
   draw_panel = function(data, panel_params, coord,
                         reference = FALSE,
                         reference_colour = "grey70",
@@ -113,8 +113,56 @@ GeomRoc <- ggproto("GeomRoc", GeomPath,
                         linejoin = "round",
                         linemitre = 10,
                         na.rm = FALSE) {
+    grobs <- list()
 
-    roc_grob <- GeomPath$draw_panel(
+    # Area under the ROC curve
+    if ("fill" %in% names(data) && any(!is.na(data$fill))) {
+
+      groups <- split(data, data$group)  # generates a dfs for each group
+
+      polygon_data <- do.call(
+        rbind,
+
+        lapply(groups, function(d) {  # closes polygon
+          # Close the polygon along the x-axis
+          polygon <- rbind(
+            d,
+            d[nrow(d), , drop = FALSE],
+            d[1, , drop = FALSE]
+          )  # adds polygon two extra points of FPR (closing it)
+          polygon$y[(nrow(d) + 1):nrow(polygon)] <- 0  # new points are TPR 0
+          polygon$colour <- NA
+          polygon
+        })
+      )
+
+      grobs$area <- GeomPolygon$draw_panel(
+        polygon_data,
+        panel_params,
+        coord
+        # na.rm = na.rm  # not working
+      )
+    }
+    # Random classifier reference line
+    if (reference) {
+      reference_data <- data.frame(
+        x = c(0, 1),
+        y = c(0, 1),
+        group = 1,
+        colour = reference_colour,
+        linewidth = reference_linewidth,
+        linetype = reference_linetype,
+        alpha = 1
+      )
+      grobs$reference <- GeomPath$draw_panel(
+        reference_data,
+        panel_params,
+        coord,
+        na.rm = na.rm
+      )
+    }
+    # ROC curve
+    grobs$roc <- GeomPath$draw_panel(
       data,
       panel_params,
       coord,
@@ -125,30 +173,8 @@ GeomRoc <- ggproto("GeomRoc", GeomPath,
       na.rm = na.rm
     )
 
-    if (!reference) {
-      return(roc_grob)
-    }
-
-    reference_data <- data.frame(
-      x = c(0, 1),
-      y = c(0, 1),
-      group = 1,
-      colour = reference_colour,
-      linewidth = reference_linewidth,
-      linetype = reference_linetype,
-      alpha = 1
-    )
-
-    reference_grob <- GeomPath$draw_panel(
-      reference_data,
-      panel_params,
-      coord,
-      na.rm = na.rm
-    )
-
     grid::grobTree(
-      reference_grob,
-      roc_grob
+      do.call(grid::gList, grobs)
     )
   }
 )
@@ -184,5 +210,3 @@ geom_roc <- function(mapping = NULL,
     )
   )
 }
-
-
