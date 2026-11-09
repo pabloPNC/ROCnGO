@@ -1,7 +1,6 @@
 plot_roc <- function(data) {
-  # TODO: fix ignoring unknown labels `fill = Bound`
   ggplot(data) +
-    labs(x = "FPR", y = "TPR", color = "Predictor", fill = "Bound")
+    labs(x = "FPR", y = "TPR", color = "Predictor")
 }
 
 add_geom_point <- function(data, .label) {
@@ -645,11 +644,13 @@ add_fpauc_partially_proper_lower_bound.ratio_df <- function(data,
                                                             .label = NULL) {
   if (!is.null(.label)) {
     fill <- str_c(.label, " FpAUC lower bound")
+    fill_lab <- labs(fill = "Bound")
   } else {
     fill <- NULL
+    fill_lab <- NULL
   }
 
-  geom_polygon(
+  geom <- geom_polygon(
     data = tibble(
       x = c(threshold, 1, 1),
       y = c(threshold, 1, threshold)
@@ -663,6 +664,7 @@ add_fpauc_partially_proper_lower_bound.ratio_df <- function(data,
     alpha = 1 / 5,
     linetype = "solid"
   )
+  list(geom, fill_lab)
 }
 
 #' @rdname fpauc_lower_bounds
@@ -739,13 +741,15 @@ add_fpauc_concave_lower_bound.ratio_df <- function(data,
                                                    .label = NULL) {
   if (!is.null(.label)) {
     fill <- str_c(.label, " FpAUC lower bound")
+    fill_lab <- labs(fill = "Bound")
   } else {
     fill <- NULL
+    fill_lab <- NULL
   }
 
   threshold_fpr <- data[["fpr"]][1]
 
-  geom_polygon(
+  geom <- geom_polygon(
     data = tibble(
       x = c(threshold_fpr, 1, 1),
       y = c(threshold, threshold, 1)
@@ -759,6 +763,7 @@ add_fpauc_concave_lower_bound.ratio_df <- function(data,
     alpha = 1 / 5,
     linetype = "solid"
   )
+  list(geom, fill_lab)
 }
 
 #' @title Add FpAUC lower bound to a ROC plot
@@ -914,8 +919,10 @@ add_tpauc_concave_lower_bound.ratio_df <- function(data,
                                                    .label = NULL) {
   if (!is.null(.label)) {
     fill <- str_c(.label, " TpAUC lower bound")
+    fill_lab <- labs(fill = "Bound")
   } else {
     fill <- NULL
+    fill_lab <- NULL
   }
 
   lower_threshold_tpr <- data %>%
@@ -927,7 +934,7 @@ add_tpauc_concave_lower_bound.ratio_df <- function(data,
     slice_max(.data$tpr, n = 1, with_ties = FALSE) %>%
     pull(.data$tpr)
 
-  geom_polygon(
+  geom <- geom_polygon(
     data = tibble(
       x = c(
         lower_threshold,
@@ -946,6 +953,7 @@ add_tpauc_concave_lower_bound.ratio_df <- function(data,
     alpha = 1 / 5,
     linetype = "solid"
   )
+  list(geom, fill_lab)
 }
 
 #' @rdname tpauc_lower_bounds
@@ -1028,8 +1036,10 @@ add_tpauc_partially_proper_lower_bound.ratio_df <- function(data,
                                                             .label = NULL) {
   if (!is.null(.label)) {
     fill <- str_c(.label, " TpAUC lower bound")
+    fill_lab <- labs(fill = "Bound")
   } else {
     fill <- NULL
+    fill_lab <- NULL
   }
 
   lower_threshold_tpr <- data %>%
@@ -1068,7 +1078,7 @@ add_tpauc_partially_proper_lower_bound.ratio_df <- function(data,
     )
   }
 
-  geom_polygon(
+  geom <- geom_polygon(
     data = bound_points,
     mapping = aes(
       .data$x,
@@ -1079,6 +1089,7 @@ add_tpauc_partially_proper_lower_bound.ratio_df <- function(data,
     alpha = 1 / 5,
     linetype = "solid"
   )
+  list(geom, fill_lab)
 }
 
 #' @rdname tpauc_lower_bounds
@@ -1160,8 +1171,10 @@ add_tpauc_under_chance_lower_bound.ratio_df <- function(data,
                                                         .label = NULL) {
   if (!is.null(.label)) {
     fill <- str_c(.label, " TpAUC lower bound")
+    fill_lab <- labs(fill = "Bound")
   } else {
     fill <- NULL
+    fill_lab <- NULL
   }
 
   lower_threshold_tpr <- data %>%
@@ -1169,7 +1182,7 @@ add_tpauc_under_chance_lower_bound.ratio_df <- function(data,
     slice_min(.data$tpr, n = 1, with_ties = FALSE) %>%
     pull(.data$tpr)
 
-  geom_polygon(
+  geom <- geom_polygon(
     data = tibble(
       x = c(
         lower_threshold,
@@ -1188,6 +1201,7 @@ add_tpauc_under_chance_lower_bound.ratio_df <- function(data,
     alpha = 1 / 5,
     linetype = "solid"
   )
+  list(geom, fill_lab)
 }
 
 #' @title Add TpAUC lower bound to a ROC plot
@@ -1372,11 +1386,13 @@ add_npauc_lower_bound.ratio_df <- function(data,
                                            .label = NULL) {
   if (!is.null(.label)) {
     fill <- str_c(.label, " NpAUC lower bound")
+    fill_lab <- labs(fill = "Bound")
   } else {
     fill <- NULL
+    fill_lab <- NULL
   }
 
-  geom_polygon(
+  geom <- geom_polygon(
     data = tibble(
       x = c(threshold, 1, 1),
       y = c(threshold, 1, threshold)
@@ -1390,6 +1406,7 @@ add_npauc_lower_bound.ratio_df <- function(data,
     alpha = 1 / 5,
     linetype = "solid"
   )
+  list(geom, fill_lab)
 }
 
 #' @rdname npauc_lower_bounds
@@ -1463,11 +1480,13 @@ add_npauc_normalized_lower_bound.ratio_df <- function(data,
                                                       .label = NULL) {
   if (!is.null(.label)) {
     fill <- str_c(.label, " NpAUC lower bound")
+    fill_lab <- labs(fill = "Bound")
   } else {
     fill <- NULL
+    fill_lab <- NULL
   }
 
-  geom_polygon(
+  geom <- geom_polygon(
     data = tibble(
       x = c(0, 1, 1),
       y = c(threshold, 1, threshold)
@@ -1481,6 +1500,7 @@ add_npauc_normalized_lower_bound.ratio_df <- function(data,
     alpha = 1 / 5,
     linetype = "solid"
   )
+  list(geom, fill_lab)
 }
 
 #' @title Add SpAUC lower bound to a ROC plot
@@ -1584,12 +1604,14 @@ add_spauc_lower_bound.ratio_df <- function(data,
 
   if (!is.null(.label)) {
     fill <- str_c(.label, " SpAUC lower bound")
+    fill_lab <- labs(fill = "Bound")
   } else {
     fill <- NULL
+    fill_lab <- NULL
   }
 
 
-  geom_polygon(
+  geom <- geom_polygon(
     data = tibble(
       x = c(
         lower_threshold,
@@ -1610,6 +1632,7 @@ add_spauc_lower_bound.ratio_df <- function(data,
     alpha = 1 / 5,
     linetype = "solid"
   )
+  list(geom, fill_lab)
 }
 
 #' @title Hide legend in a ROC plot
