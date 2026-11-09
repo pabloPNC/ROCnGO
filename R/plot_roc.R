@@ -217,7 +217,7 @@ add_roc_curve.ratio_df <- function(data,
                                    predictor = NULL,
                                    .condition = NULL,
                                    .label = NULL) {
-  add_geom_path(data, geom_path, .label)
+  add_geom_path(data, .label)
 }
 
 #' @title Add ROC points plot to an existing one
@@ -272,7 +272,7 @@ add_roc_points.ratio_df <- function(data,
                                     predictor = NULL,
                                     .condition = NULL,
                                     .label = NULL) {
-  add_geom_point(data, geom_point, .label)
+  add_geom_point(data, .label)
 }
 
 #' @rdname plot_thresholds
@@ -406,7 +406,7 @@ add_partial_roc_curve.ratio_df <- function(data,
   } else if (ratio == "fpr") {
     data <- filter(data, .data[["fpr"]] <= threshold)
   }
-  add_geom_path(data, geom_path, .label)
+  add_geom_path(data, .label)
 }
 
 #' @title Add points in a section of a ROC curve to an existing plot
@@ -498,7 +498,7 @@ add_partial_roc_points.ratio_df <- function(data,
     data <- filter(data, .data[["fpr"]] <= threshold)
   }
 
-  add_geom_point(data, geom_point, .label)
+  add_geom_point(data, .label)
 }
 
 
