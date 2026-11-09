@@ -1,10 +1,11 @@
 plot_roc <- function(data) {
+  # TODO: fix ignoring unknown labels `fill = Bound`
   ggplot(data) +
     labs(x = "FPR", y = "TPR", color = "Predictor", fill = "Bound")
 }
 
-add_roc_geom <- function(data, geom, .label) {
-  geom(
+add_geom_point <- function(data, .label) {
+  geom_point(
     data = data,
     mapping = aes(
       x = .data[["fpr"]],
@@ -15,9 +16,26 @@ add_roc_geom <- function(data, geom, .label) {
   )
 }
 
-plot_roc_geom <- function(data, geom, .label) {
+add_geom_path <- function(data, .label) {
+  geom_path(
+    data = data,
+    mapping = aes(
+      x = .data[["fpr"]],
+      y = .data[["tpr"]],
+      color = .label
+    ),
+    linewidth = 0.8
+  )
+}
+
+plot_geom_point <- function(data, .label) {
   plot_roc(data) +
-    add_roc_geom(data, geom, .label)
+    add_geom_point(data, .label)
+}
+
+plot_geom_path <- function(data, .label) {
+  plot_roc(data) +
+    add_geom_path(data, .label)
 }
 
 #' @title Plot classifier points of a ROC curve
@@ -75,7 +93,7 @@ plot_roc_points.ratio_df <- function(data,
                                      predictor = NULL,
                                      .condition = NULL,
                                      .label = NULL) {
-  plot_roc_geom(data, geom_point, .label)
+  plot_geom_point(data, .label)
 }
 
 #' @title Plot a classifier ROC curve
@@ -130,7 +148,7 @@ plot_roc_curve.ratio_df <- function(data,
                                     predictor = NULL,
                                     .condition = NULL,
                                     .label = NULL) {
-  plot_roc_geom(data, geom_path, .label)
+  plot_geom_path(data, .label)
 }
 
 #' @title Show chance line in a ROC plot
@@ -199,7 +217,7 @@ add_roc_curve.ratio_df <- function(data,
                                    predictor = NULL,
                                    .condition = NULL,
                                    .label = NULL) {
-  add_roc_geom(data, geom_path, .label)
+  add_geom_path(data, geom_path, .label)
 }
 
 #' @title Add ROC points plot to an existing one
@@ -254,7 +272,7 @@ add_roc_points.ratio_df <- function(data,
                                     predictor = NULL,
                                     .condition = NULL,
                                     .label = NULL) {
-  add_roc_geom(data, geom_point, .label)
+  add_geom_point(data, geom_point, .label)
 }
 
 #' @rdname plot_thresholds
@@ -388,7 +406,7 @@ add_partial_roc_curve.ratio_df <- function(data,
   } else if (ratio == "fpr") {
     data <- filter(data, .data[["fpr"]] <= threshold)
   }
-  add_roc_geom(data, geom_path, .label)
+  add_geom_path(data, geom_path, .label)
 }
 
 #' @title Add points in a section of a ROC curve to an existing plot
@@ -480,7 +498,7 @@ add_partial_roc_points.ratio_df <- function(data,
     data <- filter(data, .data[["fpr"]] <= threshold)
   }
 
-  add_roc_geom(data, geom_point, .label)
+  add_geom_point(data, geom_point, .label)
 }
 
 
