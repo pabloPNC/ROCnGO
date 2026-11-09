@@ -35,6 +35,7 @@ StatRoc <- ggproto("StatRoc", Stat,
     y = after_stat(tpr)
   ),
   setup_data = function(data, params) {
+    print(as_tibble(data))
 
     automatic_group <- recompute_groups(
       data,
@@ -95,6 +96,7 @@ stat_roc <- function(mapping = NULL,
 GeomRoc <- ggproto("GeomRoc", GeomPath,
 
   required_aes = c("x", "y"),
+  optional_aes = "colour",
 
   default_aes = aes(
     colour = "black",
@@ -191,6 +193,19 @@ geom_roc <- function(mapping = NULL,
                      na.rm = FALSE,
                      show.legend = NA,
                      inherit.aes = TRUE) {
+
+  mapping <- rlang::enquo(mapping)
+  print(mapping)
+
+  mapping <- rlang::eval_tidy(mapping)
+  print(mapping)
+
+  predictor <- mapping$predictor
+  print(predictor)
+
+  if (!is.null(predictor)) {
+    mapping$colour <- as_name(predictor)
+  }
 
   layer(
     geom = GeomRoc,
