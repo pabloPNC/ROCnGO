@@ -4,15 +4,13 @@ GeomRoi <- ggplot2::ggproto(
 
   required_aes = character(),
 
-  default_aes = ggplot2::aes(
+  default_aes = aes(
     fill = "grey70",
     colour = NA,
     alpha = 0.5,
     linewidth = 0.5,
     linetype = 1
   ),
-
-  draw_key = ggplot2::draw_key_polygon,
 
   draw_panel = function(data, panel_params, coord,
                         fpr, tpr,
@@ -80,7 +78,7 @@ GeomRoi <- ggplot2::ggproto(
     # Draw ROI boundaries
     if (show_boundary) {
 
-      # Only internal boundaries are drawn
+      # Only internal boundaries
       vline_data <- data.frame(
         xintercept = fpr[fpr > 0 & fpr < 1]
       )
@@ -89,17 +87,25 @@ GeomRoi <- ggplot2::ggproto(
         yintercept = tpr[tpr > 0 & tpr < 1]
       )
 
-      # Dedicated aesthetics for boundaries
-      boundary_aes <- data.frame(
+      # Explicit aesthetics for boundary lines
+      boundary_aes <- list(
         colour = "black",
         linewidth = 0.5,
-        linetype = "dashed"
+        linetype = "dashed",
+        alpha = 1
       )
 
       if (nrow(vline_data) > 0) {
 
+        vline_data <- cbind(
+          vline_data,
+          as.data.frame(
+            lapply(boundary_aes, rep, nrow(vline_data))
+          )
+        )
+
         vlines <- ggplot2::GeomVline$draw_panel(
-          cbind(vline_data, boundary_aes[rep(1, nrow(vline_data)), ]),
+          vline_data,
           panel_params,
           coord
         )
@@ -110,8 +116,15 @@ GeomRoi <- ggplot2::ggproto(
 
       if (nrow(hline_data) > 0) {
 
+        hline_data <- cbind(
+          hline_data,
+          as.data.frame(
+            lapply(boundary_aes, rep, nrow(hline_data))
+          )
+        )
+
         hlines <- ggplot2::GeomHline$draw_panel(
-          cbind(hline_data, boundary_aes[rep(1, nrow(hline_data)), ]),
+          hline_data,
           panel_params,
           coord
         )
@@ -124,6 +137,7 @@ GeomRoi <- ggplot2::ggproto(
       vlines <- grid::nullGrob()
       hlines <- grid::nullGrob()
     }
+
 
     grid::grobTree(
       shaded,
