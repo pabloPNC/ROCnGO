@@ -1,6 +1,6 @@
-GeomRoi <- ggplot2::ggproto(
+GeomRoi <- ggproto(
   "GeomRoi",
-  ggplot2::Geom,
+  Geom,
 
   required_aes = character(),
 
@@ -14,10 +14,9 @@ GeomRoi <- ggplot2::ggproto(
 
   draw_panel = function(data, panel_params, coord,
                         fpr, tpr,
-                        show_boundary = TRUE,
-                        na.rm = FALSE) {
+                        show_boundary = TRUE) {
 
-    # Complementary intervals
+    # calc complement intervals
     x_intervals <- list(
       c(0, fpr[1]),
       c(fpr[2], 1)
@@ -28,12 +27,13 @@ GeomRoi <- ggplot2::ggproto(
       c(tpr[2], 1)
     )
 
-    # Generate shaded rectangles
+    # pairs of intervals
     rects <- expand.grid(
       x = seq_along(x_intervals),
       y = seq_along(y_intervals)
     )
 
+    # calc rectangle points
     polygons <- lapply(seq_len(nrow(rects)), function(i) {
 
       x <- x_intervals[[rects$x[i]]]
@@ -50,9 +50,10 @@ GeomRoi <- ggplot2::ggproto(
       )
     })
 
+    # filter rect polygons
     polygons <- Filter(Negate(is.null), polygons)
 
-    # Draw shaded area
+    # draw polygons
     if (length(polygons) > 0) {
 
       polygon_data <- do.call(rbind, polygons)
@@ -65,17 +66,17 @@ GeomRoi <- ggplot2::ggproto(
 
       polygon_data <- cbind(aesthetics, polygon_data)
 
-      shaded <- ggplot2::GeomPolygon$draw_panel(
+      shaded <- GeomPolygon$draw_panel(
         polygon_data,
         panel_params,
         coord
       )
 
     } else {
-      shaded <- grid::nullGrob()
+      shaded <- nullGrob()
     }
 
-    # Draw ROI boundaries
+    # ROI boundaries
     if (show_boundary) {
 
       # Only internal boundaries
@@ -104,14 +105,14 @@ GeomRoi <- ggplot2::ggproto(
           )
         )
 
-        vlines <- ggplot2::GeomVline$draw_panel(
+        vlines <- GeomVline$draw_panel(
           vline_data,
           panel_params,
           coord
         )
 
       } else {
-        vlines <- grid::nullGrob()
+        vlines <- nullGrob()
       }
 
       if (nrow(hline_data) > 0) {
@@ -123,31 +124,41 @@ GeomRoi <- ggplot2::ggproto(
           )
         )
 
-        hlines <- ggplot2::GeomHline$draw_panel(
+        hlines <- GeomHline$draw_panel(
           hline_data,
           panel_params,
           coord
         )
 
       } else {
-        hlines <- grid::nullGrob()
+        hlines <- nullGrob()
       }
 
     } else {
-      vlines <- grid::nullGrob()
-      hlines <- grid::nullGrob()
+      vlines <- nullGrob()
+      hlines <- nullGrob()
     }
 
-
-    grid::grobTree(
-      shaded,
-      vlines,
-      hlines
-    )
+    grobTree(shaded, vlines, hlines)
   }
 )
 
-
+validate_range <- function(x, name) {
+  if (
+    !is.numeric(x) ||
+      length(x) != 2 ||
+      any(!is.finite(x)) ||
+    x[1] < 0 ||
+    x[2] > 1 ||
+    x[1] >= x[2]
+  ) {
+    cli_abort(
+      "{.arg {name}} must be a numeric vector of length 2, 
+      with increasing values between 0 and 1.",
+      call = caller_env()
+    )
+  }
+}
 
 geom_roi <- function(
   mapping = NULL,
@@ -163,36 +174,20 @@ geom_roi <- function(
   inherit.aes = FALSE
 ) {
 
-  validate_range <- function(x, name) {
-
-    if (
-      !is.numeric(x) ||
-      length(x) != 2 ||
-      any(!is.finite(x)) ||
-      x[1] < 0 ||
-      x[2] > 1 ||
-      x[1] >= x[2]
-    ) {
-      stop(
-        "`", name,
-        "` must be a numeric vector of length 2, ",
-        "with increasing values between 0 and 1.",
-        call. = FALSE
-      )
-    }
-  }
-
   validate_range(fpr, "fpr")
   validate_range(tpr, "tpr")
 
-  if (!is.logical(show_boundary) ||
+  if (
+    !is.logical(show_boundary) ||
       length(show_boundary) != 1 ||
-      is.na(show_boundary)) {
-    stop("`show_boundary` must be TRUE or FALSE.",
-         call. = FALSE)
+      is.na(show_boundary)
+  ) {
+    cli_abort(
+      "{.arg show_boundary} must be {.val TRUE} or {.val FALSE}."
+    )
   }
 
-  ggplot2::layer(
+  layer(
     data = data,
     mapping = mapping,
     stat = stat,
@@ -209,4 +204,3 @@ geom_roi <- function(
     )
   )
 }
-
