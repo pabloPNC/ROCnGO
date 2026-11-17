@@ -148,6 +148,7 @@ importFrom(forcats,
   fct_relevel
 )
 importFrom(ggplot2,
+  GeomPath,
   Stat,
   aes,
   after_stat,
