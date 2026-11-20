@@ -32,11 +32,10 @@ StatRoc <- ggproto("StatRoc", Stat,
   dropped_aes = c("response", "predictor"),
   default_aes = aes(
     x = after_stat(fpr),
-    y = after_stat(tpr)
+    y = after_stat(tpr),
+    color = after_stat(Predictor)
   ),
   setup_data = function(data, params) {
-    print(as_tibble(data))
-
     automatic_group <- recompute_groups(
       data,
       exclude_response = FALSE
@@ -53,16 +52,20 @@ StatRoc <- ggproto("StatRoc", Stat,
     )) {
       data$group <- as.integer(desired_group)
     }
-    print(as_tibble(data))
     data
   },
-  compute_group = function(data, scales, .condition = NULL) {
+  compute_group = function(data, scales, .condition = NULL,
+                           predictor_name = NULL) {
     x <- roc_points(
       data = data,
       response = response,
       predictor = predictor,
       .condition = .condition
     )
+    if (is.null(predictor_name)) {
+      predictor_name <- NA
+    }
+    x[["Predictor"]] <- predictor_name
     x
   }
 )
@@ -96,15 +99,17 @@ stat_roc <- function(mapping = NULL,
 GeomRoc <- ggproto("GeomRoc", GeomPath,
 
   required_aes = c("x", "y"),
-  optional_aes = "colour",
 
   default_aes = aes(
-    colour = "black",
+    color = "black",
     fill = NA,
     linewidth = 0.5,
     linetype = 1,
     alpha = NA
   ),
+  setup_data = function(data, params) {
+    data
+  },
   draw_panel = function(data, panel_params, coord,
                         reference = FALSE,
                         reference_colour = "grey70",
@@ -175,7 +180,7 @@ GeomRoc <- ggproto("GeomRoc", GeomPath,
       na.rm = na.rm
     )
 
-    grid::grobTree(
+    grobTree(
       do.call(grid::gList, grobs)
     )
   }
@@ -186,6 +191,7 @@ geom_roc <- function(mapping = NULL,
                      stat = "roc",
                      position = "identity",
                      ...,
+                     predictor_name = NULL,
                      reference = FALSE,
                      reference_colour = "grey70",
                      reference_linetype = 2,
@@ -194,17 +200,9 @@ geom_roc <- function(mapping = NULL,
                      show.legend = NA,
                      inherit.aes = TRUE) {
 
-  mapping <- rlang::enquo(mapping)
-  print(mapping)
-
-  mapping <- rlang::eval_tidy(mapping)
-  print(mapping)
-
-  predictor <- mapping$predictor
-  print(predictor)
-
-  if (!is.null(predictor)) {
-    mapping$colour <- as_name(predictor)
+  if (is.null(predictor_name) &&
+        !is.null(mapping$predictor)) {
+    predictor_name <- as_label(mapping$predictor)
   }
 
   layer(
@@ -221,6 +219,7 @@ geom_roc <- function(mapping = NULL,
       reference_linetype = reference_linetype,
       reference_linewidth = reference_linewidth,
       na.rm = na.rm,
+      predictor_name = predictor_name,
       ...
     )
   )

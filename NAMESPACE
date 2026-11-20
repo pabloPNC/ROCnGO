@@ -180,6 +180,7 @@ importFrom(purrr,
 )
 importFrom(rlang,
   .data,
+  as_label,
   as_name,
   call_args,
   caller_env,

@@ -3,7 +3,7 @@
 #'  bind_rows bind_cols group_by summarize n where all_of mutate
 #' @importFrom tidyr pivot_longer pivot_wider
 #' @importFrom rlang enquo as_name quo_is_null quo_is_symbol quo_is_call
-#'  call_args .data caller_env
+#'  call_args .data caller_env as_label
 #' @importFrom magrittr %>%
 #' @importFrom purrr map reduce
 #' @importFrom stringr str_c str_glue
