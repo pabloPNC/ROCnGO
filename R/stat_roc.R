@@ -36,6 +36,8 @@ StatRoc <- ggproto("StatRoc", Stat,
     color = after_stat(Predictor)
   ),
   setup_data = function(data, params) {
+    cli::cli_h1("StatRoc setup_data")
+    print(as_tibble(data))
     automatic_group <- recompute_groups(
       data,
       exclude_response = FALSE
@@ -52,10 +54,17 @@ StatRoc <- ggproto("StatRoc", Stat,
     )) {
       data$group <- as.integer(desired_group)
     }
+
+    if (!is.null(params$predictor_name)) {
+      data[["Predictor"]] <- params$predictor_name
+    }
+
+    cli::cli_h2("Post transform")
+    print(as_tibble(data))
     data
   },
-  compute_group = function(data, scales, .condition = NULL,
-                           predictor_name = NULL) {
+  compute_group = function(data, scales, .condition,
+                           predictor_name) {
     x <- roc_points(
       data = data,
       response = response,
@@ -77,10 +86,16 @@ stat_roc <- function(mapping = NULL,
                      geom = "point",
                      position = "identity",
                      ...,
+                     predictor_name = NULL,
                      .condition = NULL,
                      na.rm = FALSE,
                      show.legend = NA,
                      inherit.aes = TRUE) {
+
+  if (is.null(predictor_name) &&
+        !is.null(mapping$predictor)) {
+    predictor_name <- as_label(mapping$predictor)
+  }
 
   layer(
     stat = StatRoc,
@@ -92,6 +107,7 @@ stat_roc <- function(mapping = NULL,
     inherit.aes = inherit.aes,
     params = list(
       .condition = .condition,
+      predictor_name = predictor_name,
       na.rm = na.rm,
       ...
     )
